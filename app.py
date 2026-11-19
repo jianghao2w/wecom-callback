@@ -10,6 +10,7 @@ import time
 import threading
 import urllib.request
 import urllib.parse
+import xml.etree.ElementTree as ET
 from flask import Flask, request, jsonify
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.padding import PKCS7
@@ -159,14 +160,33 @@ def wecom_verify():
 
 @app.route('/wecom', methods=['POST'])
 def wecom_callback():
-    """接收企微推送的消息"""
+    """接收企微推送的消息（XML格式）"""
     try:
         signature = request.args.get('msg_signature', '')
         timestamp = request.args.get('timestamp', '')
         nonce = request.args.get('nonce', '')
         
-        data = request.json or {}
-        encrypt = data.get('Encrypt', '')
+        # 解析 XML 格式的请求体
+        raw_body = request.get_data()
+        print(f"📥 原始请求体: {raw_body[:500]}")
+        
+        encrypt = ""
+        try:
+            root = ET.fromstring(raw_body)
+            encrypt_elem = root.find('Encrypt')
+            if encrypt_elem is not None and encrypt_elem.text:
+                encrypt = encrypt_elem.text.strip()
+        except Exception as xml_err:
+            print(f"❌ XML解析失败: {xml_err}")
+            # 尝试 JSON 格式（兼容）
+            try:
+                import json as _json
+                data = _json.loads(raw_body)
+                encrypt = data.get('Encrypt', '')
+            except:
+                pass
+        
+        print(f"🔐 Encrypt字段: {encrypt[:100]}..." if encrypt else "❌ 未找到Encrypt字段")
         
         if not encrypt:
             return "ok"
@@ -178,11 +198,24 @@ def wecom_callback():
         
         # 解密消息
         msg_json = decrypt_msg(encrypt)
-        msg = json.loads(msg_json)
-        print(f"📩 收到消息: {msg}")
+        print(f"🔓 解密后: {msg_json[:500]}")
+        
+        # 解析解密后的消息（也是XML格式）
+        msg = {}
+        try:
+            msg_root = ET.fromstring(msg_json)
+            for child in msg_root:
+                msg[child.tag] = (child.text or '').strip()
+        except:
+            try:
+                msg = json.loads(msg_json)
+            except:
+                pass
+        
+        print(f"📩 解析后消息: {msg}")
         
         # 检查是否包含链接
-        content = msg.get('Content', '') or msg.get('text', {}).get('content', '')
+        content = msg.get('Content', '') or msg.get('text', {}).get('content', '') or 
         if not content:
             return "ok"
         
