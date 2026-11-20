@@ -239,7 +239,7 @@ def wecom_callback():
                 reply_to_group(f"✅ 已识别 {platform} 内容，正在启动监控...")
                 success = trigger_dify(content)
                 if success:
-                    reply_to_group(f"📊 监控报告已生成，请查看 Dify")
+                    pass
                 else:
                     reply_to_group(f"⚠️ 监控启动失败，请手动在 Dify 中运行")
             
