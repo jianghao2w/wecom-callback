@@ -1,37 +1,77 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import os, json, hashlib, base64, re, threading
-import urllib.request, urllib.parse
+"""企微机器人 URL 回调服务：接收群消息，检测链接，触发 Dify 监控"""
+import os
+import json
+import hashlib
+import base64
+import re
+import time
+import threading
+import urllib.request
+import urllib.parse
 import xml.etree.ElementTree as ET
 from flask import Flask, request, jsonify
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.primitives.padding import PKCS7
 
 app = Flask(__name__)
 
+# ===== 配置（Railway 环境变量里填）=====
 WECOM_TOKEN = os.environ.get("WECOM_CALLBACK_TOKEN", "")
 WECOM_AES_KEY = os.environ.get("WECOM_CALLBACK_AES_KEY", "")
-WECOM_BOT_WEBHOOK = os.environ.get("WECOM_BOT_WEBHOOK", "")
-DIFY_API_URL = os.environ.get("DIFY_API_URL", "")
-DIFY_API_KEY = os.environ.get("DIFY_API_KEY", "")
+WECOM_BOT_WEBHOOK = os.environ.get("WECOM_BOT_WEBHOOK", "")  # 群机器人 Webhook，用于回复确认
+DIFY_API_URL = os.environ.get("DIFY_API_URL", "")  # Dify 工作流 API 地址
+DIFY_API_KEY = os.environ.get("DIFY_API_KEY", "")  # Dify API Key
+
+# ===== 企微加解密 =====
+def get_aes_key():
+    key = base64.b64decode(WECOM_AES_KEY + "=")
+    return key
 
 def decrypt_msg(encrypt_text):
-    key = base64.b64decode(WECOM_AES_KEY + "=")
+    """解密企微回调消息"""
+    key = get_aes_key()
     data = base64.b64decode(encrypt_text)
     cipher = Cipher(algorithms.AES(key), modes.CBC(key[:16]))
     decryptor = cipher.decryptor()
     padded = decryptor.update(data) + decryptor.finalize()
+    # Remove PKCS7 padding
     pad_len = padded[-1]
     content = padded[:-pad_len]
+    # Remove 16-byte random prefix, 4-byte msg_len, msg, 16-byte corp_id
     msg_len = int.from_bytes(content[16:20], 'big')
-    return content[20:20+msg_len].decode('utf-8')
+    msg = content[20:20+msg_len].decode('utf-8')
+    return msg
+
+def encrypt_msg(reply_msg, nonce, timestamp):
+    """加密回复消息"""
+    key = get_aes_key()
+    random_str = os.urandom(16)
+    reply_bytes = reply_msg.encode('utf-8')
+    msg_len = len(reply_bytes).to_bytes(4, 'big')
+    corp_id = WECOM_TOKEN.encode('utf-8')  # simplified
+    plain = random_str + msg_len + reply_bytes + corp_id
+    # PKCS7 padding
+    block_size = 32
+    pad_len = block_size - (len(plain) % block_size)
+    plain += bytes([pad_len]) * pad_len
+    cipher = Cipher(algorithms.AES(key), modes.CBC(key[:16]))
+    encryptor = cipher.encryptor()
+    encrypted = encryptor.update(plain) + encryptor.finalize()
+    return base64.b64encode(encrypted).decode('utf-8')
 
 def verify_signature(token, timestamp, nonce, encrypt):
+    """验证企微签名"""
     sort_list = sorted([token, timestamp, nonce, encrypt])
-    return hashlib.sha1("".join(sort_list).encode('utf-8')).hexdigest()
+    sha = hashlib.sha1("".join(sort_list).encode('utf-8')).hexdigest()
+    return sha
 
+# ===== 链接检测 =====
 LINK_PATTERN = re.compile(r'https?://[^\s<>"\']+')
 
 def extract_platform_and_id(text):
+    """从消息中提取平台和内容ID"""
     links = LINK_PATTERN.findall(text)
     if not links:
         return None, None
@@ -47,115 +87,180 @@ def extract_platform_and_id(text):
         if m: return 'xiaohongshu', m.group(1)
     return None, None
 
+# ===== 触发 Dify =====
 def trigger_dify(content):
+    """调 Dify API 触发监控工作流"""
     if not DIFY_API_URL or not DIFY_API_KEY:
-        print("Dify API not configured")
+        print("⚠️ Dify API 未配置")
         return False
-    body = json.dumps({"inputs": {"content": content}, "response_mode": "blocking"}, ensure_ascii=False).encode('utf-8')
-    req = urllib.request.Request(DIFY_API_URL, data=body,
-        headers={"Content-Type": "application/json", "Authorization": "Bearer " + DIFY_API_KEY}, method="POST")
+    body = json.dumps({
+        "inputs": {"content": content},
+        "response_mode": "blocking",
+    }, ensure_ascii=False).encode('utf-8')
+    req = urllib.request.Request(
+        DIFY_API_URL,
+        data=body,
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {DIFY_API_KEY}",
+        },
+        method="POST"
+    )
     try:
         with urllib.request.urlopen(req, timeout=60) as resp:
-            print("Dify triggered OK")
+            result = resp.read().decode('utf-8')
+            print(f"✅ Dify 触发成功: {result[:200]}")
             return True
     except Exception as e:
-        print("Dify trigger failed: " + str(e))
+        print(f"❌ Dify 触发失败: {e}")
         return False
 
+# ===== 回复群消息 =====
 def reply_to_group(message):
+    """通过 Webhook 回复群消息"""
     if not WECOM_BOT_WEBHOOK:
         return
-    body = json.dumps({"msgtype": "text", "text": {"content": message}}, ensure_ascii=False).encode('utf-8')
-    req = urllib.request.Request(WECOM_BOT_WEBHOOK, data=body,
-        headers={"Content-Type": "application/json"}, method="POST")
+    body = json.dumps({
+        "msgtype": "text",
+        "text": {"content": message}
+    }, ensure_ascii=False).encode('utf-8')
+    req = urllib.request.Request(
+        WECOM_BOT_WEBHOOK,
+        data=body,
+        headers={"Content-Type": "application/json"},
+        method="POST"
+    )
     try:
         with urllib.request.urlopen(req, timeout=10) as resp:
-            print("Group reply OK")
+            print(f"✅ 群回复成功")
     except Exception as e:
-        print("Group reply failed: " + str(e))
+        print(f"❌ 群回复失败: {e}")
 
+# ===== 路由 =====
 @app.route('/healthz', methods=['GET'])
 def health():
-    return jsonify({"ok": True, "version": "v2.1"})
+    return jsonify({"ok": True, "service": "wecom-callback"})
 
 @app.route('/wecom', methods=['GET'])
 def wecom_verify():
+    """企微回调 URL 验证"""
     signature = request.args.get('msg_signature', '')
     timestamp = request.args.get('timestamp', '')
     nonce = request.args.get('nonce', '')
     echostr = request.args.get('echostr', '')
+    
+    # 验证签名
     calc_sig = verify_signature(WECOM_TOKEN, timestamp, nonce, echostr)
     if calc_sig != signature:
-        print("VERIFY FAIL: got=" + signature + " calc=" + calc_sig)
         return "signature error", 403
-    return decrypt_msg(echostr)
+    
+    # 解密 echostr 并返回
+    decrypted = decrypt_msg(echostr)
+    return decrypted
 
 @app.route('/wecom', methods=['POST'])
 def wecom_callback():
+    """接收企微推送的消息（XML格式）"""
     try:
         signature = request.args.get('msg_signature', '')
         timestamp = request.args.get('timestamp', '')
         nonce = request.args.get('nonce', '')
+        
+        # 解析 XML 格式的请求体
         raw_body = request.get_data()
-        print("RAW: " + str(raw_body[:300]))
-
+        print(f"📥 原始请求体: {raw_body[:500]}")
+        
         encrypt = ""
+        # Try JSON first (WeCom smart bot sends JSON with lowercase "encrypt")
         try:
-            root = ET.fromstring(raw_body)
-            e = root.find('Encrypt')
-            if e is not None and e.text:
-                encrypt = e.text.strip()
+            data = json.loads(raw_body)
+            if isinstance(data, dict):
+                encrypt = str(data.get('encrypt') or data.get('Encrypt') or '').strip()
+                print("JSON FORMAT OK, encrypt=" + encrypt[:50] + "...")
         except:
             pass
-
+        # Try XML as fallback
         if not encrypt:
-            print("NO ENCRYPT FIELD")
+            try:
+                root = ET.fromstring(raw_body)
+                encrypt_elem = root.find('Encrypt')
+                if encrypt_elem is not None and encrypt_elem.text:
+                    encrypt = encrypt_elem.text.strip()
+                    print("XML FORMAT OK, encrypt=" + encrypt[:50] + "...")
+            except:
+                pass
+        
+        print(f"🔐 Encrypt字段: {encrypt[:100]}..." if encrypt else "❌ 未找到Encrypt字段")
+        
+        if not encrypt:
             return "ok"
-
+        
+        # 验证签名
         calc_sig = verify_signature(WECOM_TOKEN, timestamp, nonce, encrypt)
         if calc_sig != signature:
-            print("SIG FAIL: got=" + signature + " calc=" + calc_sig)
+            print(f"❌ 签名验证失败: 期望={signature}, 计算={calc_sig}")
+            print(f"   Token={WECOM_TOKEN[:10]}..., Timestamp={timestamp}, Nonce={nonce}")
             return "ok"
-
+        
+        # 解密消息
         try:
             msg_json = decrypt_msg(encrypt)
-            print("DECRYPTED: " + msg_json[:300])
-        except Exception as e:
-            print("DECRYPT FAIL: " + str(e))
+        except Exception as dec_err:
+            print(f"❌ 解密失败: {dec_err}")
+            print(f"   AES Key前10字符: {WECOM_AES_KEY[:10]}...")
             return "ok"
-
+        print(f"🔓 解密后: {msg_json[:500]}")
+        
+        # 解析解密后的消息（也是XML格式）
         msg = {}
         try:
-            root = ET.fromstring(msg_json)
-            for child in root:
+            msg_root = ET.fromstring(msg_json)
+            for child in msg_root:
                 msg[child.tag] = (child.text or '').strip()
         except:
-            pass
-
-        print("PARSED: " + str(msg))
-        content = msg.get('Content', '')
+            try:
+                msg = json.loads(msg_json)
+            except:
+                pass
+        
+        print(f"📩 解析后消息: {msg}")
+        
+        # 检查是否包含链接
+        content = msg.get('Content', '') or msg.get('text', {}).get('content', '')
         if not content:
             return "ok"
-
+        
         platform, content_id = extract_platform_and_id(content)
-        print("PLATFORM: " + str(platform) + " ID: " + str(content_id))
-
+        
         if platform and content_id:
+            # 在后台线程触发 Dify（避免阻塞回调响应）
             def run():
-                reply_to_group("OK " + platform + " monitoring...")
-                trigger_dify(content)
+                reply_to_group(f"✅ 已识别 {platform} 内容，正在启动监控...")
+                success = trigger_dify(content)
+                if success:
+                    reply_to_group(f"📊 监控报告已生成，请查看 Dify")
+                else:
+                    reply_to_group(f"⚠️ 监控启动失败，请手动在 Dify 中运行")
+            
             threading.Thread(target=run, daemon=True).start()
-
+        else:
+            # 不是链接，忽略（或者以后可以加其他指令）
+            pass
+        
         return "ok"
     except Exception as e:
-        print("ERROR: " + str(e))
+        print(f"❌ 回调处理错误: {e}")
         return "ok"
 
 if __name__ == '__main__':
+    print(f"=== 版本: v2.1 (带调试日志) ===")
+    print(f"Token前10字符: {WECOM_TOKEN[:10]}...")
+    print(f"AES Key前10字符: {WECOM_AES_KEY[:10]}...")
+    print(f"Webhook前30字符: {WECOM_BOT_WEBHOOK[:30]}...")
+    print(f"Dify URL: {DIFY_API_URL}")
     port = int(os.environ.get('PORT', 8080))
-    print("=== v2.1 started ===")
-    print("Token: " + WECOM_TOKEN[:8] + "...")
-    print("AES: " + WECOM_AES_KEY[:8] + "...")
-    print("Webhook: " + WECOM_BOT_WEBHOOK[:30] + "...")
-    print("DifyURL: " + DIFY_API_URL)
+    print(f"=== 企微回调服务 ===")
+    print(f"端口: {port}")
+    print(f"Webhook: {'已配置' if WECOM_BOT_WEBHOOK else '未配置'}")
+    print(f"Dify API: {'已配置' if DIFY_API_URL else '未配置'}")
     app.run(host='0.0.0.0', port=port, debug=False)
