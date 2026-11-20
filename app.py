@@ -96,6 +96,7 @@ def trigger_dify(content):
     body = json.dumps({
         "inputs": {"content": content},
         "response_mode": "blocking",
+        "user": "wecom-bot"
     }, ensure_ascii=False).encode('utf-8')
     req = urllib.request.Request(
         DIFY_API_URL,
