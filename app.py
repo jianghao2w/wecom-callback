@@ -194,10 +194,17 @@ def wecom_callback():
         # 验证签名
         calc_sig = verify_signature(WECOM_TOKEN, timestamp, nonce, encrypt)
         if calc_sig != signature:
+            print(f"❌ 签名验证失败: 期望={signature}, 计算={calc_sig}")
+            print(f"   Token={WECOM_TOKEN[:10]}..., Timestamp={timestamp}, Nonce={nonce}")
             return "ok"
         
         # 解密消息
-        msg_json = decrypt_msg(encrypt)
+        try:
+            msg_json = decrypt_msg(encrypt)
+        except Exception as dec_err:
+            print(f"❌ 解密失败: {dec_err}")
+            print(f"   AES Key前10字符: {WECOM_AES_KEY[:10]}...")
+            return "ok"
         print(f"🔓 解密后: {msg_json[:500]}")
         
         # 解析解密后的消息（也是XML格式）
@@ -215,7 +222,7 @@ def wecom_callback():
         print(f"📩 解析后消息: {msg}")
         
         # 检查是否包含链接
-        content = msg.get('Content', '') or msg.get('text', {}).get('content', '') or 
+        content = msg.get('Content', '') or msg.get('text', {}).get('content', '')
         if not content:
             return "ok"
         
@@ -242,6 +249,11 @@ def wecom_callback():
         return "ok"
 
 if __name__ == '__main__':
+    print(f"=== 版本: v2.1 (带调试日志) ===")
+    print(f"Token前10字符: {WECOM_TOKEN[:10]}...")
+    print(f"AES Key前10字符: {WECOM_AES_KEY[:10]}...")
+    print(f"Webhook前30字符: {WECOM_BOT_WEBHOOK[:30]}...")
+    print(f"Dify URL: {DIFY_API_URL}")
     port = int(os.environ.get('PORT', 8080))
     print(f"=== 企微回调服务 ===")
     print(f"端口: {port}")
