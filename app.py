@@ -10,6 +10,7 @@ import time
 import threading
 import urllib.request
 import urllib.parse
+import urllib.error
 import xml.etree.ElementTree as ET
 from flask import Flask, request, jsonify
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
@@ -23,8 +24,12 @@ WECOM_AES_KEY = os.environ.get("WECOM_CALLBACK_AES_KEY", "")
 WECOM_BOT_WEBHOOK = os.environ.get("WECOM_BOT_WEBHOOK", "")  # 群机器人 Webhook，用于回复确认
 DIFY_API_URL = os.environ.get("DIFY_API_URL", "")  # Dify 工作流 API 地址
 DIFY_API_KEY = os.environ.get("DIFY_API_KEY", "")  # Dify API Key
-TARGETS_FILE = os.environ.get("TARGETS_FILE", "/data/targets.json")  # 登记清单存储（Railway Volume 挂 /data）
+TARGETS_FILE = os.environ.get("TARGETS_FILE", "/data/targets.json")  # 本地文件存储（未配置 GitHub 时使用；容器不持久）
 TARGETS_API_TOKEN = os.environ.get("TARGETS_API_TOKEN", "")  # /targets 接口访问口令（可选，设置后需 ?token= 才能读）
+GITHUB_REPO = os.environ.get("GITHUB_REPO", "")        # 清单存储仓库，如 jianghao2w/wecom-callback
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")      # GitHub PAT（Contents 读写权限）
+GITHUB_DATA_BRANCH = os.environ.get("GITHUB_DATA_BRANCH", "data")  # 数据分支（避开 main，防止触发 Railway 重新部署）
+TARGETS_PATH = os.environ.get("TARGETS_PATH", "data/targets.json") # 清单文件在仓库内的路径
 
 # ===== 企微加解密 =====
 def get_aes_key():
@@ -128,8 +133,52 @@ def extract_platform_and_id(text):
         if p: return p
     return parse_target(text.strip()) or (None, None)
 
-# ===== 登记清单存储 =====
+# ===== 登记清单存储（GitHub 仓库优先，未配置时退回本地文件）=====
+def github_api(method, path, body=None):
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/{path}"
+    headers = {"Accept": "application/vnd.github+json",
+               "Authorization": f"Bearer {GITHUB_TOKEN}",
+               "X-GitHub-Api-Version": "2022-11-28",
+               "User-Agent": "wecom-callback"}
+    data = json.dumps(body).encode('utf-8') if body is not None else None
+    req = urllib.request.Request(url, data=data, headers=headers, method=method)
+    with urllib.request.urlopen(req, timeout=20) as resp:
+        raw = resp.read().decode('utf-8')
+    return json.loads(raw) if raw.strip() else {}
+
+def github_ensure_branch():
+    """确保数据分支存在（不存在则基于 main 创建）"""
+    try:
+        github_api("GET", f"branches/{GITHUB_DATA_BRANCH}")
+        return
+    except urllib.error.HTTPError as e:
+        if e.code != 404:
+            raise
+    main = github_api("GET", "branches/main")
+    github_api("POST", "git/refs", {"ref": f"refs/heads/{GITHUB_DATA_BRANCH}",
+                                    "sha": main["commit"]["sha"]})
+
+def github_load(with_sha=False):
+    """读仓库清单；文件不存在返回 ([], None)"""
+    try:
+        r = github_api("GET", f"contents/{TARGETS_PATH}?ref={GITHUB_DATA_BRANCH}")
+        content = base64.b64decode(r.get("content", "")).decode('utf-8')
+        data = json.loads(content)
+        data = data if isinstance(data, list) else []
+        return (data, r.get("sha")) if with_sha else data
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            github_ensure_branch()
+            return ([], None) if with_sha else []
+        raise
+
 def load_targets():
+    if GITHUB_REPO and GITHUB_TOKEN:
+        try:
+            return github_load()
+        except Exception as e:
+            print(f"⚠️ GitHub 读清单失败: {e}")
+            return []
     try:
         with open(TARGETS_FILE, "r", encoding="utf-8") as f:
             data = json.load(f)
@@ -139,6 +188,22 @@ def load_targets():
 
 def register_target(platform, cid):
     """登记目标（按 platform+id 去重）；返回 (是否新增, 当前总数)"""
+    if GITHUB_REPO and GITHUB_TOKEN:
+        try:
+            targets, sha = github_load(with_sha=True)
+            if any(str(t.get("platform")) == str(platform) and str(t.get("id")) == str(cid) for t in targets):
+                return False, len(targets)
+            targets.append({"platform": platform, "id": str(cid), "added_at": int(time.time())})
+            body = {"message": f"register: {platform} {cid}",
+                    "branch": GITHUB_DATA_BRANCH,
+                    "content": base64.b64encode(json.dumps(targets, ensure_ascii=False, indent=2).encode('utf-8')).decode('utf-8')}
+            if sha:
+                body["sha"] = sha
+            github_api("PUT", f"contents/{TARGETS_PATH}", body)
+            return True, len(targets)
+        except Exception as e:
+            print(f"❌ GitHub 登记写入失败: {e}")
+            return False, 0
     targets = load_targets()
     if any(str(t.get("platform")) == str(platform) and str(t.get("id")) == str(cid) for t in targets):
         return False, len(targets)
