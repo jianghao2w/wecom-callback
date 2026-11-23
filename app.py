@@ -23,6 +23,8 @@ WECOM_AES_KEY = os.environ.get("WECOM_CALLBACK_AES_KEY", "")
 WECOM_BOT_WEBHOOK = os.environ.get("WECOM_BOT_WEBHOOK", "")  # 群机器人 Webhook，用于回复确认
 DIFY_API_URL = os.environ.get("DIFY_API_URL", "")  # Dify 工作流 API 地址
 DIFY_API_KEY = os.environ.get("DIFY_API_KEY", "")  # Dify API Key
+TARGETS_FILE = os.environ.get("TARGETS_FILE", "/data/targets.json")  # 登记清单存储（Railway Volume 挂 /data）
+TARGETS_API_TOKEN = os.environ.get("TARGETS_API_TOKEN", "")  # /targets 接口访问口令（可选，设置后需 ?token= 才能读）
 
 # ===== 企微加解密 =====
 def get_aes_key():
@@ -67,25 +69,88 @@ def verify_signature(token, timestamp, nonce, encrypt):
     sha = hashlib.sha1("".join(sort_list).encode('utf-8')).hexdigest()
     return sha
 
-# ===== 链接检测 =====
+# ===== 链接检测与登记（v2：短链展开/视频号/文本格式/持久化清单）=====
 LINK_PATTERN = re.compile(r'https?://[^\s<>"\']+')
+SHORT_HOSTS = ("v.douyin.com", "v.kuaishou.com", "xhslink.com")
+BROWSER_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+ALIASES = {"douyin":"douyin","dy":"douyin","抖音":"douyin",
+           "channel":"channels","channels":"channels","wechat_channels":"channels","视频号":"channels",
+           "kuaishou":"kuaishou","ks":"kuaishou","快手":"kuaishou",
+           "xiaohongshu":"xiaohongshu","xhs":"xiaohongshu","小红书":"xiaohongshu"}
+PLATFORM_NAMES = {"douyin":"抖音","channels":"视频号","kuaishou":"快手","xiaohongshu":"小红书"}
+
+def expand_short(url):
+    """短链展开：跟随 30x 重定向拿最终链接"""
+    try:
+        if "://" not in url:
+            url = "https://" + url
+        req = urllib.request.Request(url, headers={"User-Agent": BROWSER_UA})
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            return resp.url or ""
+    except Exception as e:
+        print(f"⚠️ 短链展开失败: {e}")
+        return ""
+
+def parse_target(text_in):
+    """识别 (平台, 内容ID)；支持链接/短链/channel ID/中文平台名/纯ID"""
+    text_in = str(text_in or "").strip()
+    if not text_in:
+        return None
+    if any(h in text_in for h in SHORT_HOSTS):
+        expanded = expand_short(text_in)
+        if expanded and expanded != text_in:
+            return parse_target(expanded)
+    if "douyin.com" in text_in or "iesdouyin.com" in text_in:
+        m = re.search(r'(?:video|note)/([0-9]+)', text_in)
+        if m: return ("douyin", m.group(1))
+    if "channels.weixin.qq.com" in text_in:
+        m = re.search(r'(?:feed|post)/([a-zA-Z0-9_-]+)', text_in)
+        if m: return ("channels", m.group(1))
+    if "kuaishou.com" in text_in:
+        m = re.search(r'short-video/([a-zA-Z0-9_-]+)', text_in)
+        if m: return ("kuaishou", m.group(1))
+    if "xiaohongshu.com" in text_in:
+        m = re.search(r'(?:explore|discovery/item)/([a-zA-Z0-9]+)', text_in)
+        if m: return ("xiaohongshu", m.group(1))
+    parts = text_in.split()
+    if len(parts) >= 2:
+        plat = ALIASES.get(parts[0].lower(), "")
+        if plat: return (plat, parts[1])
+    clean = text_in
+    if re.match(r'^[0-9]{15,}$', clean): return ("douyin", clean)
+    if re.match(r'^[a-zA-Z0-9]{20,}$', clean): return ("xiaohongshu", clean)
+    return None
 
 def extract_platform_and_id(text):
-    """从消息中提取平台和内容ID"""
-    links = LINK_PATTERN.findall(text)
-    if not links:
-        return None, None
-    link = links[0]
-    if 'douyin.com' in link:
-        m = re.search(r'(?:video|note)/([0-9]+)', link)
-        if m: return 'douyin', m.group(1)
-    elif 'kuaishou.com' in link:
-        m = re.search(r'short-video/([a-zA-Z0-9_-]+)', link)
-        if m: return 'kuaishou', m.group(1)
-    elif 'xiaohongshu.com' in link:
-        m = re.search(r'(?:explore|discovery/item)/([a-zA-Z0-9]+)', link)
-        if m: return 'xiaohongshu', m.group(1)
-    return None, None
+    """从消息中提取平台和内容ID：优先取链接，其次按文本解析"""
+    for link in LINK_PATTERN.findall(text):
+        p = parse_target(link)
+        if p: return p
+    return parse_target(text.strip()) or (None, None)
+
+# ===== 登记清单存储 =====
+def load_targets():
+    try:
+        with open(TARGETS_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, list) else []
+    except Exception:
+        return []
+
+def register_target(platform, cid):
+    """登记目标（按 platform+id 去重）；返回 (是否新增, 当前总数)"""
+    targets = load_targets()
+    if any(str(t.get("platform")) == str(platform) and str(t.get("id")) == str(cid) for t in targets):
+        return False, len(targets)
+    targets.append({"platform": platform, "id": str(cid), "added_at": int(time.time())})
+    try:
+        os.makedirs(os.path.dirname(TARGETS_FILE), exist_ok=True)
+        with open(TARGETS_FILE, "w", encoding="utf-8") as f:
+            json.dump(targets, f, ensure_ascii=False, indent=2)
+        return True, len(targets)
+    except Exception as e:
+        print(f"❌ 登记写入失败: {e}")
+        return False, len(targets)
 
 # ===== 触发 Dify =====
 def trigger_dify(content):
@@ -140,7 +205,14 @@ def reply_to_group(message):
 # ===== 路由 =====
 @app.route('/healthz', methods=['GET'])
 def health():
-    return jsonify({"ok": True, "service": "wecom-callback"})
+    return jsonify({"ok": True, "service": "wecom-callback", "targets": len(load_targets())})
+
+@app.route('/targets', methods=['GET'])
+def targets_api():
+    """登记清单接口，供 Dify 定时任务拉取；设置 TARGETS_API_TOKEN 后需 ?token=xxx"""
+    if TARGETS_API_TOKEN and request.args.get('token') != TARGETS_API_TOKEN:
+        return jsonify({"error": "unauthorized"}), 403
+    return jsonify(load_targets())
 
 @app.route('/wecom', methods=['GET'])
 def wecom_verify():
@@ -234,14 +306,16 @@ def wecom_callback():
         platform, content_id = extract_platform_and_id(content)
         
         if platform and content_id:
-            # 在后台线程触发 Dify（避免阻塞回调响应）
+            added, total = register_target(platform, content_id)
+            plat_name = PLATFORM_NAMES.get(platform, platform)
+            
             def run():
-                reply_to_group(f"✅ 已识别 {platform} 内容，正在启动监控...")
-                success = trigger_dify(content)
-                if success:
-                    pass
+                if added:
+                    reply_to_group(f"✅ 已登记{plat_name}内容，当前共 {total} 个监控目标；发布满6小时后自动开始每小时监控")
                 else:
-                    reply_to_group(f"⚠️ 监控启动失败，请手动在 Dify 中运行")
+                    reply_to_group(f"ℹ️ 该{plat_name}内容已在监控清单中，无需重复登记")
+                # 当场触发一次 Dify：立即回报该目标状态（不足6小时会显示跳过，满6小时会正常监控）
+                trigger_dify(f"{platform} {content_id}")
             
             threading.Thread(target=run, daemon=True).start()
         else:
