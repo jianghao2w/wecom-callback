@@ -30,6 +30,7 @@ GITHUB_REPO = os.environ.get("GITHUB_REPO", "")        # 清单存储仓库，�
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")      # GitHub PAT（Contents 读写权限）
 GITHUB_DATA_BRANCH = os.environ.get("GITHUB_DATA_BRANCH", "data")  # 数据分支（避开 main，防止触发 Railway 重新部署）
 TARGETS_PATH = os.environ.get("TARGETS_PATH", "data/targets.json") # 清单文件在仓库内的路径
+TIKHUB_TOKEN = os.environ.get("TIKHUB_API_TOKEN", "")  # TikHub Token：视频号分享链接换数字ID用
 
 # ===== 企微加解密 =====
 def get_aes_key():
@@ -111,6 +112,9 @@ def parse_target(text_in):
     if "channels.weixin.qq.com" in text_in:
         m = re.search(r'(?:feed|post)/([a-zA-Z0-9_-]+)', text_in)
         if m: return ("channels", m.group(1))
+    if "weixin.qq.com/sph" in text_in:
+        # 视频号短链（助手后台分享出来的是这种），登记时再换成数字 object_id
+        return ("channels", text_in if text_in.startswith("http") else "https://weixin.qq.com/sph/" + text_in.rstrip("/").split("/")[-1])
     if "kuaishou.com" in text_in:
         m = re.search(r'short-video/([a-zA-Z0-9_-]+)', text_in)
         if m: return ("kuaishou", m.group(1))
@@ -132,6 +136,49 @@ def extract_platform_and_id(text):
         p = parse_target(link)
         if p: return p
     return parse_target(text.strip()) or (None, None)
+
+def channels_resolve_id(text_in, token):
+    """视频号：分享链接/export_id 换成数字 object_id（export 有时效，登记必须存数字ID）；失败返回原文"""
+    s = str(text_in or "").strip()
+    if re.match(r'^[0-9]{15,}$', s):
+        return s  # 已是数字 ID
+    if not token:
+        return s
+    try:
+        share_url = s if s.startswith("http") else "https://channels.weixin.qq.com/web/pages/feed/" + s
+        body = json.dumps({"share_url": share_url, "raw": False}).encode('utf-8')
+        req = urllib.request.Request(
+            "https://api.tikhub.io/api/v1/wechat_channels/v2/fetch_video_detail",
+            data=body,
+            headers={"Authorization": "Bearer " + token,
+                     "Content-Type": "application/json",
+                     "User-Agent": "monitor/1.0"},
+            method="POST")
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            d = json.loads(resp.read().decode('utf-8'))
+        def dig(o, depth=0):
+            if depth > 7 or o is None: return None
+            if isinstance(o, dict):
+                for k in ("objectId", "object_id", "objectid", "id"):
+                    v = o.get(k)
+                    if isinstance(v, str) and re.match(r'^[0-9]{15,25}$', v):
+                        return v
+                for v in o.values():
+                    r = dig(v, depth + 1)
+                    if r: return r
+            elif isinstance(o, list):
+                for v in o[:8]:
+                    r = dig(v, depth + 1)
+                    if r: return r
+            return None
+        resolved = dig(d)
+        if resolved:
+            print(f"🔗 视频号链接已解析: {s[:50]} -> {resolved}")
+            return resolved
+        return s
+    except Exception as e:
+        print(f"⚠️ 视频号ID解析失败: {e}")
+        return s
 
 # ===== 登记清单存储（GitHub 仓库优先，未配置时退回本地文件）=====
 def github_api(method, path, body=None):
@@ -369,19 +416,20 @@ def wecom_callback():
             return "ok"
         
         platform, content_id = extract_platform_and_id(content)
-        
+
         if platform and content_id:
+            if platform == "channels":
+                content_id = channels_resolve_id(content_id, TIKHUB_TOKEN)
             added, total = register_target(platform, content_id)
             plat_name = PLATFORM_NAMES.get(platform, platform)
-            
+
             def run():
+                # 仅登记回执；监控按节奏由定时任务执行，群里不再收即时报告
                 if added:
-                    reply_to_group(f"✅ 已登记{plat_name}内容，当前共 {total} 个监控目标；发布满6小时后自动开始每小时监控")
+                    reply_to_group(f"✅ 已登记{plat_name}内容，当前共 {total} 个监控目标；发布满6小时后自动开始监控（6-12小时每小时、之后每6小时），有负面评论时才会推送报告")
                 else:
                     reply_to_group(f"ℹ️ 该{plat_name}内容已在监控清单中，无需重复登记")
-                # 当场触发一次 Dify：立即回报该目标状态（不足6小时会显示跳过，满6小时会正常监控）
-                trigger_dify(f"{platform} {content_id}")
-            
+
             threading.Thread(target=run, daemon=True).start()
         else:
             # 不是链接，忽略（或者以后可以加其他指令）
