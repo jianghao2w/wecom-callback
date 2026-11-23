@@ -3,5 +3,10 @@
     "platform": "douyin",
     "id": "7707565249196510514",
     "added_at": 1795411912
+  },
+  {
+    "platform": "channels",
+    "id": "https://weixin.qq.com/sph/A7H7oaGHm",
+    "added_at": 1795417841
   }
 ]
