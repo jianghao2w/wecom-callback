@@ -120,7 +120,11 @@ def parse_target(text_in):
         if m: return ("kuaishou", m.group(1))
     if "xiaohongshu.com" in text_in:
         m = re.search(r'(?:explore|discovery/item)/([a-zA-Z0-9]+)', text_in)
-        if m: return ("xiaohongshu", m.group(1))
+        if m:
+            tok = ""
+            mt = re.search(r'[?&]xsec_token=([^&\s]+)', text_in)
+            if mt: tok = mt.group(1)
+            return ("xiaohongshu", m.group(1) + (("?xsec_token=" + tok) if tok else ""))
     parts = text_in.split()
     if len(parts) >= 2:
         plat = ALIASES.get(parts[0].lower(), "")
@@ -265,13 +269,13 @@ def register_target(platform, cid):
         return False, len(targets)
 
 # ===== 触发 Dify =====
-def trigger_dify(content):
-    """调 Dify API 触发监控工作流"""
+def trigger_dify(content, mode="register"):
+    """调 Dify API 触发监控工作流；mode=register 表示登记触发（强制推送评论现状）"""
     if not DIFY_API_URL or not DIFY_API_KEY:
         print("⚠️ Dify API 未配置")
         return False
     body = json.dumps({
-        "inputs": {"content": content},
+        "inputs": {"content": content, "mode": mode},
         "response_mode": "blocking",
         "user": "wecom-bot"
     }, ensure_ascii=False).encode('utf-8')
@@ -285,7 +289,7 @@ def trigger_dify(content):
         method="POST"
     )
     try:
-        with urllib.request.urlopen(req, timeout=60) as resp:
+        with urllib.request.urlopen(req, timeout=120) as resp:
             result = resp.read().decode('utf-8')
             print(f"✅ Dify 触发成功: {result[:200]}")
             return True
@@ -424,11 +428,12 @@ def wecom_callback():
             plat_name = PLATFORM_NAMES.get(platform, platform)
 
             def run():
-                # 仅登记回执；监控按节奏由定时任务执行，群里不再收即时报告
                 if added:
-                    reply_to_group(f"✅ 已登记{plat_name}内容，当前共 {total} 个监控目标；发布满6小时后自动开始监控（6-12小时每小时、之后每6小时），有负面评论时才会推送报告")
+                    reply_to_group(f"✅ 已登记{plat_name}内容，当前共 {total} 个监控目标")
                 else:
                     reply_to_group(f"ℹ️ 该{plat_name}内容已在监控清单中，无需重复登记")
+                # 触发一次 Dify（register 模式）：满6小时的作品立即回报评论现状并处理负面；不足6小时回报剩余等待时间
+                trigger_dify(f"{platform} {content_id}", "register")
 
             threading.Thread(target=run, daemon=True).start()
         else:
