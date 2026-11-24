@@ -31,6 +31,9 @@ GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")      # GitHub PAT（Contents �
 GITHUB_DATA_BRANCH = os.environ.get("GITHUB_DATA_BRANCH", "data")  # 数据分支（避开 main，防止触发 Railway 重新部署）
 TARGETS_PATH = os.environ.get("TARGETS_PATH", "data/targets.json") # 清单文件在仓库内的路径
 TIKHUB_TOKEN = os.environ.get("TIKHUB_API_TOKEN", "")  # TikHub Token：视频号分享链接换数字ID用
+COMMENTS_PATH = os.environ.get("COMMENTS_PATH", "data/comment-cache")
+COLLECTION_PAGE_LIMIT = max(1, int(os.environ.get("COLLECTION_PAGE_LIMIT", "200")))
+COLLECTION_REQUEST_TIMEOUT = max(3, int(os.environ.get("COLLECTION_REQUEST_TIMEOUT", "20")))
 
 # ===== 企微加解密 =====
 def get_aes_key():
@@ -223,6 +226,65 @@ def github_load(with_sha=False):
             return ([], None) if with_sha else []
         raise
 
+def github_load_json(path, default=None):
+    """从 data 分支读取任意 JSON 文件；不存在时返回 default。"""
+    try:
+        r = github_api("GET", f"contents/{path}?ref={GITHUB_DATA_BRANCH}")
+        return json.loads(base64.b64decode(r.get("content", "")).decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            return default
+        raise
+
+def github_save_json(path, data, message):
+    """覆盖 data 分支中的 JSON 文件，并处理 GitHub Contents API 的 sha 要求。"""
+    try:
+        old = github_api("GET", f"contents/{path}?ref={GITHUB_DATA_BRANCH}")
+        sha = old.get("sha")
+    except urllib.error.HTTPError as e:
+        if e.code != 404:
+            raise
+        sha = None
+    body = {
+        "message": message,
+        "branch": GITHUB_DATA_BRANCH,
+        "content": base64.b64encode(json.dumps(data, ensure_ascii=False, indent=2).encode("utf-8")).decode("utf-8"),
+    }
+    if sha:
+        body["sha"] = sha
+    github_api("PUT", f"contents/{path}", body)
+
+def comment_cache_key(platform, content_id):
+    return re.sub(r"[^a-zA-Z0-9_.-]", "_", f"{platform}_{content_id}")
+
+def comment_cache_path(platform, content_id):
+    return f"{COMMENTS_PATH.rstrip('/')}/{comment_cache_key(platform, content_id)}.json"
+
+def load_comment_cache(platform, content_id):
+    path = comment_cache_path(platform, content_id)
+    if GITHUB_REPO and GITHUB_TOKEN:
+        try:
+            return github_load_json(path, {}) or {}
+        except Exception as e:
+            print(f"⚠️ GitHub 读评论缓存失败: {e}")
+            return {}
+    try:
+        local = os.path.join(os.path.dirname(TARGETS_FILE), "comment-cache", os.path.basename(path))
+        with open(local, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+def save_comment_cache(platform, content_id, data, message):
+    path = comment_cache_path(platform, content_id)
+    if GITHUB_REPO and GITHUB_TOKEN:
+        github_save_json(path, data, message)
+        return
+    local = os.path.join(os.path.dirname(TARGETS_FILE), "comment-cache", os.path.basename(path))
+    os.makedirs(os.path.dirname(local), exist_ok=True)
+    with open(local, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
 def load_targets():
     if GITHUB_REPO and GITHUB_TOKEN:
         try:
@@ -267,6 +329,222 @@ def register_target(platform, cid):
     except Exception as e:
         print(f"❌ 登记写入失败: {e}")
         return False, len(targets)
+
+# ===== 后台全量评论采集 =====
+COMMENT_LIST_PATHS = [
+    ("data", "aweme_list", "comments"), ("data", "comments"),
+    ("data", "data", "comments"), ("data", "data", "comment_list"),
+    ("data", "comment_list"), ("data", "comments_data"),
+    ("data", "note_comments"), ("data", "comment_resp"),
+    ("data", "data", "comment_resp"),
+]
+COLLECTION_LOCK = threading.Lock()
+COLLECTING = set()
+
+def tikhub_json(url, body=None):
+    headers = {"Accept": "application/json", "Authorization": "Bearer " + TIKHUB_TOKEN,
+               "User-Agent": "wecom-comment-collector/1.0"}
+    data = None
+    if body is not None:
+        data = json.dumps(body, ensure_ascii=False).encode("utf-8")
+        headers["Content-Type"] = "application/json"
+    req = urllib.request.Request(url, data=data, headers=headers, method="POST" if body is not None else "GET")
+    with urllib.request.urlopen(req, timeout=COLLECTION_REQUEST_TIMEOUT) as resp:
+        return json.loads(resp.read().decode("utf-8"))
+
+def nested_value(value, path):
+    cur = value
+    for key in path:
+        if not isinstance(cur, dict) or key not in cur:
+            return None
+        cur = cur[key]
+    return cur
+
+def comment_rows(payload):
+    for path in COMMENT_LIST_PATHS:
+        rows = nested_value(payload, path)
+        if isinstance(rows, list):
+            return rows
+    return []
+
+def first_value(row, *keys):
+    for key in keys:
+        if isinstance(row, dict) and row.get(key) is not None:
+            return row[key]
+    return None
+
+def safe_int(value):
+    try:
+        return max(0, int(value or 0))
+    except (TypeError, ValueError):
+        return 0
+
+def normalise_comment(platform, row):
+    content = str(first_value(row, "content", "text", "comment", "content_desc") or "").strip()
+    if not content:
+        return None
+    author = first_value(row, "author", "nickname", "user_name", "nick_name")
+    if not author:
+        for path in (("user", "nickname"), ("user_info", "nickname"), ("author", "nickname")):
+            author = nested_value(row, path)
+            if author:
+                break
+    return {
+        "comment_id": str(first_value(row, "id", "comment_id", "cid") or "")[:100],
+        "author": str(author or "匿名")[:50],
+        "content": content[:1500],
+        "likes": safe_int(first_value(row, "likes", "like_count", "digg_count", "likemount")),
+        "replies": safe_int(first_value(row, "reply_count", "sub_comment_count")),
+        "created_at": first_value(row, "create_time", "created_at", "createTime", "timestamp") or 0,
+        "platform": platform,
+    }
+
+def fetch_all_comments(platform, content_id, checkpoint=None):
+    """在 Railway 后台抓取所有可用分页；不受 Dify Sandbox 的 15 秒限制。"""
+    checkpoint = checkpoint or {}
+    comments = checkpoint.get("comments") or []
+    seen = {c.get("comment_id") or (c.get("author", "") + "\n" + c.get("content", "")) for c in comments}
+    pages = int(checkpoint.get("pages") or 0)
+    cursor, last_buffer = checkpoint.get("cursor", 0), checkpoint.get("last_buffer")
+    while pages < COLLECTION_PAGE_LIMIT:
+        if platform == "douyin":
+            query = urllib.parse.urlencode({"aweme_id": content_id, "count": 20, "cursor": cursor})
+            payload = tikhub_json("https://api.tikhub.io/api/v1/douyin/web/fetch_video_comments?" + query)
+            more = bool((payload.get("data") or {}).get("has_more"))
+            next_cursor = (payload.get("data") or {}).get("cursor")
+        elif platform == "channels":
+            body = {"object_id": content_id, "raw": False}
+            if last_buffer:
+                body["last_buffer"] = last_buffer
+            payload = tikhub_json("https://api.tikhub.io/api/v1/wechat_channels/v2/fetch_video_comments", body)
+            data = payload.get("data") or {}
+            more = data.get("down_continue") == 1
+            next_buffer = data.get("last_buffer")
+        elif platform == "xiaohongshu":
+            note_id = str(content_id).split("?", 1)[0]
+            query = {"note_id": note_id, "sort_strategy": "latest_v2"}
+            if cursor:
+                query["cursor"] = cursor
+            payload = tikhub_json("https://api.tikhub.io/api/v1/xiaohongshu/app_v2/get_note_comments?" + urllib.parse.urlencode(query))
+            data = ((payload.get("data") or {}).get("data")) or {}
+            more = bool(data.get("has_more"))
+            next_cursor = data.get("cursor")
+        elif platform == "kuaishou":
+            query = urllib.parse.urlencode({"photo_id": content_id})
+            payload = tikhub_json("https://api.tikhub.io/api/v1/kuaishou/app/fetch_video_comment?" + query)
+            more = False
+        else:
+            raise ValueError("不支持的平台: " + str(platform))
+
+        rows = comment_rows(payload)
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            item = normalise_comment(platform, row)
+            if not item:
+                continue
+            identity = item["comment_id"] or (item["author"] + "\n" + item["content"])
+            if identity in seen:
+                continue
+            seen.add(identity)
+            comments.append(item)
+        pages += 1
+        if not more:
+            break
+        if not rows:
+            raise RuntimeError("分页接口表示还有数据，但本页为空；采集未完成")
+        if platform == "channels":
+            if not next_buffer or next_buffer == last_buffer:
+                raise RuntimeError("视频号分页游标缺失或未变化；采集未完成")
+            last_buffer = next_buffer
+        elif platform in ("douyin", "xiaohongshu"):
+            if next_cursor is None or next_cursor == cursor:
+                raise RuntimeError("分页游标缺失或未变化；采集未完成")
+            cursor = next_cursor
+        else:
+            break
+        save_comment_cache(platform, content_id, {
+            "status": "collecting", "platform": platform, "content_id": content_id,
+            "comments": comments, "pages": pages, "cursor": cursor, "last_buffer": last_buffer,
+            "updated_at": int(time.time()),
+        }, f"collect: checkpoint {platform} {content_id}")
+    if pages >= COLLECTION_PAGE_LIMIT and more:
+        raise RuntimeError("达到分页上限，但接口仍有下一页；采集未完成")
+    if platform == "channels" and any(c["replies"] for c in comments):
+        raise RuntimeError("视频号存在回复，当前接口尚未确认支持完整获取回复；采集未完成")
+    if platform == "douyin":
+        for parent in list(comments):
+            if not parent["replies"]:
+                continue
+            if not parent["comment_id"]:
+                raise RuntimeError("抖音父评论缺少 ID，无法采集回复")
+            reply_cursor, reply_pages = 0, 0
+            while reply_pages < COLLECTION_PAGE_LIMIT:
+                query = urllib.parse.urlencode({"item_id": content_id, "comment_id": parent["comment_id"],
+                                                "cursor": reply_cursor, "count": 20})
+                payload = tikhub_json("https://api.tikhub.io/api/v1/douyin/web/fetch_video_comment_replies?" + query)
+                rows = comment_rows(payload)
+                data = payload.get("data") or {}
+                if not isinstance(data, dict) or "has_more" not in data:
+                    raise RuntimeError("抖音回复分页响应缺少 has_more")
+                reply_more = bool(data["has_more"])
+                if not rows and reply_more:
+                    raise RuntimeError("抖音回复页为空但仍有下一页")
+                for row in rows:
+                    if not isinstance(row, dict): continue
+                    item = normalise_comment(platform, row)
+                    if not item: continue
+                    identity = item["comment_id"] or (item["author"] + "\n" + item["content"])
+                    if identity not in seen:
+                        seen.add(identity)
+                        item["parent_comment_id"] = parent["comment_id"]
+                        comments.append(item)
+                reply_pages += 1
+                if not reply_more: break
+                next_cursor = data.get("cursor")
+                if next_cursor is None or next_cursor == reply_cursor:
+                    raise RuntimeError("抖音回复分页游标缺失或未变化")
+                reply_cursor = next_cursor
+            if reply_more:
+                raise RuntimeError("抖音回复达到分页上限，采集未完成")
+    return comments, pages, False
+
+def collect_target(platform, content_id):
+    key = (str(platform), str(content_id))
+    with COLLECTION_LOCK:
+        if key in COLLECTING:
+            return False
+        COLLECTING.add(key)
+
+    def run():
+        started = int(time.time())
+        try:
+            previous = load_comment_cache(platform, content_id)
+            checkpoint = previous if previous.get("status") in ("collecting", "failed") else {}
+            comments, pages, capped = fetch_all_comments(platform, content_id, checkpoint)
+            result = {
+                "status": "complete", "platform": platform, "content_id": content_id,
+                "started_at": started, "completed_at": int(time.time()), "pages": pages,
+                "page_limit_reached": capped, "comments": comments,
+            }
+            save_comment_cache(platform, content_id, result, f"collect: complete {platform} {content_id}")
+            print(f"✅ 全量评论采集完成: {platform} {content_id}, {len(comments)} 条, {pages} 页")
+            trigger_dify(f"{platform} {content_id}", "collected")
+        except Exception as e:
+            print(f"❌ 全量评论采集失败: {e}")
+            try:
+                saved = load_comment_cache(platform, content_id)
+                saved.update({"status": "failed", "platform": platform, "content_id": content_id,
+                              "started_at": started, "error": str(e)[:300]})
+                save_comment_cache(platform, content_id, saved, f"collect: failed {platform} {content_id}")
+            except Exception as save_error:
+                print(f"❌ 保存采集失败状态失败: {save_error}")
+        finally:
+            with COLLECTION_LOCK:
+                COLLECTING.discard(key)
+
+    threading.Thread(target=run, daemon=True).start()
+    return True
 
 # ===== 触发 Dify =====
 def trigger_dify(content, mode="register"):
@@ -329,6 +607,33 @@ def targets_api():
     if TARGETS_API_TOKEN and request.args.get('token') != TARGETS_API_TOKEN:
         return jsonify({"error": "unauthorized"}), 403
     return jsonify(load_targets())
+
+def api_authorized():
+    return not TARGETS_API_TOKEN or request.args.get('token') == TARGETS_API_TOKEN
+
+@app.route('/comments', methods=['GET'])
+def comments_api():
+    """返回某个作品已完成的评论缓存，供 Dify 的 collected 模式读取。"""
+    if not api_authorized():
+        return jsonify({"error": "unauthorized"}), 403
+    platform = str(request.args.get('platform', '')).strip()
+    content_id = str(request.args.get('id', '')).strip()
+    if not platform or not content_id:
+        return jsonify({"error": "platform and id are required"}), 400
+    return jsonify(load_comment_cache(platform, content_id))
+
+@app.route('/collect', methods=['POST'])
+def collect_api():
+    """异步刷新一个作品的完整评论；请求立即返回，采集完成后再触发 Dify。"""
+    if not api_authorized():
+        return jsonify({"error": "unauthorized"}), 403
+    data = request.get_json(silent=True) or {}
+    platform = str(data.get('platform', '')).strip()
+    content_id = str(data.get('id') or data.get('content_id') or '').strip()
+    if not platform or not content_id:
+        return jsonify({"error": "platform and id are required"}), 400
+    started = collect_target(platform, content_id)
+    return jsonify({"accepted": True, "started": started, "platform": platform, "id": content_id})
 
 CACHE_PATH = os.environ.get("CACHE_PATH", "data/comment_cache.json")
 
@@ -482,11 +787,10 @@ def wecom_callback():
 
             def run():
                 if added:
-                    reply_to_group(f"✅ 已登记{plat_name}内容，当前共 {total} 个监控目标")
+                    reply_to_group(f"✅ 已登记{plat_name}内容，当前共 {total} 个监控目标，正在全量采集评论")
                 else:
-                    reply_to_group(f"ℹ️ 该{plat_name}内容已在监控清单中，无需重复登记")
-                # 触发一次 Dify（register 模式）：满6小时的作品立即回报评论现状并处理负面；不足6小时回报剩余等待时间
-                trigger_dify(f"{platform} {content_id}", "register")
+                    reply_to_group(f"ℹ️ 该{plat_name}内容已在监控清单中，正在刷新全量评论")
+                collect_target(platform, content_id)
 
             threading.Thread(target=run, daemon=True).start()
         else:
