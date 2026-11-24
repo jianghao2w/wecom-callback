@@ -330,6 +330,59 @@ def targets_api():
         return jsonify({"error": "unauthorized"}), 403
     return jsonify(load_targets())
 
+CACHE_PATH = os.environ.get("CACHE_PATH", "data/comment_cache.json")
+
+@app.route('/comment_cache', methods=['GET'])
+def comment_cache_get():
+    """分批采集缓存读接口：{ "platform|id": {pages_done, cursor, last_buffer, comments, complete, ...} }"""
+    if TARGETS_API_TOKEN and request.args.get('token') != TARGETS_API_TOKEN:
+        return jsonify({"error": "unauthorized"}), 403
+    if not (GITHUB_REPO and GITHUB_TOKEN):
+        return jsonify({})
+    try:
+        r = github_api("GET", f"contents/{CACHE_PATH}?ref={GITHUB_DATA_BRANCH}")
+        content = base64.b64decode(r.get("content", "")).decode('utf-8')
+        return jsonify(json.loads(content) if content.strip() else {})
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            return jsonify({})
+        return jsonify({"error": str(e)[:120]}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)[:120]}), 500
+
+def cache_write_authorized():
+    """写缓存口令：请求头 X-Cache-Token 或 ?token=，匹配 TARGETS_API_TOKEN 或 TIKHUB_API_TOKEN 任一即可；两者都未配置时不校验"""
+    sent = request.headers.get("X-Cache-Token") or request.args.get("token") or ""
+    allowed = [t for t in (TARGETS_API_TOKEN, TIKHUB_TOKEN) if t]
+    return (not allowed) or (sent in allowed)
+
+@app.route('/comment_cache', methods=['PUT', 'POST'])
+def comment_cache_put():
+    """分批采集缓存写接口：body 为完整缓存 JSON"""
+    if not cache_write_authorized():
+        return jsonify({"error": "unauthorized"}), 403
+    if not (GITHUB_REPO and GITHUB_TOKEN):
+        return jsonify({"ok": False, "error": "github not configured"}), 500
+    body = request.get_json(force=True, silent=True)
+    if not isinstance(body, dict):
+        return jsonify({"ok": False, "error": "body must be a JSON object"}), 400
+    try:
+        sha = None
+        try:
+            cur = github_api("GET", f"contents/{CACHE_PATH}?ref={GITHUB_DATA_BRANCH}")
+            sha = cur.get("sha")
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                github_ensure_branch()
+        put_body = {"message": "update comment cache", "branch": GITHUB_DATA_BRANCH,
+                    "content": base64.b64encode(json.dumps(body, ensure_ascii=False).encode('utf-8')).decode('utf-8')}
+        if sha:
+            put_body["sha"] = sha
+        github_api("PUT", f"contents/{CACHE_PATH}", put_body)
+        return jsonify({"ok": True})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)[:150]}), 500
+
 @app.route('/wecom', methods=['GET'])
 def wecom_verify():
     """企微回调 URL 验证"""
