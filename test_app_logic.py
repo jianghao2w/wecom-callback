@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """wecom-callback 登记链路逻辑测试（不启动 Flask、不发真实网络请求）"""
 import importlib.util
+import json
 import os
 import sys
 import tempfile
@@ -101,6 +102,36 @@ check("GH模式: 读回", [(t["platform"], t["id"]) for t in mod.load_targets()]
 check("GH模式: PUT只发生2次(去重不写)", calls["put_contents"], 2)
 # second register PUT should carry sha from previous write
 check("GH模式: 无文件PUT不带sha", True, True)  # covered by mock shape; sha update verified via state
+
+# --- comment_cache write endpoint: token required when server has one configured ---
+import base64 as b64mod
+put_calls = []
+
+def mock_cache_api(method, path, body=None):
+    if method == "GET" and path.startswith("branches/"):
+        return {"commit": {"sha": "mainsha"}}
+    if method == "GET" and path.startswith("contents/data/comment_cache.json"):
+        raise urllib.error.HTTPError(path, 404, "not found", None, None)
+    if method == "POST" and path == "git/refs":
+        return {}
+    if method == "PUT" and path.startswith("contents/data/comment_cache.json"):
+        put_calls.append(body)
+        return {"commit": {"sha": "abc"}}
+    raise AssertionError(f"unexpected {method} {path}")
+
+mod.github_api = mock_cache_api
+mod.TIKHUB_TOKEN = "th_tok"
+client = mod.app.test_client()
+r1 = client.put("/comment_cache", json={"a": 1})
+check("缓存写接口: 无口令被拒绝", r1.status_code, 403)
+r2 = client.put("/comment_cache", json={"a": 1})
+check("缓存写接口: 错误口令被拒绝", r2.status_code, 403)
+r3 = client.put("/comment_cache", json={"a": 1, "k": "中文"}, headers={"X-Cache-Token": "th_tok"})
+check("缓存写接口: 正确口令通过", (r3.status_code, r3.get_json()), (200, {"ok": True}))
+check("缓存写接口: 写入分支为 data", put_calls[-1].get("branch"), "data")
+check("缓存写接口: 内容原样写入", json.loads(b64mod.b64decode(put_calls[-1]["content"]).decode("utf-8")), {"a": 1, "k": "中文"})
+r4 = client.get("/comment_cache")
+check("缓存读接口: 文件不存在返回空对象", r4.get_json(), {})
 
 print(("\nALL PASSED" if failed == 0 else f"\n{failed} FAILED"))
 sys.exit(1 if failed else 0)
