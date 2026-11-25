@@ -350,7 +350,10 @@ def tikhub_json(url, body=None):
         headers["Content-Type"] = "application/json"
     req = urllib.request.Request(url, data=data, headers=headers, method="POST" if body is not None else "GET")
     with urllib.request.urlopen(req, timeout=COLLECTION_REQUEST_TIMEOUT) as resp:
-        return json.loads(resp.read().decode("utf-8"))
+        result = json.loads(resp.read().decode("utf-8"))
+    if not isinstance(result, dict) or result.get("code") != 200:
+        raise RuntimeError("TikHub 接口返回错误，采集未完成")
+    return result
 
 def nested_value(value, path):
     cur = value
@@ -402,14 +405,19 @@ def normalise_comment(platform, row):
 def fetch_all_comments(platform, content_id, checkpoint=None):
     """在 Railway 后台抓取所有可用分页；不受 Dify Sandbox 的 15 秒限制。"""
     checkpoint = checkpoint or {}
-    comments = checkpoint.get("comments") or []
+    comments = [comment for comment in (checkpoint.get("comments") or [])
+                if not comment.get("parent_comment_id")]
     seen = {c.get("comment_id") or (c.get("author", "") + "\n" + c.get("content", "")) for c in comments}
     pages = int(checkpoint.get("pages") or 0)
     cursor, last_buffer = checkpoint.get("cursor", 0), checkpoint.get("last_buffer")
+    if pages >= COLLECTION_PAGE_LIMIT:
+        raise RuntimeError("已达到分页上限，无法继续采集")
     while pages < COLLECTION_PAGE_LIMIT:
         if platform == "douyin":
             query = urllib.parse.urlencode({"aweme_id": content_id, "count": 20, "cursor": cursor})
             payload = tikhub_json("https://api.tikhub.io/api/v1/douyin/web/fetch_video_comments?" + query)
+            if not isinstance(payload.get("data"), dict) or "has_more" not in payload["data"]:
+                raise RuntimeError("抖音评论响应缺少分页状态，采集未完成")
             more = bool((payload.get("data") or {}).get("has_more"))
             next_cursor = (payload.get("data") or {}).get("cursor")
         elif platform == "channels":
@@ -418,6 +426,8 @@ def fetch_all_comments(platform, content_id, checkpoint=None):
                 body["last_buffer"] = last_buffer
             payload = tikhub_json("https://api.tikhub.io/api/v1/wechat_channels/v2/fetch_video_comments", body)
             data = payload.get("data") or {}
+            if not isinstance(data, dict) or "down_continue" not in data or not isinstance(data.get("comments"), list):
+                raise RuntimeError("视频号评论响应缺少评论列表或分页状态，采集未完成")
             more = data.get("down_continue") == 1
             next_buffer = data.get("last_buffer")
         elif platform == "xiaohongshu":
@@ -470,43 +480,6 @@ def fetch_all_comments(platform, content_id, checkpoint=None):
         }, f"collect: checkpoint {platform} {content_id}")
     if pages >= COLLECTION_PAGE_LIMIT and more:
         raise RuntimeError("达到分页上限，但接口仍有下一页；采集未完成")
-    if platform == "channels" and any(c["replies"] for c in comments):
-        raise RuntimeError("视频号存在回复，当前接口尚未确认支持完整获取回复；采集未完成")
-    if platform == "douyin":
-        for parent in list(comments):
-            if not parent["replies"]:
-                continue
-            if not parent["comment_id"]:
-                raise RuntimeError("抖音父评论缺少 ID，无法采集回复")
-            reply_cursor, reply_pages = 0, 0
-            while reply_pages < COLLECTION_PAGE_LIMIT:
-                query = urllib.parse.urlencode({"item_id": content_id, "comment_id": parent["comment_id"],
-                                                "cursor": reply_cursor, "count": 20})
-                payload = tikhub_json("https://api.tikhub.io/api/v1/douyin/web/fetch_video_comment_replies?" + query)
-                rows = comment_rows(payload)
-                data = payload.get("data") or {}
-                if not isinstance(data, dict) or "has_more" not in data:
-                    raise RuntimeError("抖音回复分页响应缺少 has_more")
-                reply_more = bool(data["has_more"])
-                if not rows and reply_more:
-                    raise RuntimeError("抖音回复页为空但仍有下一页")
-                for row in rows:
-                    if not isinstance(row, dict): continue
-                    item = normalise_comment(platform, row)
-                    if not item: continue
-                    identity = item["comment_id"] or (item["author"] + "\n" + item["content"])
-                    if identity not in seen:
-                        seen.add(identity)
-                        item["parent_comment_id"] = parent["comment_id"]
-                        comments.append(item)
-                reply_pages += 1
-                if not reply_more: break
-                next_cursor = data.get("cursor")
-                if next_cursor is None or next_cursor == reply_cursor:
-                    raise RuntimeError("抖音回复分页游标缺失或未变化")
-                reply_cursor = next_cursor
-            if reply_more:
-                raise RuntimeError("抖音回复达到分页上限，采集未完成")
     return comments, pages, False
 
 def collect_target(platform, content_id):
