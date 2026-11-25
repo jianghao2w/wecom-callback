@@ -21,6 +21,7 @@ from approval_store import ApprovalStore
 from approval_coordinator import execute_confirmed_batch
 from channels_delete import delete_verified_batch
 from channels_session_probe import check_session
+from monitor_schedule import ScheduleStore
 
 app = Flask(__name__)
 
@@ -400,6 +401,17 @@ def tikhub_json(url, body=None):
         raise RuntimeError("TikHub 接口返回错误，采集未完成")
     return result
 
+def douyin_publication_metadata(content_id):
+    query = urllib.parse.urlencode({'aweme_id': content_id})
+    payload = tikhub_json('https://api.tikhub.io/api/v1/douyin/web/fetch_one_video?' + query)
+    detail = (payload.get('data') or {}).get('aweme_detail') or {}
+    if str(detail.get('aweme_id') or '') != str(content_id):
+        raise ValueError('抖音作品信息不匹配')
+    created = int(detail.get('create_time') or 0)
+    if created <= 0 or created > time.time() + 300:
+        raise ValueError('抖音发布时间无效')
+    return {'id': str(content_id), 'create_time': created}
+
 def nested_value(value, path):
     cur = value
     for key in path:
@@ -527,7 +539,7 @@ def fetch_all_comments(platform, content_id, checkpoint=None):
         raise RuntimeError("达到分页上限，但接口仍有下一页；采集未完成")
     return comments, pages, False
 
-def collect_target(platform, content_id, chat_id=""):
+def collect_target(platform, content_id, chat_id="", on_complete=None):
     key = (str(platform), str(content_id))
     with COLLECTION_LOCK:
         if key in COLLECTING:
@@ -536,6 +548,7 @@ def collect_target(platform, content_id, chat_id=""):
 
     def run():
         started = int(time.time())
+        success = False
         try:
             previous = load_comment_cache(platform, content_id)
             checkpoint = previous if previous.get("status") in ("collecting", "failed") else {}
@@ -547,7 +560,7 @@ def collect_target(platform, content_id, chat_id=""):
             }
             save_comment_cache(platform, content_id, result, f"collect: complete {platform} {content_id}")
             print(f"✅ 全量评论采集完成: {platform} {content_id}, {len(comments)} 条, {pages} 页")
-            trigger_dify(f"{platform} {content_id}", "collected", chat_id)
+            success = trigger_dify(f"{platform} {content_id}", "collected", chat_id)
         except Exception as e:
             print(f"❌ 全量评论采集失败: {e}")
             try:
@@ -560,6 +573,11 @@ def collect_target(platform, content_id, chat_id=""):
         finally:
             with COLLECTION_LOCK:
                 COLLECTING.discard(key)
+            if on_complete:
+                try:
+                    on_complete(success)
+                except Exception as error:
+                    print(f"更新监控调度失败: {type(error).__name__}")
 
     threading.Thread(target=run, daemon=True).start()
     return True
@@ -589,12 +607,35 @@ def trigger_dify(content, mode="register", chat_id=""):
     )
     try:
         with urllib.request.urlopen(req, timeout=120) as resp:
-            result = resp.read().decode('utf-8')
-            print(f"✅ Dify 触发成功: {result[:200]}")
+            result = json.loads(resp.read().decode('utf-8'))
+            status = (result.get('data') or {}).get('status')
+            if status != 'succeeded':
+                print(f"❌ Dify 运行未成功: {status}")
+                return False
+            print("✅ Dify 工作流运行成功")
             return True
     except Exception as e:
         print(f"❌ Dify 触发失败: {e}")
         return False
+
+def run_monitor_tick():
+    if not APPROVAL_DB_PATH:
+        return
+    store = ScheduleStore(APPROVAL_DB_PATH)
+    for item in store.claim_due():
+        platform, cid, chat = item['platform'], item['content_id'], item['chat_id']
+        def completed(success, platform=platform, cid=cid):
+            ScheduleStore(APPROVAL_DB_PATH).complete(platform, cid, success)
+        if not collect_target(platform, cid, chat, on_complete=completed):
+            store.complete(platform, cid, False)
+
+def monitor_loop():
+    while True:
+        try:
+            run_monitor_tick()
+        except Exception as error:
+            print(f"监控调度失败: {type(error).__name__}")
+        time.sleep(60)
 
 # ===== 回复群消息 =====
 def reply_to_group(message):
@@ -945,23 +986,45 @@ def wecom_callback():
         platform, content_id = extract_platform_and_id(content)
 
         if platform and content_id:
+            metadata = {}
             if platform == "channels":
-                metadata = {}
                 content_id = channels_resolve_id(content_id, TIKHUB_TOKEN, metadata)
                 if metadata:
                     try:
                         save_video_metadata(metadata)
                     except (OSError, ValueError, urllib.error.URLError) as error:
                         print(f"保存作品匹配信息失败: {type(error).__name__}")
+                if not metadata and re.fullmatch(r'\d{15,25}', str(content_id)):
+                    metadata = load_video_metadata(content_id)
+            elif platform == 'douyin':
+                try:
+                    metadata = douyin_publication_metadata(content_id)
+                except (OSError, ValueError, RuntimeError, TypeError):
+                    metadata = {}
+            if not chat_id or not APPROVAL_DB_PATH:
+                reply_to_group("无法保存群聊监控计划，请检查服务配置。")
+                return "ok"
+            if not metadata.get('create_time'):
+                reply_to_group("未能获取作品发布时间，暂未加入定时监控，请重新发送作品分享链接。")
+                return "ok"
             added, total = register_target(platform, content_id)
+            if total == 0:
+                reply_to_group("登记失败，请稍后重试。")
+                return "ok"
+            try:
+                ScheduleStore(APPROVAL_DB_PATH).register(platform, content_id, metadata['create_time'], chat_id)
+            except (OSError, ValueError, sqlite3.Error):
+                reply_to_group("作品已登记，但定时计划保存失败，请稍后重新发送链接。")
+                return "ok"
             plat_name = PLATFORM_NAMES.get(platform, platform)
 
             def run():
-                if added:
-                    reply_to_group(f"✅ 已登记{plat_name}内容，当前共 {total} 个监控目标，正在全量采集评论")
+                age = time.time() - int(metadata['create_time'])
+                if age < 6 * 3600:
+                    reply_to_group(f"✅ {plat_name}作品已加入评论监控，发布满 6 小时后开始采集。")
                 else:
-                    reply_to_group(f"ℹ️ 该{plat_name}内容已在监控清单中，正在刷新全量评论")
-                collect_target(platform, content_id, chat_id)
+                    reply_to_group(f"✅ {plat_name}作品已加入评论监控，正在安排采集评论。")
+                run_monitor_tick()
 
             threading.Thread(target=run, daemon=True).start()
         else:
@@ -984,4 +1047,5 @@ if __name__ == '__main__':
     print(f"端口: {port}")
     print(f"Webhook: {'已配置' if WECOM_BOT_WEBHOOK else '未配置'}")
     print(f"Dify API: {'已配置' if DIFY_API_URL else '未配置'}")
+    threading.Thread(target=monitor_loop, daemon=True).start()
     app.run(host='0.0.0.0', port=port, debug=False)
