@@ -4,8 +4,10 @@
 import os
 import json
 import hashlib
+import hmac
 import base64
 import re
+import sqlite3
 import time
 import threading
 import urllib.request
@@ -15,6 +17,10 @@ import xml.etree.ElementTree as ET
 from flask import Flask, request, jsonify
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.padding import PKCS7
+from approval_store import ApprovalStore
+from approval_coordinator import execute_confirmed_batch
+from channels_delete import delete_verified_batch
+from channels_session_probe import check_session
 
 app = Flask(__name__)
 
@@ -34,6 +40,12 @@ TIKHUB_TOKEN = os.environ.get("TIKHUB_API_TOKEN", "")  # TikHub Token：视频�
 COMMENTS_PATH = os.environ.get("COMMENTS_PATH", "data/comment-cache")
 COLLECTION_PAGE_LIMIT = max(1, int(os.environ.get("COLLECTION_PAGE_LIMIT", "200")))
 COLLECTION_REQUEST_TIMEOUT = max(3, int(os.environ.get("COLLECTION_REQUEST_TIMEOUT", "20")))
+APPROVAL_DB_PATH = os.environ.get("APPROVAL_DB_PATH", "")
+APPROVAL_API_TOKEN = os.environ.get("APPROVAL_API_TOKEN", "")
+APPROVAL_CHAT_ID = os.environ.get("APPROVAL_CHAT_ID", "")
+APPROVAL_EXECUTION_ENABLED = os.environ.get("APPROVAL_EXECUTION_ENABLED", "").lower() == "true"
+CHANNELS_SESSION_PATH = os.environ.get("CHANNELS_SESSION_PATH", "")
+DIFY_CHAT_INPUT_ENABLED = os.environ.get("DIFY_CHAT_INPUT_ENABLED", "").lower() == "true"
 
 # ===== 企微加解密 =====
 def get_aes_key():
@@ -144,7 +156,7 @@ def extract_platform_and_id(text):
         if p: return p
     return parse_target(text.strip()) or (None, None)
 
-def channels_resolve_id(text_in, token):
+def channels_resolve_id(text_in, token, metadata_out=None):
     """视频号：分享链接/export_id 换成数字 object_id（export 有时效，登记必须存数字ID）；失败返回原文"""
     s = str(text_in or "").strip()
     if re.match(r'^[0-9]{15,}$', s):
@@ -180,6 +192,11 @@ def channels_resolve_id(text_in, token):
             return None
         resolved = dig(d)
         if resolved:
+            details = d.get("data") if isinstance(d, dict) else None
+            if isinstance(metadata_out, dict) and isinstance(details, dict):
+                description, created = details.get("description"), details.get("create_time")
+                if isinstance(description, str) and description.strip() and str(created or "").isdigit():
+                    metadata_out.update({"id": resolved, "description": description, "create_time": created})
             print(f"🔗 视频号链接已解析: {s[:50]} -> {resolved}")
             return resolved
         return s
@@ -259,6 +276,34 @@ def comment_cache_key(platform, content_id):
 
 def comment_cache_path(platform, content_id):
     return f"{COMMENTS_PATH.rstrip('/')}/{comment_cache_key(platform, content_id)}.json"
+
+def video_metadata_path(content_id):
+    if not re.fullmatch(r"\d{15,25}", str(content_id or "")):
+        raise ValueError("视频号作品 ID 无效")
+    return f"data/video-metadata/channels_{content_id}.json"
+
+def save_video_metadata(metadata):
+    path = video_metadata_path(metadata.get("id"))
+    if not isinstance(metadata.get("description"), str) or not metadata["description"].strip() or not str(metadata.get("create_time") or "").isdigit():
+        raise ValueError("作品匹配信息不完整")
+    if GITHUB_REPO and GITHUB_TOKEN:
+        github_save_json(path, metadata, "save video metadata")
+    else:
+        local = os.path.join(os.path.dirname(TARGETS_FILE), path.replace("/", os.sep))
+        os.makedirs(os.path.dirname(local), exist_ok=True)
+        with open(local, "w", encoding="utf-8") as handle:
+            json.dump(metadata, handle, ensure_ascii=False)
+
+def load_video_metadata(content_id):
+    path = video_metadata_path(content_id)
+    if GITHUB_REPO and GITHUB_TOKEN:
+        return github_load_json(path, {}) or {}
+    local = os.path.join(os.path.dirname(TARGETS_FILE), path.replace("/", os.sep))
+    try:
+        with open(local, "r", encoding="utf-8") as handle:
+            return json.load(handle)
+    except (OSError, ValueError):
+        return {}
 
 def load_comment_cache(platform, content_id):
     path = comment_cache_path(platform, content_id)
@@ -482,7 +527,7 @@ def fetch_all_comments(platform, content_id, checkpoint=None):
         raise RuntimeError("达到分页上限，但接口仍有下一页；采集未完成")
     return comments, pages, False
 
-def collect_target(platform, content_id):
+def collect_target(platform, content_id, chat_id=""):
     key = (str(platform), str(content_id))
     with COLLECTION_LOCK:
         if key in COLLECTING:
@@ -502,7 +547,7 @@ def collect_target(platform, content_id):
             }
             save_comment_cache(platform, content_id, result, f"collect: complete {platform} {content_id}")
             print(f"✅ 全量评论采集完成: {platform} {content_id}, {len(comments)} 条, {pages} 页")
-            trigger_dify(f"{platform} {content_id}", "collected")
+            trigger_dify(f"{platform} {content_id}", "collected", chat_id)
         except Exception as e:
             print(f"❌ 全量评论采集失败: {e}")
             try:
@@ -520,13 +565,16 @@ def collect_target(platform, content_id):
     return True
 
 # ===== 触发 Dify =====
-def trigger_dify(content, mode="register"):
+def trigger_dify(content, mode="register", chat_id=""):
     """调 Dify API 触发监控工作流；mode=register 表示登记触发（强制推送评论现状）"""
     if not DIFY_API_URL or not DIFY_API_KEY:
         print("⚠️ Dify API 未配置")
         return False
+    inputs = {"content": content, "mode": mode}
+    if chat_id and DIFY_CHAT_INPUT_ENABLED:
+        inputs["chat_id"] = chat_id
     body = json.dumps({
-        "inputs": {"content": content, "mode": mode},
+        "inputs": inputs,
         "response_mode": "blocking",
         "user": "wecom-bot"
     }, ensure_ascii=False).encode('utf-8')
@@ -580,6 +628,125 @@ def targets_api():
     if TARGETS_API_TOKEN and request.args.get('token') != TARGETS_API_TOKEN:
         return jsonify({"error": "unauthorized"}), 403
     return jsonify(load_targets())
+
+
+def approval_messages(comments):
+    """Render all candidate text without exceeding the robot message size."""
+    lines = []
+    for index, comment in enumerate(comments, 1):
+        author = str(comment.get("author") or "匿名").replace("@", "＠").replace("\n", " ").replace("\r", " ")
+        content = comment["content"].replace("@", "＠").replace("\n", " ").replace("\r", " ")
+        reason = str(comment.get("reason") or "").replace("@", "＠").replace("\n", " ").replace("\r", " ")
+        lines.append(f"{index}. {author}：{content}" + (f"（{reason}）" if reason else ""))
+    text = "\n".join(lines)
+    chunks = []
+    chunk = ""
+    for char in text:
+        if len((chunk + char).encode("utf-8")) > 2600:
+            chunks.append(chunk)
+            chunk = ""
+        chunk += char
+    if chunk:
+        chunks.append(chunk)
+    return [f"待确认删除评论（{index}/{len(chunks)}）\n{chunk}"
+            for index, chunk in enumerate(chunks, 1)]
+
+
+def send_approval_message(content):
+    body = json.dumps({"msgtype": "text", "text": {"content": content}}, ensure_ascii=False).encode("utf-8")
+    req = urllib.request.Request(WECOM_BOT_WEBHOOK, data=body,
+        headers={"Content-Type": "application/json"}, method="POST")
+    with urllib.request.urlopen(req, timeout=10) as response:
+        result = json.loads(response.read().decode("utf-8"))
+    if result.get("errcode") != 0:
+        raise RuntimeError("群消息发送失败")
+
+
+def announce_approval_batch(store, batch_id, comments):
+    try:
+        for message in approval_messages(comments):
+            send_approval_message(message)
+        if not store.mark_announced(batch_id):
+            raise RuntimeError("确认批次状态错误")
+        send_approval_message(f"以上评论已列出。如确认删除，请 @机器人 发送：确认删除 {batch_id}")
+    except Exception as error:
+        store.fail_announcement(batch_id)
+        print(f"待确认清单发送失败: {type(error).__name__}")
+
+def run_approved_deletion(batch_id):
+    """Run the already-confirmed batch after a session and target check."""
+    store = ApprovalStore(APPROVAL_DB_PATH)
+    session = {}
+    def session_check():
+        if not CHANNELS_SESSION_PATH:
+            return "expired"
+        try:
+            with open(CHANNELS_SESSION_PATH, "r", encoding="utf-8") as handle:
+                session.update(json.load(handle))
+        except (OSError, ValueError):
+            return "expired"
+        return check_session(session)
+    def request_login(chat_id, target_batch):
+        # The cloud QR login provider is a separate, currently unconfigured component.
+        send_approval_message("视频号登录已失效；云端扫码授权尚未接通，本批评论尚未删除。")
+    def delete_comments(comments):
+        first = comments[0]
+        if any(item.get("platform") != "channels" or item.get("object_id") != first.get("object_id") for item in comments):
+            raise ValueError("此批次不是单一视频号作品")
+        metadata = load_video_metadata(first.get("object_id"))
+        if str(metadata.get("id") or "") != str(first.get("object_id") or ""):
+            raise ValueError("缺少已验证的作品信息，请重新登记原始分享链接")
+        return delete_verified_batch(session, metadata, comments)
+    outcome = execute_confirmed_batch(store, batch_id, session_check, request_login, delete_comments)
+    record = store.get(batch_id)
+    if outcome == "finished":
+        result = record.get("result") or {}
+        if result.get("status") == "completed":
+            send_approval_message("删除执行完成：已删除 " + str(len(result.get("deleted") or [])) + " 条。")
+        else:
+            send_approval_message("删除结果未完全确认，请核对后台；后续评论未继续删除。")
+    elif outcome == "deletion_unknown":
+        send_approval_message("作品校验或删除执行未完成，请核对后台；系统不会自动重试该批次。")
+    elif outcome == "session_unknown":
+        send_approval_message("无法确认视频号登录状态，本批评论尚未删除。")
+    elif outcome == "login_request_failed":
+        print("视频号登录通知发送失败")
+
+
+@app.route('/approval-batches', methods=['POST'])
+def create_approval_batch():
+    """Create a batch only for an authenticated workflow with persistent storage configured."""
+    if not APPROVAL_DB_PATH or not APPROVAL_API_TOKEN or not APPROVAL_CHAT_ID or not WECOM_BOT_WEBHOOK:
+        return jsonify({"error": "approval service unavailable"}), 503
+    token = request.headers.get("X-Approval-Token", "")
+    if not hmac.compare_digest(token.encode("utf-8"), APPROVAL_API_TOKEN.encode("utf-8")):
+        return jsonify({"error": "unauthorized"}), 403
+    body = request.get_json(silent=True)
+    if not isinstance(body, dict):
+        return jsonify({"error": "invalid request"}), 400
+    chat_id = body.get("chat_id")
+    comments = body.get("comments")
+    if not isinstance(chat_id, str) or not chat_id.strip() or not isinstance(comments, list) or not comments:
+        return jsonify({"error": "chat_id and comments required"}), 400
+    if not hmac.compare_digest(chat_id.encode("utf-8"), APPROVAL_CHAT_ID.encode("utf-8")):
+        return jsonify({"error": "chat not configured"}), 403
+    if len(comments) > 1000:
+        return jsonify({"error": "too many comments"}), 400
+    for comment in comments:
+        if not isinstance(comment, dict) or not all(
+            isinstance(comment.get(key), str) and comment[key].strip()
+            for key in ("platform", "object_id", "comment_id", "content")
+        ):
+            return jsonify({"error": "invalid comment"}), 400
+    if any(c["platform"] != "channels" or c["object_id"] != comments[0]["object_id"] for c in comments):
+        return jsonify({"error": "only one channels video per batch is supported"}), 400
+    try:
+        store = ApprovalStore(APPROVAL_DB_PATH)
+        batch_id = store.create(chat_id, comments, announcing=True)
+    except (OSError, ValueError, sqlite3.Error):
+        return jsonify({"error": "unable to persist batch"}), 503
+    threading.Thread(target=announce_approval_batch, args=(store, batch_id, comments), daemon=True).start()
+    return jsonify({"batch_id": batch_id, "count": len(comments), "status": "announcing"}), 202
 
 def api_authorized():
     return not TARGETS_API_TOKEN or request.args.get('token') == TARGETS_API_TOKEN
@@ -749,12 +916,43 @@ def wecom_callback():
         content = msg.get('Content', '') or msg.get('text', {}).get('content', '')
         if not content:
             return "ok"
+
+        confirmation = re.search(r'(?:^|\s)确认删除\s+([0-9a-f]{12})(?:\s|$)', content.strip())
+        if confirmation:
+            sender = msg.get("from") or {}
+            user_id = sender.get("userid", "") if isinstance(sender, dict) else ""
+            user_id = user_id or msg.get("FromUserName", "")
+            chat_id = msg.get("chatid") or msg.get("ChatId") or ""
+            chat_type = str(msg.get("chattype") or msg.get("ChatType") or "").lower()
+            if APPROVAL_DB_PATH and chat_type == "group" and chat_id and user_id:
+                try:
+                    confirmed = ApprovalStore(APPROVAL_DB_PATH).confirm(
+                        confirmation.group(1), chat_id, user_id
+                    )
+                    if confirmed:
+                        if APPROVAL_EXECUTION_ENABLED:
+                            reply_to_group("已收到删除确认，正在核验视频号登录和评论。")
+                            threading.Thread(target=run_approved_deletion,
+                                             args=(confirmation.group(1),), daemon=True).start()
+                        else:
+                            reply_to_group("已收到确认，但删除服务尚未启用，本批评论尚未删除。")
+                except (OSError, ValueError, sqlite3.Error) as error:
+                    print(f"确认批次失败: {type(error).__name__}")
+            return "ok"
         
+        chat_type = str(msg.get("chattype") or msg.get("ChatType") or "").lower()
+        chat_id = (msg.get("chatid") or msg.get("ChatId") or "") if chat_type == "group" else ""
         platform, content_id = extract_platform_and_id(content)
 
         if platform and content_id:
             if platform == "channels":
-                content_id = channels_resolve_id(content_id, TIKHUB_TOKEN)
+                metadata = {}
+                content_id = channels_resolve_id(content_id, TIKHUB_TOKEN, metadata)
+                if metadata:
+                    try:
+                        save_video_metadata(metadata)
+                    except (OSError, ValueError, urllib.error.URLError) as error:
+                        print(f"保存作品匹配信息失败: {type(error).__name__}")
             added, total = register_target(platform, content_id)
             plat_name = PLATFORM_NAMES.get(platform, platform)
 
@@ -763,7 +961,7 @@ def wecom_callback():
                     reply_to_group(f"✅ 已登记{plat_name}内容，当前共 {total} 个监控目标，正在全量采集评论")
                 else:
                     reply_to_group(f"ℹ️ 该{plat_name}内容已在监控清单中，正在刷新全量评论")
-                collect_target(platform, content_id)
+                collect_target(platform, content_id, chat_id)
 
             threading.Thread(target=run, daemon=True).start()
         else:
