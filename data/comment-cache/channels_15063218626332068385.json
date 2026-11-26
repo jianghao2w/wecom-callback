@@ -1,7 +1,11 @@
 {
-  "status": "collecting",
+  "status": "complete",
   "platform": "channels",
   "content_id": "15063218626332068385",
+  "started_at": 1795708203,
+  "completed_at": 1795708212,
+  "pages": 3,
+  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15063330008627943727",
@@ -274,8 +278,22 @@
       "content_unavailable": false
     }
   ],
-  "pages": 2,
-  "cursor": 0,
-  "last_buffer": "CpkDCP///////////wEYr7KA1tfa7IXRARibuci3r/+QhtEBGKi37K7Npe6F0QEYr6Ok9JHs4YXRARjVldzE3a7ghdEBGLmUxOC1veiF0QEYnpHs+66CgYbRARiUo7iXsaGFhtEBGKuXkN/es4WG0QEYzrXE7cPm7oXRARiYnOjvh5n6hdEBGJe8iMS5so+G0QEY9bOc1/PX+IXRARiXsYzK2ojuhdEBGIqw7JyQkv+F0QEYjbOcuLDI+4XRARjrs/S2nvHZhdEBGMKzhIXB8NmF0QEYu7m86IeO84XRARiNsPyg84WGhtEBGK6Q/JbGqvOF0QEYyLuw9YCj/oXRARjxtaz6sOPvhdEBGNS7gLKenomG0QEYtbeMmuTv94XRARiNsqD09+n2hdEBGM67tOH3sfOF0QEYm7nIt6//kIbRARiXvIjEubKPhtEBGNS7gLKenomG0QEYjbD8oPOFhobRARirl5Df3rOFhtEBGJSjuJexoYWG0QEYnpHs+66CgYbRARiKsOyckJL/hdEBMAE4////////////AQ==",
-  "updated_at": 1795708210
+  "analysis": {
+    "no_comments": false,
+    "overall": "本批评论整体以正面支持为主，多为鼓励坚持、赞美辛苦的表情与文字；少数为中性提问或温和质疑，无明确负面攻击性评论。分类计数：正面12条，中性9条，负面0条。",
+    "negatives": [],
+    "positive_count": 12,
+    "neutral_count": 9,
+    "analyzed_count": 21,
+    "classification_valid": true,
+    "themes": [],
+    "urgent": [],
+    "response_suggestions": [],
+    "unavailable_count": 6
+  },
+  "video": {
+    "description": "所有难熬的时刻，都是登顶前最后的考验，看得懂长远布局，才懂得这份坚守有多珍贵，脚步不停 一起静待佳音。#万全通 #新健康运动 #健康运动 ",
+    "create_time": 1795675590,
+    "account_name": ""
+  }
 }
