@@ -1,7 +1,11 @@
 {
-  "status": "collecting",
+  "status": "complete",
   "platform": "channels",
   "content_id": "15057417447822133757",
+  "started_at": 1795686653,
+  "completed_at": 1795686669,
+  "pages": 5,
+  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15057656203187658165",
@@ -992,10 +996,44 @@
       "created_at": 1794994717,
       "platform": "channels",
       "content_unavailable": false
+    },
+    {
+      "comment_id": "15057673578216425752",
+      "author": "户黄柳宗",
+      "content": "[强]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795014569,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15057999372739743334",
+      "author": "秋实2760",
+      "content": "等待看结果吧…",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795053407,
+      "platform": "channels",
+      "content_unavailable": false
     }
   ],
-  "pages": 4,
-  "cursor": 0,
-  "last_buffer": "CtkICP///////////wEYtbvUp5vR4vvQARj2uYy139DXhNEBGMeUzOqnzrf80AEYjJnosf3U1/vQARjEufiQkMC3+9ABGOq6qMmRxqL80AEYn5eQyrDLu/vQARjXvNC/pvfS+9ABGMq7wP/11M370AEYk7y8i8rRu/zQARj9tPzgkPDX+9ABGKuwuM7F7NH70AEYg7O08dfn1PvQARi0meyXpLC/+9ABGJGToOGe5Kj80AEY77DQuOaIu/vQARjtmpj6g6/ahdEBGOW37OKgl8/80AEYxrTo8oPO+v7QARjBo9TBk6Hd+9ABGMmU6N7bgZP90AEYkLXAzqWU0PvQARiDk4i9uOvW/NABGI+ayJOaic370AEYx7GQ7r6n1PvQARiauryuxMKT/NABGLe61NqC9tyE0QEY5rqE/bGh0fvQARisupCIjYuY/NABGPWY5Ifbi6n80AEY5ZykkLvQ1f3QARivl5Dc0urB/dABGP+80P2vlMj80AEYxJLgjMiqsvzQARj8lrDdnJyf/NABGICd9MfOyd/70AEYmJq8/Iyyz/vQARj/vNC3mard+9ABGPm2oL/8p5780AEYprHsupfqvvvQARjvscTf9aDl+9ABGPaVlLHS+NH90AEYipv4q43K7/7QARjlu/D58u+B/tABGPiU+N7Jo+6B0QEYoZO0udyzuPvQARjFvOSX/8yohNEBGJad+ILBo6WA0QEY7ZjY8ci46fzQARiPu+yWp5eNgtEBGImz8ObV8cyE0QEYtZD0sv+Y3YXRARi4vOyCionWgNEBGIuQ5PPxr4aE0QEYhLek8v7NmYDRARi2tfyW1qa5hNEBGOqSvMyWr8z90AEYxLqsh8D7joTRARi8tvze3ary/NABGJaTlO6q0ej90AEY7pSQ8K6Jmf7QARjZsdzDif2F/NABGIK7/LP7obL/0AEYr7rEsfuM7vzQARiKtOj5/63Bg9EBGLWxvNrwvLj/0AEYsbno77Tk7v7QARiPvMzvgKum/NABGNC0qNCCjf/+0AEYzJXoiPzRvv3QARirtqi78/rl/dABGKOY3L2S44GE0QEYm5Ts/IfRhIDRARiwnIzIh7GPg9EBGOmc6NjfieGE0QEY/7bo1IqptoDRARiTvYz+zOGDgtEBGLCYjOuR3sGA0QEYx7vEpODsgv/QARjplMDSyPiI/9ABGLKU0Lil29r90AEYj7boy7SKgP/QARiklNTQ7v/NgNEBGOKU4L/siYL/0AEY77GIh96v1f7QARj8kISQlO3o/NABGOa7yJjJhZD/0AEYn7rcvtv8tPvQARi5stTr4p6w+9ABGJGXlMiE6+T70AEYibTo8Ifo1PvQARijsviAyaTn/NABGIi6gLTbgJr80AEYk5OYjtWyvPvQARitnLCPhO/X+9ABGPe1xN6XlsP70AEYxLqw5dTK0fvQARjxkfST8J6a/NABGNm06MqV3MD70AEwATj///////////8B",
-  "updated_at": 1795686666
+  "analysis": {
+    "no_comments": false,
+    "overall": "本批评论围绕上市敲钟事件，以普通提问和陈述为主，表达期待或质疑；部分使用点赞表情表达支持，少数有温和批评，无明确辱骂或攻击性言论。整体情绪以中性为主（59条），正面41条，负面0条。",
+    "negatives": [],
+    "positive_count": 41,
+    "neutral_count": 59,
+    "analyzed_count": 100,
+    "classification_valid": true,
+    "themes": [],
+    "urgent": [],
+    "response_suggestions": [],
+    "unavailable_count": 1
+  },
+  "video": {
+    "description": "喜讯不断 大势已成，相信团队 相信方向，所有默默沉淀，都是为了这一刻的高光！！！#万全通 #新健康运动 #健康运动 ",
+    "create_time": 1794984036,
+    "account_name": "万董健身日记"
+  }
 }
