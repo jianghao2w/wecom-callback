@@ -22,6 +22,7 @@ from approval_coordinator import execute_confirmed_batch
 from channels_delete import delete_verified_batch
 from channels_session_probe import check_session
 from monitor_schedule import ScheduleStore
+from deepseek_batch import DeepSeekBatch
 
 app = Flask(__name__)
 
@@ -47,6 +48,10 @@ APPROVAL_CHAT_ID = os.environ.get("APPROVAL_CHAT_ID", "")
 APPROVAL_EXECUTION_ENABLED = os.environ.get("APPROVAL_EXECUTION_ENABLED", "").lower() == "true"
 CHANNELS_SESSION_PATH = os.environ.get("CHANNELS_SESSION_PATH", "")
 DIFY_CHAT_INPUT_ENABLED = os.environ.get("DIFY_CHAT_INPUT_ENABLED", "").lower() == "true"
+FULL_ANALYSIS_ENABLED = os.environ.get("FULL_ANALYSIS_ENABLED", "").lower() == "true"
+LLM_API_URL = os.environ.get("LLM_API_URL", "")
+LLM_API_KEY = os.environ.get("LLM_API_KEY", "")
+LLM_MODEL = os.environ.get("LLM_MODEL", "")
 
 # ===== 企微加解密 =====
 def get_aes_key():
@@ -558,6 +563,9 @@ def collect_target(platform, content_id, chat_id="", on_complete=None, first_run
                 "started_at": started, "completed_at": int(time.time()), "pages": pages,
                 "page_limit_reached": capped, "comments": comments,
             }
+            if FULL_ANALYSIS_ENABLED:
+                numbered = [{**comment, 'number': i + 1} for i, comment in enumerate(comments)]
+                result['analysis'] = DeepSeekBatch(LLM_API_URL, LLM_API_KEY, LLM_MODEL).analyze(numbered)
             if platform == 'channels':
                 try:
                     metadata = load_video_metadata(content_id)
