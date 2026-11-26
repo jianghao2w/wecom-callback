@@ -1,11 +1,7 @@
 {
-  "status": "complete",
+  "status": "collecting",
   "platform": "channels",
   "content_id": "15061803593908554244",
-  "started_at": 1795695903,
-  "completed_at": 1795695910,
-  "pages": 2,
-  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15061822864752712597",
@@ -136,44 +132,10 @@
       "created_at": 1795520353,
       "platform": "channels",
       "content_unavailable": false
-    },
-    {
-      "comment_id": "15061957657781934572",
-      "author": "龙怡山庄...",
-      "content": "[评论内容无法获取]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795525271,
-      "platform": "channels",
-      "content_unavailable": true
-    },
-    {
-      "comment_id": "15061957627394660841",
-      "author": "龙怡山庄...",
-      "content": "[评论内容无法获取]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795525268,
-      "platform": "channels",
-      "content_unavailable": true
     }
   ],
-  "analysis": {
-    "no_comments": false,
-    "overall": "本批评论整体偏正面，以点赞表情和鼓励支持为主，共6条正面；另有6条中性内容，包括关于上市进展的普通提问和温和质疑；无负面攻击性内容。",
-    "negatives": [],
-    "positive_count": 6,
-    "neutral_count": 6,
-    "analyzed_count": 12,
-    "classification_valid": true,
-    "themes": [],
-    "urgent": [],
-    "response_suggestions": [],
-    "unavailable_count": 3
-  },
-  "video": {
-    "description": "两次从零到一拿到大结果,如今布局Ai+中医,邀你一起抢占风口红利。#万全通 #新健康运动 #带货",
-    "create_time": 1795506905,
-    "account_name": ""
-  }
+  "pages": 1,
+  "cursor": 0,
+  "last_buffer": "CqcBCP///////////wEYlbfEm4ODloPRARjBsKDpr7XphdEBGO2SoO317KGE0QEYlZCokYXFnIPRARjNusCPq8aYg9EBGMWV5JCI38SF0QEY9ba4nM3h2oXRARimmoi4qdXHhNEBGOaw8IH4ypuE0QEY7rPIlqnUtIPRARjesMS8qKitg9EBGJyUzJHRq/CD0QEY2ra8v7Olq4PRATABOP///////////wE=",
+  "updated_at": 1795696265
 }
