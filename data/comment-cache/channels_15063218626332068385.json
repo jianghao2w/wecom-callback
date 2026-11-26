@@ -1,7 +1,11 @@
 {
-  "status": "collecting",
+  "status": "complete",
   "platform": "channels",
   "content_id": "15063218626332068385",
+  "started_at": 1795719184,
+  "completed_at": 1795719192,
+  "pages": 3,
+  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15063489598811413659",
@@ -274,8 +278,22 @@
       "content_unavailable": false
     }
   ],
-  "pages": 2,
-  "cursor": 0,
-  "last_buffer": "CpkDCP///////////wEYm7nIt6//kIbRARiUo7iXsaGFhtEBGKi37K7Npe6F0QEYr7KA1tfa7IXRARivo6T0kezhhdEBGLmUxOC1veiF0QEY1ZXcxN2u4IXRARiekez7roKBhtEBGKuXkN/es4WG0QEYl7GMytqI7oXRARiXvIjEubKPhtEBGNS7gLKenomG0QEY67P0tp7x2YXRARiYnOjvh5n6hdEBGIqw7JyQkv+F0QEYjbOcuLDI+4XRARj1s5zX89f4hdEBGMKzhIXB8NmF0QEYzrXE7cPm7oXRARi7ubzoh47zhdEBGI2w/KDzhYaG0QEYrpD8lsaq84XRARjxtaz6sOPvhdEBGMi7sPWAo/6F0QEYtbeMmuTv94XRARjOu7Th97HzhdEBGI2yoPT36faF0QEYm7nIt6//kIbRARiXvIjEubKPhtEBGNS7gLKenomG0QEYjbD8oPOFhobRARirl5Df3rOFhtEBGJSjuJexoYWG0QEYnpHs+66CgYbRARiKsOyckJL/hdEBMAE4////////////AQ==",
-  "updated_at": 1795719189
+  "analysis": {
+    "no_comments": false,
+    "overall": "本批评论整体情绪积极，以正面鼓励和支持为主，包含较多表情符号与坚持奋斗的鼓励语；另有少量中性评论，表现为对上市进度的普通质疑或含义不明的陈述；未发现明确辱骂或攻击性内容，负面评论为零。",
+    "negatives": [],
+    "positive_count": 13,
+    "neutral_count": 8,
+    "analyzed_count": 21,
+    "classification_valid": true,
+    "themes": [],
+    "urgent": [],
+    "response_suggestions": [],
+    "unavailable_count": 6
+  },
+  "video": {
+    "description": "所有难熬的时刻，都是登顶前最后的考验，看得懂长远布局，才懂得这份坚守有多珍贵，脚步不停 一起静待佳音。#万全通 #新健康运动 #健康运动 ",
+    "create_time": 1795675590,
+    "account_name": ""
+  }
 }
