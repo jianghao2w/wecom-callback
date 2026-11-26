@@ -1,11 +1,7 @@
 {
-  "status": "complete",
+  "status": "collecting",
   "platform": "channels",
   "content_id": "15061803593908554244",
-  "started_at": 1795696263,
-  "completed_at": 1795696269,
-  "pages": 2,
-  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15061822864752712597",
@@ -18,12 +14,12 @@
       "content_unavailable": false
     },
     {
-      "comment_id": "15063315532481042497",
-      "author": "环保和创业同行",
-      "content": "合法高级门店",
+      "comment_id": "15063251081503841141",
+      "author": "工控彭于晏",
+      "content": "你这美国上市的时差这么大吗",
       "likes": 0,
       "replies": 0,
-      "created_at": 1795687142,
+      "created_at": 1795679459,
       "platform": "channels",
       "content_unavailable": false
     },
@@ -68,12 +64,12 @@
       "content_unavailable": false
     },
     {
-      "comment_id": "15063251081503841141",
-      "author": "工控彭于晏",
-      "content": "你这美国上市的时差这么大吗",
+      "comment_id": "15063315532481042497",
+      "author": "环保和创业同行",
+      "content": "合法高级门店",
       "likes": 0,
       "replies": 0,
-      "created_at": 1795679459,
+      "created_at": 1795687142,
       "platform": "channels",
       "content_unavailable": false
     },
@@ -98,14 +94,14 @@
       "content_unavailable": false
     },
     {
-      "comment_id": "15061957599476980206",
-      "author": "龙怡山庄...",
-      "content": "[评论内容无法获取]",
+      "comment_id": "15061916404920818522",
+      "author": "黄堇贻",
+      "content": "[强][强][强]",
       "likes": 0,
       "replies": 0,
-      "created_at": 1795525264,
+      "created_at": 1795520353,
       "platform": "channels",
-      "content_unavailable": true
+      "content_unavailable": false
     },
     {
       "comment_id": "15061925301134104670",
@@ -128,52 +124,18 @@
       "content_unavailable": false
     },
     {
-      "comment_id": "15061916404920818522",
-      "author": "黄堇贻",
-      "content": "[强][强][强]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795520353,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15061957657781934572",
+      "comment_id": "15061957599476980206",
       "author": "龙怡山庄...",
       "content": "[评论内容无法获取]",
       "likes": 0,
       "replies": 0,
-      "created_at": 1795525271,
-      "platform": "channels",
-      "content_unavailable": true
-    },
-    {
-      "comment_id": "15061957627394660841",
-      "author": "龙怡山庄...",
-      "content": "[评论内容无法获取]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795525268,
+      "created_at": 1795525264,
       "platform": "channels",
       "content_unavailable": true
     }
   ],
-  "analysis": {
-    "no_comments": false,
-    "overall": "本批评论整体偏正面，以点赞表情和鼓励支持为主，另有若干关于上市进展的普通提问和温和质疑，无明确负面攻击性内容；分类计数为正面7条、中性5条、负面0条。",
-    "negatives": [],
-    "positive_count": 7,
-    "neutral_count": 5,
-    "analyzed_count": 12,
-    "classification_valid": true,
-    "themes": [],
-    "urgent": [],
-    "response_suggestions": [],
-    "unavailable_count": 3
-  },
-  "video": {
-    "description": "两次从零到一拿到大结果,如今布局Ai+中医,邀你一起抢占风口红利。#万全通 #新健康运动 #带货",
-    "create_time": 1795506905,
-    "account_name": ""
-  }
+  "pages": 1,
+  "cursor": 0,
+  "last_buffer": "CqcBCP///////////wEYlbfEm4ODloPRARj1triczeHahdEBGO2SoO317KGE0QEYlZCokYXFnIPRARjNusCPq8aYg9EBGMWV5JCI38SF0QEYwbCg6a+16YXRARimmoi4qdXHhNEBGOaw8IH4ypuE0QEY2ra8v7Olq4PRARjesMS8qKitg9EBGJyUzJHRq/CD0QEY7rPIlqnUtIPRATABOP///////////wE=",
+  "updated_at": 1795717926
 }
