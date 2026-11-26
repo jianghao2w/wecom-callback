@@ -1,7 +1,11 @@
 {
-  "status": "collecting",
+  "status": "complete",
   "platform": "channels",
   "content_id": "15063218626332068385",
+  "started_at": 1795715524,
+  "completed_at": 1795715532,
+  "pages": 3,
+  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15063489598811413659",
@@ -274,8 +278,22 @@
       "content_unavailable": false
     }
   ],
-  "pages": 2,
-  "cursor": 0,
-  "last_buffer": "CpkDCP///////////wEYm7nIt6//kIbRARiUo7iXsaGFhtEBGK+ygNbX2uyF0QEYqLfsrs2l7oXRARivo6T0kezhhdEBGLmUxOC1veiF0QEY1ZXcxN2u4IXRARiekez7roKBhtEBGKuXkN/es4WG0QEY1LuAsp6eiYbRARiXsYzK2ojuhdEBGJic6O+HmfqF0QEY9bOc1/PX+IXRARiNs5y4sMj7hdEBGLu5vOiHjvOF0QEYirDsnJCS/4XRARiXvIjEubKPhtEBGM61xO3D5u6F0QEY67P0tp7x2YXRARiNsPyg84WGhtEBGMKzhIXB8NmF0QEYyLuw9YCj/oXRARjxtaz6sOPvhdEBGK6Q/JbGqvOF0QEYtbeMmuTv94XRARjOu7Th97HzhdEBGI2yoPT36faF0QEYm7nIt6//kIbRARiXvIjEubKPhtEBGNS7gLKenomG0QEYjbD8oPOFhobRARirl5Df3rOFhtEBGJSjuJexoYWG0QEYnpHs+66CgYbRARiKsOyckJL/hdEBMAE4////////////AQ==",
-  "updated_at": 1795715530
+  "analysis": {
+    "no_comments": false,
+    "overall": "本批评论整体情绪积极，以正面鼓励和支持为主，多使用强、爱心等表情表达对万总、范总的感谢与坚持到底的鼓励；少数为对上市敲钟的温和质疑或普通提问。分类计数显示正面13条、中性8条、负面0条。",
+    "negatives": [],
+    "positive_count": 13,
+    "neutral_count": 8,
+    "analyzed_count": 21,
+    "classification_valid": true,
+    "themes": [],
+    "urgent": [],
+    "response_suggestions": [],
+    "unavailable_count": 6
+  },
+  "video": {
+    "description": "所有难熬的时刻，都是登顶前最后的考验，看得懂长远布局，才懂得这份坚守有多珍贵，脚步不停 一起静待佳音。#万全通 #新健康运动 #健康运动 ",
+    "create_time": 1795675590,
+    "account_name": ""
+  }
 }
