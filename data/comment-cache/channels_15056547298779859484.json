@@ -1,7 +1,11 @@
 {
-  "status": "collecting",
+  "status": "complete",
   "platform": "channels",
   "content_id": "15056547298779859484",
+  "started_at": 1795684806,
+  "completed_at": 1795684844,
+  "pages": 11,
+  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15056593674838018520",
@@ -2052,10 +2056,143 @@
       "created_at": 1794884812,
       "platform": "channels",
       "content_unavailable": false
+    },
+    {
+      "comment_id": "15056579821011799062",
+      "author": "项乾3229",
+      "content": "[强][强][强][爱心][爱心][爱心]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1794884183,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15056579304438434324",
+      "author": "祭酒",
+      "content": "[强][强][强][强][强][强][强][强][强][强][强][强][强][强][强][强][强][强][强][强][强][爱心][爱心][爱心][爱心][爱心][爱心][爱心][爱心][爱心][爱心][爱心][爱心][爱心][爱心][爱心][爱心][爱心][爱心][爱心][爱心][爱心]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1794884121,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15056575825409087548",
+      "author": "青山绿水",
+      "content": "相信相信的力量[强][强][强]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1794883707,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15056575534294179033",
+      "author": "淡然",
+      "content": "期待[合十][合十][合十][合十][合十][合十]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1794883672,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15056574870247705165",
+      "author": "钱法珍",
+      "content": "[强][强][强]",
+      "likes": 3,
+      "replies": 0,
+      "created_at": 1794883593,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15056572965874043984",
+      "author": ".潇洒的走",
+      "content": "/:strong/:strong/:strong",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1794883366,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15056567608328526481",
+      "author": "靠祂必胜",
+      "content": "万董：！期待明天",
+      "likes": 4,
+      "replies": 0,
+      "created_at": 1794882727,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15056567249120402353",
+      "author": "雪花飘逸9810",
+      "content": "[强][强][强][强][强][强][强][强][强][强][强]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1794882684,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15056560412133104992",
+      "author": "一小杯酒",
+      "content": "万哥！加油！[强][强]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1794881869,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15056557592342436366",
+      "author": "应友良18682460559",
+      "content": "[强][强][强][强][强][强]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1794881533,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15056554197830798434",
+      "author": "中通快递要东",
+      "content": "明天就到时间了",
+      "likes": 4,
+      "replies": 0,
+      "created_at": 1794881129,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15056759108649094104",
+      "author": "转角爱烧烤（东安店）",
+      "content": "坚持多年值了",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1794905556,
+      "platform": "channels",
+      "content_unavailable": false
     }
   ],
-  "pages": 10,
-  "cursor": 0,
-  "last_buffer": "CrsBCOu56ID2i+/50AEY2JP04MiF8fnQARjFtajqobfv+dABGKO10IeZ0vH50AEYoJe43Nzb8PnQARiNkazq6P73+dABGKCd0JT/+/X50AEYnJi8obb78PnQARiEluDFxtHq+dABGOC5jLCmifb50AEYv5zAw8jN6PnQARjQsNC5l9yE+tABGIWyrMzjufT50AEYurC416OvgvrQARiOkMjm+KT/+dABGOyTwPz2w/750AE467nogPaL7/nQAQ==",
-  "updated_at": 1795684841
+  "analysis": {
+    "no_comments": false,
+    "overall": "两批评论整体围绕万总（万董）公司上市敲钟展开，情绪以正面为主，共119条正面评论，多表达支持、信任、期待与赞美，并大量使用表情符号；中性评论94条，主要为普通提问、日期陈述或对上市真实性的合理质疑；无明确负面评论，仅个别温和批评或调侃，未发现辱骂或攻击性言论。",
+    "negatives": [],
+    "positive_count": 119,
+    "neutral_count": 94,
+    "analyzed_count": 213,
+    "classification_valid": true,
+    "themes": [],
+    "urgent": [],
+    "response_suggestions": [],
+    "unavailable_count": 4
+  },
+  "video": {
+    "description": "关关难过关关过，同心聚力，同心同行，激动人心的时刻近了，时间会证明一切！#万全通 #新健康运动 #健康",
+    "create_time": 1794880306
+  }
 }
