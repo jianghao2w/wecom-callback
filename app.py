@@ -206,7 +206,9 @@ def channels_resolve_id(text_in, token, metadata_out=None):
             if isinstance(metadata_out, dict) and isinstance(details, dict):
                 description, created = details.get("description"), details.get("create_time")
                 if str(created or "").isdigit() and 0 < int(created) <= time.time() + 300:
-                    metadata_out.update({"id": resolved, "description": description if isinstance(description,str) else "", "create_time": int(created)})
+                    author = details.get('author') if isinstance(details.get('author'), dict) else {}
+                    account = details.get('nickname') or details.get('nick_name') or details.get('author_name') or author.get('nickname') or author.get('nick_name') or ''
+                    metadata_out.update({"id": resolved, "description": description if isinstance(description,str) else "", "create_time": int(created), "account_name": account if isinstance(account, str) else ''})
             print(f"🔗 视频号链接已解析: {s[:50]} -> {resolved}")
             return resolved
         return s
@@ -419,7 +421,9 @@ def douyin_publication_metadata(content_id):
     created = int(detail.get('create_time') or 0)
     if created <= 0 or created > time.time() + 300:
         raise ValueError('抖音发布时间无效')
-    return {'id': str(content_id), 'create_time': created}
+    author = detail.get('author') if isinstance(detail.get('author'), dict) else {}
+    return {'id': str(content_id), 'create_time': created,
+            'description': str(detail.get('desc') or ''), 'account_name': str(author.get('nickname') or '')}
 
 def nested_value(value, path):
     cur = value
@@ -574,13 +578,14 @@ def collect_target(platform, content_id, chat_id="", on_complete=None, first_run
             if FULL_ANALYSIS_ENABLED:
                 numbered = [{**comment, 'number': i + 1} for i, comment in enumerate(comments)]
                 result['analysis'] = DeepSeekBatch(LLM_API_URL, LLM_API_KEY, LLM_MODEL).analyze(numbered)
-            if platform == 'channels':
+            if platform in ('channels', 'douyin'):
                 try:
-                    metadata = load_video_metadata(content_id)
+                    metadata = load_video_metadata(content_id) if platform == 'channels' else douyin_publication_metadata(content_id)
                     if str(metadata.get('id') or '') == str(content_id):
                         result['video'] = {'description': str(metadata.get('description') or ''),
-                                           'create_time': metadata.get('create_time')}
-                except (OSError, ValueError, urllib.error.URLError) as error:
+                                           'create_time': metadata.get('create_time'),
+                                           'account_name': str(metadata.get('account_name') or '')}
+                except (OSError, ValueError, RuntimeError, TypeError, urllib.error.URLError) as error:
                     print(f"读取作品信息失败: {type(error).__name__}")
             save_comment_cache(platform, content_id, result, f"collect: complete {platform} {content_id}")
             print(f"✅ 全量评论采集完成: {platform} {content_id}, {len(comments)} 条, {pages} 页")
