@@ -1,7 +1,11 @@
 {
-  "status": "collecting",
+  "status": "complete",
   "platform": "channels",
   "content_id": "15061039481908562435",
+  "started_at": 1795656014,
+  "completed_at": 1795656025,
+  "pages": 3,
+  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15061200244505118946",
@@ -300,9 +304,5 @@
       "created_at": 1795427536,
       "platform": "channels"
     }
-  ],
-  "pages": 2,
-  "cursor": 0,
-  "last_buffer": "CpkDCP///////////wEY4pGEhrK6iILRARiJkJDh4tPngdEBGL6amMm6+JCC0QEYwrz0r83XjYLRARi9lPTlhOKYgtEBGNi5qO7/vpGC0QEYzLbY3M3w84HRARi2taTzgYfygdEBGJyR+Oi9vZKC0QEYu5GA2Nja/oHRARjXu6icjfaNgtEBGMqTmPzKl+iB0QEYxLuw5Oyo7IHRARjMsOiy7YvogdEBGLW0qN7k6OaB0QEY3pOg7a/T54HRARjTs9SDq47xgdEBGOya0P2z8fmB0QEYn7fA49Wy84HRARiZvMzMr7KEgtEBGImxjPfT3u+B0QEYtbL0k+u0lILRARiIvOj5udaYgtEBGN2S6LitgJiC0QEYjLz0tJXOmILRARiHlbiLqZeag9EBGIubpInrraOC0QEY6prUjcy8i4PRARj1kKyIr8qBgtEBGPO11JPplqCC0QEYupGIjaC4oILRARjqu5i9j5uKgtEBGMu7gP/3oJKC0QEY5LSk5riHh4LRARiut+TR7aD6gdEBMAE4////////////AQ==",
-  "updated_at": 1795656022
+  ]
 }
