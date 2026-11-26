@@ -22,6 +22,7 @@ class ApprovalStore:
                     result TEXT
                 )"""
             )
+            connection.execute('CREATE TABLE IF NOT EXISTS local_login_notices (batch_id TEXT PRIMARY KEY)')
 
     @contextmanager
     def _connect(self):
@@ -91,6 +92,17 @@ class ApprovalStore:
                 "UPDATE deletion_batches SET state='executing' WHERE batch_id=? AND state='confirmed'",
                 (batch_id,),
             )
+            return cursor.rowcount == 1
+
+    def confirmed_batches(self):
+        with self._connect() as connection:
+            rows = connection.execute("SELECT batch_id FROM deletion_batches WHERE state='confirmed' ORDER BY confirmed_at").fetchall()
+            return [row['batch_id'] for row in rows]
+
+    def mark_login_notified(self, batch_id):
+        with self._connect() as connection:
+            cursor=connection.execute("""INSERT OR IGNORE INTO local_login_notices(batch_id)
+                SELECT batch_id FROM deletion_batches WHERE batch_id=? AND state='confirmed'""", (batch_id,))
             return cursor.rowcount == 1
 
     def wait_for_login(self, batch_id):

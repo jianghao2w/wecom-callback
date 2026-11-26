@@ -46,6 +46,8 @@ APPROVAL_DB_PATH = os.environ.get("APPROVAL_DB_PATH", "")
 APPROVAL_API_TOKEN = os.environ.get("APPROVAL_API_TOKEN", "")
 APPROVAL_CHAT_ID = os.environ.get("APPROVAL_CHAT_ID", "")
 APPROVAL_EXECUTION_ENABLED = os.environ.get("APPROVAL_EXECUTION_ENABLED", "").lower() == "true"
+LOCAL_WORKER_ENABLED = os.environ.get("LOCAL_WORKER_ENABLED", "").lower() == "true"
+LOCAL_WORKER_TOKEN = os.environ.get("LOCAL_WORKER_TOKEN", "")
 CHANNELS_SESSION_PATH = os.environ.get("CHANNELS_SESSION_PATH", "")
 DIFY_CHAT_INPUT_ENABLED = os.environ.get("DIFY_CHAT_INPUT_ENABLED", "").lower() == "true"
 FULL_ANALYSIS_ENABLED = os.environ.get("FULL_ANALYSIS_ENABLED", "").lower() == "true"
@@ -769,6 +771,71 @@ def run_approved_deletion(batch_id):
     elif outcome == "login_request_failed":
         print("视频号登录通知发送失败")
 
+def worker_authorized():
+    token = request.headers.get('X-Worker-Token', '')
+    return bool(LOCAL_WORKER_ENABLED and LOCAL_WORKER_TOKEN and APPROVAL_DB_PATH and token and
+                hmac.compare_digest(token.encode('utf-8'), LOCAL_WORKER_TOKEN.encode('utf-8')))
+
+@app.route('/local-worker/jobs', methods=['GET'])
+def local_worker_jobs():
+    if not worker_authorized():
+        return jsonify({'error':'unauthorized'}), 403
+    return jsonify({'batches': ApprovalStore(APPROVAL_DB_PATH).confirmed_batches()})
+
+@app.route('/local-worker/jobs/<batch_id>/claim', methods=['POST'])
+def local_worker_claim(batch_id):
+    if not worker_authorized():
+        return jsonify({'error':'unauthorized'}), 403
+    if not re.fullmatch(r'[0-9a-f]{12}',batch_id):
+        return jsonify({'error':'invalid batch'}), 400
+    store=ApprovalStore(APPROVAL_DB_PATH)
+    batch=store.get(batch_id)
+    if not batch or batch['state']!='confirmed':
+        return jsonify({'error':'not confirmed'}),409
+    comments=batch['payload']
+    if not comments or any(c.get('platform')!='channels' or c.get('object_id')!=comments[0].get('object_id') for c in comments):
+        return jsonify({'error':'unsupported batch'}),400
+    video=load_video_metadata(comments[0]['object_id'])
+    if str(video.get('id') or '')!=str(comments[0]['object_id']):
+        return jsonify({'error':'video metadata unavailable'}),409
+    if not store.claim(batch_id):
+        return jsonify({'error':'already claimed'}),409
+    return jsonify({'batch_id':batch_id,'comments':comments,'video':video})
+
+@app.route('/local-worker/jobs/<batch_id>/login-needed', methods=['POST'])
+def local_worker_login_needed(batch_id):
+    if not worker_authorized():
+        return jsonify({'error':'unauthorized'}),403
+    if not re.fullmatch(r'[0-9a-f]{12}',batch_id):
+        return jsonify({'error':'invalid batch'}),400
+    store=ApprovalStore(APPROVAL_DB_PATH)
+    if store.mark_login_notified(batch_id):
+        reply_to_group('本机视频号助手不可用，请打开 Ego Lite 并登录视频号助手；本批评论尚未删除。')
+    return jsonify({'ok':True})
+
+@app.route('/local-worker/jobs/<batch_id>/finish', methods=['POST'])
+def local_worker_finish(batch_id):
+    if not worker_authorized():
+        return jsonify({'error':'unauthorized'}),403
+    body=request.get_json(silent=True) or {}
+    result=body.get('result')
+    if not isinstance(result,dict) or result.get('status') not in ('completed','unknown','rejected','not_started'):
+        return jsonify({'error':'invalid result'}),400
+    store=ApprovalStore(APPROVAL_DB_PATH)
+    if result['status']=='not_started':
+        changed=store.release_before_deletion(batch_id)
+    else:
+        changed=store.finish(batch_id,result)
+    if not changed:
+        return jsonify({'error':'invalid batch state'}),409
+    if result['status']=='completed':
+        reply_to_group('已完成确认删除：成功 '+str(len(result.get('deleted') or []))+' 条。')
+    elif result['status']=='unknown':
+        reply_to_group('本机删除结果未完全确认，请核对后台；未确认结果不会自动重试。')
+    elif result['status']=='rejected':
+        reply_to_group('本机未能核对作品或评论信息，本批评论未删除，请检查视频号后台。')
+    return jsonify({'ok':True})
+
 
 @app.route('/approval-batches', methods=['POST'])
 def create_approval_batch():
@@ -987,7 +1054,9 @@ def wecom_callback():
                         confirmation.group(1), chat_id, user_id
                     )
                     if confirmed:
-                        if APPROVAL_EXECUTION_ENABLED:
+                        if LOCAL_WORKER_ENABLED:
+                            reply_to_group("已收到删除确认，等待本机执行程序检查视频号登录。")
+                        elif APPROVAL_EXECUTION_ENABLED:
                             reply_to_group("已收到删除确认，正在核验视频号登录和评论。")
                             threading.Thread(target=run_approved_deletion,
                                              args=(confirmation.group(1),), daemon=True).start()
