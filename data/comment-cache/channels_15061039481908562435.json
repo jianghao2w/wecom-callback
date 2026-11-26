@@ -1,7 +1,11 @@
 {
-  "status": "collecting",
+  "status": "complete",
   "platform": "channels",
   "content_id": "15061039481908562435",
+  "started_at": 1795658046,
+  "completed_at": 1795658058,
+  "pages": 3,
+  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15061200244505118946",
@@ -301,8 +305,20 @@
       "platform": "channels"
     }
   ],
-  "pages": 2,
-  "cursor": 0,
-  "last_buffer": "CpkDCP///////////wEY4pGEhrK6iILRARiJkJDh4tPngdEBGL6amMm6+JCC0QEYwrz0r83XjYLRARi9lPTlhOKYgtEBGNi5qO7/vpGC0QEYzLbY3M3w84HRARi2taTzgYfygdEBGJyR+Oi9vZKC0QEYu5GA2Nja/oHRARjXu6icjfaNgtEBGMqTmPzKl+iB0QEYxLuw5Oyo7IHRARjMsOiy7YvogdEBGLW0qN7k6OaB0QEY3pOg7a/T54HRARjTs9SDq47xgdEBGOya0P2z8fmB0QEYn7fA49Wy84HRARiZvMzMr7KEgtEBGImxjPfT3u+B0QEYtbL0k+u0lILRARiIvOj5udaYgtEBGN2S6LitgJiC0QEYjLz0tJXOmILRARjztdST6ZaggtEBGIubpInrraOC0QEY9ZCsiK/KgYLRARjqmtSNzLyLg9EBGIeVuIupl5qD0QEY6ruYvY+bioLRARi6kYiNoLiggtEBGMu7gP/3oJKC0QEYrrfk0e2g+oHRARjktKTmuIeHgtEBMAE4////////////AQ==",
-  "updated_at": 1795658055
+  "analysis": {
+    "no_comments": false,
+    "overall": "本批评论整体情绪偏正面，以点赞表情和明确支持鼓励为主，共22条正面评论；另有11条中性内容，包括关于上市敲钟和股票代码的普通提问及个别含义不明的调侃；无负面评论，未发现明确负面攻击性内容。",
+    "negatives": [],
+    "positive_count": 22,
+    "neutral_count": 11,
+    "analyzed_count": 33,
+    "classification_valid": true,
+    "themes": [],
+    "urgent": [],
+    "response_suggestions": []
+  },
+  "video": {
+    "description": "同心聚力 同心同行，方向坚定 步履不停，所有努力都不会白费，不必被负面声音影响！！！！#万全通 #新健康运动 #健康运动 ",
+    "create_time": 1795415816
+  }
 }
