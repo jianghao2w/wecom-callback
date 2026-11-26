@@ -34,4 +34,11 @@ class DeepSeekBatch:
             result=self._request('根据所有分批总结与分类计数，返回JSON：{"overall":"中文总体总结"}。不要编造信息。',
                                  {'batch_summaries':summaries,'counts':counts})
             return result.get('overall')
-        return analyze_all(comments,batch,summary)
+        available=[row for row in comments if not row.get('content_unavailable')]
+        result=analyze_all(available,batch,summary)
+        unavailable=len(comments)-len(available)
+        result['unavailable_count']=unavailable
+        if unavailable and not available:
+            result['no_comments']=False
+            result['overall']='评论内容暂无法获取，无法判断情绪。'
+        return result

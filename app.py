@@ -450,8 +450,11 @@ def safe_int(value):
 
 def normalise_comment(platform, row):
     content = str(first_value(row, "content", "text", "comment", "content_desc") or "").strip()
+    unavailable = not content
     if not content:
-        return None
+        if platform != 'channels' or not first_value(row, 'id', 'comment_id', 'cid'):
+            return None
+        content = '[评论内容无法获取]'
     author = first_value(row, "author", "nickname", "user_name", "nick_name")
     if not author:
         for path in (("user", "nickname"), ("user_info", "nickname"), ("author", "nickname")):
@@ -466,6 +469,7 @@ def normalise_comment(platform, row):
         "replies": safe_int(first_value(row, "reply_count", "sub_comment_count")),
         "created_at": first_value(row, "create_time", "created_at", "createTime", "timestamp") or 0,
         "platform": platform,
+        "content_unavailable": unavailable,
     }
 
 def fetch_all_comments(platform, content_id, checkpoint=None):
