@@ -539,7 +539,7 @@ def fetch_all_comments(platform, content_id, checkpoint=None):
         raise RuntimeError("达到分页上限，但接口仍有下一页；采集未完成")
     return comments, pages, False
 
-def collect_target(platform, content_id, chat_id="", on_complete=None):
+def collect_target(platform, content_id, chat_id="", on_complete=None, first_run=False):
     key = (str(platform), str(content_id))
     with COLLECTION_LOCK:
         if key in COLLECTING:
@@ -558,9 +558,17 @@ def collect_target(platform, content_id, chat_id="", on_complete=None):
                 "started_at": started, "completed_at": int(time.time()), "pages": pages,
                 "page_limit_reached": capped, "comments": comments,
             }
+            if platform == 'channels':
+                try:
+                    metadata = load_video_metadata(content_id)
+                    if str(metadata.get('id') or '') == str(content_id):
+                        result['video'] = {'description': str(metadata.get('description') or ''),
+                                           'create_time': metadata.get('create_time')}
+                except (OSError, ValueError, urllib.error.URLError) as error:
+                    print(f"读取作品信息失败: {type(error).__name__}")
             save_comment_cache(platform, content_id, result, f"collect: complete {platform} {content_id}")
             print(f"✅ 全量评论采集完成: {platform} {content_id}, {len(comments)} 条, {pages} 页")
-            success = trigger_dify(f"{platform} {content_id}", "collected", chat_id)
+            success = trigger_dify(f"{platform} {content_id}", "collected_first" if first_run else "collected", chat_id)
         except Exception as e:
             print(f"❌ 全量评论采集失败: {e}")
             try:
@@ -626,7 +634,7 @@ def run_monitor_tick():
         platform, cid, chat = item['platform'], item['content_id'], item['chat_id']
         def completed(success, platform=platform, cid=cid):
             ScheduleStore(APPROVAL_DB_PATH).complete(platform, cid, success)
-        if not collect_target(platform, cid, chat, on_complete=completed):
+        if not collect_target(platform, cid, chat, on_complete=completed, first_run=item['last_success'] is None):
             store.complete(platform, cid, False)
 
 def monitor_loop():
