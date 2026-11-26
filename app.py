@@ -1070,58 +1070,61 @@ def wecom_callback():
         
         chat_type = str(msg.get("chattype") or msg.get("ChatType") or "").lower()
         chat_id = (msg.get("chatid") or msg.get("ChatId") or "") if chat_type == "group" else ""
-        platform, content_id = extract_platform_and_id(content)
-
-        if platform and content_id:
-            metadata = {}
-            if platform == "channels":
-                content_id = channels_resolve_id(content_id, TIKHUB_TOKEN, metadata)
-                if metadata:
-                    try:
-                        save_video_metadata(metadata)
-                    except (OSError, ValueError, urllib.error.URLError) as error:
-                        print(f"保存作品匹配信息失败: {type(error).__name__}")
-                if not metadata and re.fullmatch(r'\d{15,25}', str(content_id)):
-                    metadata = load_video_metadata(content_id)
-            elif platform == 'douyin':
-                try:
-                    metadata = douyin_publication_metadata(content_id)
-                except (OSError, ValueError, RuntimeError, TypeError):
-                    metadata = {}
-            if not chat_id or not APPROVAL_DB_PATH:
-                reply_to_group("无法保存群聊监控计划，请检查服务配置。")
-                return "ok"
-            if not metadata.get('create_time'):
-                reply_to_group("未能获取作品发布时间，暂未加入定时监控，请重新发送作品分享链接。")
-                return "ok"
-            added, total = register_target(platform, content_id)
-            if total == 0:
-                reply_to_group("登记失败，请稍后重试。")
-                return "ok"
-            try:
-                ScheduleStore(APPROVAL_DB_PATH).register(platform, content_id, metadata['create_time'], chat_id)
-            except (OSError, ValueError, sqlite3.Error):
-                reply_to_group("作品已登记，但定时计划保存失败，请稍后重新发送链接。")
-                return "ok"
-            plat_name = PLATFORM_NAMES.get(platform, platform)
-
-            def run():
-                age = time.time() - int(metadata['create_time'])
-                if age < 6 * 3600:
-                    reply_to_group(f"✅ {plat_name}作品已加入评论监控，发布满 6 小时后开始采集。")
-                else:
-                    reply_to_group(f"✅ {plat_name}作品已加入评论监控，正在安排采集评论。")
-                run_monitor_tick()
-
-            threading.Thread(target=run, daemon=True).start()
-        else:
-            # 不是链接，忽略（或者以后可以加其他指令）
-            pass
+        message_id = str(msg.get('msgid') or msg.get('MsgId') or '').strip()
+        if message_id and APPROVAL_DB_PATH:
+            if not ApprovalStore(APPROVAL_DB_PATH).claim_webhook_message(message_id):
+                return 'ok'
+        threading.Thread(target=handle_registration, args=(content, chat_id), daemon=True).start()
         
         return "ok"
     except Exception as e:
         print(f"❌ 回调处理错误: {e}")
         return "ok"
+
+def handle_registration(content, chat_id):
+    try:
+        platform, content_id = extract_platform_and_id(content)
+        if not platform or not content_id:
+            return
+        metadata = {}
+        if platform == 'channels':
+            content_id = channels_resolve_id(content_id, TIKHUB_TOKEN, metadata)
+            if metadata:
+                try:
+                    save_video_metadata(metadata)
+                except (OSError, ValueError, urllib.error.URLError) as error:
+                    print(f"保存作品匹配信息失败: {type(error).__name__}")
+            if not metadata and re.fullmatch(r'\d{15,25}', str(content_id)):
+                metadata = load_video_metadata(content_id)
+        elif platform == 'douyin':
+            try:
+                metadata = douyin_publication_metadata(content_id)
+            except (OSError, ValueError, RuntimeError, TypeError):
+                metadata = {}
+        if not chat_id or not APPROVAL_DB_PATH:
+            reply_to_group('无法保存群聊监控计划，请检查服务配置。')
+            return
+        if not metadata.get('create_time'):
+            reply_to_group('未能获取作品发布时间，暂未加入定时监控，请重新发送作品分享链接。')
+            return
+        added, total = register_target(platform, content_id)
+        if total == 0:
+            reply_to_group('登记失败，请稍后重试。')
+            return
+        try:
+            ScheduleStore(APPROVAL_DB_PATH).register(platform, content_id, metadata['create_time'], chat_id)
+        except (OSError, ValueError, sqlite3.Error):
+            reply_to_group('作品已登记，但定时计划保存失败，请稍后重新发送链接。')
+            return
+        name = PLATFORM_NAMES.get(platform, platform)
+        if time.time() - int(metadata['create_time']) < 6*3600:
+            reply_to_group(f'✅ {name}作品已加入评论监控，发布满 6 小时后开始采集。')
+        else:
+            reply_to_group(f'✅ {name}作品已加入评论监控，正在安排采集评论。')
+        run_monitor_tick()
+    except Exception as error:
+        print(f'登记处理失败: {type(error).__name__}')
+        reply_to_group('登记处理失败，请稍后重新发送链接。')
 
 if __name__ == '__main__':
     print(f"=== 版本: v2.1 (带调试日志) ===")

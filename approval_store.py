@@ -23,6 +23,7 @@ class ApprovalStore:
                 )"""
             )
             connection.execute('CREATE TABLE IF NOT EXISTS local_login_notices (batch_id TEXT PRIMARY KEY)')
+            connection.execute('CREATE TABLE IF NOT EXISTS webhook_messages (message_id TEXT PRIMARY KEY, received_at INTEGER NOT NULL)')
 
     @contextmanager
     def _connect(self):
@@ -98,6 +99,15 @@ class ApprovalStore:
         with self._connect() as connection:
             rows = connection.execute("SELECT batch_id FROM deletion_batches WHERE state='confirmed' ORDER BY confirmed_at").fetchall()
             return [row['batch_id'] for row in rows]
+
+    def claim_webhook_message(self, message_id):
+        if not isinstance(message_id,str) or not message_id.strip():
+            raise ValueError('消息标识缺失')
+        now=int(time.time())
+        with self._connect() as connection:
+            connection.execute('DELETE FROM webhook_messages WHERE received_at < ?', (now-7*86400,))
+            cursor=connection.execute('INSERT OR IGNORE INTO webhook_messages(message_id,received_at) VALUES (?,?)',(message_id,now))
+            return cursor.rowcount == 1
 
     def mark_login_notified(self, batch_id):
         with self._connect() as connection:
