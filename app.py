@@ -46,8 +46,10 @@ APPROVAL_DB_PATH = os.environ.get("APPROVAL_DB_PATH", "")
 APPROVAL_API_TOKEN = os.environ.get("APPROVAL_API_TOKEN", "")
 APPROVAL_CHAT_ID = os.environ.get("APPROVAL_CHAT_ID", "")
 APPROVAL_EXECUTION_ENABLED = os.environ.get("APPROVAL_EXECUTION_ENABLED", "").lower() == "true"
-LOCAL_WORKER_ENABLED = os.environ.get("LOCAL_WORKER_ENABLED", "").lower() == "true"
-LOCAL_WORKER_TOKEN = os.environ.get("LOCAL_WORKER_TOKEN", "")
+LOCAL_WORKER_ENABLED = os.environ.get("LOCAL_WORKER_ENABLED", "true").lower() == "true"
+LOCAL_WORKER_TOKEN = (os.environ.get("LOCAL_WORKER_TOKEN", "") or
+    (hmac.new(APPROVAL_API_TOKEN.encode('utf-8'), b'local-worker-v1', hashlib.sha256).hexdigest()
+     if APPROVAL_API_TOKEN else ""))
 CHANNELS_SESSION_PATH = os.environ.get("CHANNELS_SESSION_PATH", "")
 DIFY_CHAT_INPUT_ENABLED = os.environ.get("DIFY_CHAT_INPUT_ENABLED", "").lower() == "true"
 FULL_ANALYSIS_ENABLED = os.environ.get("FULL_ANALYSIS_ENABLED", "").lower() == "true"
