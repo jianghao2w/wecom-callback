@@ -1,7 +1,11 @@
 {
-  "status": "collecting",
+  "status": "complete",
   "platform": "channels",
   "content_id": "15061803593908554244",
+  "started_at": 1795677836,
+  "completed_at": 1795677843,
+  "pages": 2,
+  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15062437831763298669",
@@ -112,10 +116,43 @@
       "created_at": 1795520353,
       "platform": "channels",
       "content_unavailable": false
+    },
+    {
+      "comment_id": "15061957657781934572",
+      "author": "龙怡山庄...",
+      "content": "[评论内容无法获取]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795525271,
+      "platform": "channels",
+      "content_unavailable": true
+    },
+    {
+      "comment_id": "15061957627394660841",
+      "author": "龙怡山庄...",
+      "content": "[评论内容无法获取]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795525268,
+      "platform": "channels",
+      "content_unavailable": true
     }
   ],
-  "pages": 1,
-  "cursor": 0,
-  "last_buffer": "CpEBCP///////////wEY7ZKg7fXsoYTRARjFleSQiN/EhdEBGJW3xJuDg5aD0QEYlZCokYXFnIPRARjNusCPq8aYg9EBGKaaiLip1ceE0QEY5rDwgfjKm4TRARjus8iWqdS0g9EBGN6wxLyoqK2D0QEYnJTMkdGr8IPRARjatry/s6Wrg9EBMAE4////////////AQ==",
-  "updated_at": 1795677838
+  "analysis": {
+    "no_comments": false,
+    "overall": "本批评论整体氛围积极，以正面鼓励和支持为主，多条使用强表情表达对万总/万董的信任与加油；另有少量普通提问和含义不明的简短陈述，无负面内容。",
+    "negatives": [],
+    "positive_count": 7,
+    "neutral_count": 3,
+    "analyzed_count": 10,
+    "classification_valid": true,
+    "themes": [],
+    "urgent": [],
+    "response_suggestions": [],
+    "unavailable_count": 3
+  },
+  "video": {
+    "description": "两次从零到一拿到大结果,如今布局Ai+中医,邀你一起抢占风口红利。#万全通 #新健康运动 #带货",
+    "create_time": 1795506905
+  }
 }
