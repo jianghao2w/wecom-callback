@@ -205,8 +205,8 @@ def channels_resolve_id(text_in, token, metadata_out=None):
             details = d.get("data") if isinstance(d, dict) else None
             if isinstance(metadata_out, dict) and isinstance(details, dict):
                 description, created = details.get("description"), details.get("create_time")
-                if isinstance(description, str) and description.strip() and str(created or "").isdigit():
-                    metadata_out.update({"id": resolved, "description": description, "create_time": created})
+                if str(created or "").isdigit() and 0 < int(created) <= time.time() + 300:
+                    metadata_out.update({"id": resolved, "description": description if isinstance(description,str) else "", "create_time": int(created)})
             print(f"🔗 视频号链接已解析: {s[:50]} -> {resolved}")
             return resolved
         return s
@@ -1088,7 +1088,13 @@ def handle_registration(content, chat_id):
             return
         metadata = {}
         if platform == 'channels':
-            content_id = channels_resolve_id(content_id, TIKHUB_TOKEN, metadata)
+            original = content_id
+            for attempt in range(3):
+                content_id = channels_resolve_id(original, TIKHUB_TOKEN, metadata)
+                if metadata or re.fullmatch(r'\d{15,25}', str(original)) or not TIKHUB_TOKEN:
+                    break
+                if attempt < 2:
+                    time.sleep((3,8)[attempt])
             if metadata:
                 try:
                     save_video_metadata(metadata)
@@ -1105,7 +1111,7 @@ def handle_registration(content, chat_id):
             reply_to_group('无法保存群聊监控计划，请检查服务配置。')
             return
         if not metadata.get('create_time'):
-            reply_to_group('未能获取作品发布时间，暂未加入定时监控，请重新发送作品分享链接。')
+            reply_to_group('暂时无法读取作品信息，可能是链接无效或平台数据尚未就绪；未加入监控，请稍后重新发送分享链接。')
             return
         added, total = register_target(platform, content_id)
         if total == 0:
