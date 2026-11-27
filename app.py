@@ -1004,17 +1004,6 @@ def collect_api():
     started = collect_target(platform, content_id)
     return jsonify({"accepted": True, "started": started, "platform": platform, "id": content_id})
 
-@app.route('/temporary-test-run', methods=['POST'])
-def temporary_test_run():
-    """One-off authenticated report for the requested work."""
-    token = request.headers.get('X-Approval-Token', '')
-    if not APPROVAL_API_TOKEN or not hmac.compare_digest(token.encode(), APPROVAL_API_TOKEN.encode()):
-        return jsonify({'error': 'unauthorized'}), 403
-    if not APPROVAL_CHAT_ID:
-        return jsonify({'error': 'chat not configured'}), 503
-    started = collect_target('channels', '15063218626332068385', APPROVAL_CHAT_ID, first_run=True)
-    return jsonify({'started': started}), 202 if started else 409
-
 CACHE_PATH = os.environ.get("CACHE_PATH", "data/comment_cache.json")
 
 @app.route('/comment_cache', methods=['GET'])
