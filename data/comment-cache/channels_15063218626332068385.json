@@ -1,7 +1,11 @@
 {
-  "status": "collecting",
+  "status": "complete",
   "platform": "channels",
   "content_id": "15063218626332068385",
+  "started_at": 1795746051,
+  "completed_at": 1795746123,
+  "pages": 3,
+  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15063282229864632751",
@@ -342,10 +346,114 @@
       "created_at": 1795694173,
       "platform": "channels",
       "content_unavailable": false
+    },
+    {
+      "comment_id": "15063731388186495235",
+      "author": "风清云淡",
+      "content": "吹吧！2018.08.18.怎么样？...2026.11.18又怎么？[捂脸]",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795736716,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063766426630491710",
+      "author": "波哥std",
+      "content": "你礼貌吗[Facepalm]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795740893,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15063330008627943727"
+    },
+    {
+      "comment_id": "15063383033545689591",
+      "author": "李",
+      "content": "[捂脸][捂脸][捂脸]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795695189,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15063330008627943727"
+    },
+    {
+      "comment_id": "15063478531089701614",
+      "author": "联智一哥",
+      "content": "上市否",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795706573,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15063455475016146388"
+    },
+    {
+      "comment_id": "15063771959542947291",
+      "author": "半山",
+      "content": "下个月18",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795741553,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15063382689625610741"
     }
   ],
-  "pages": 2,
-  "cursor": 0,
-  "last_buffer": "CpkDCP///////////wEYr6Ok9JHs4YXRARivt7C9+rGyhtEBGNWV3MTdruCF0QEYm7nIt6//kIbRARiUo7iXsaGFhtEBGJe8iMS5so+G0QEYnrf00cq0uYbRARivsoDW19rshdEBGNS7gLKenomG0QEYu7m86IeO84XRARiekez7roKBhtEBGLmUxOC1veiF0QEYqLfsrs2l7oXRARiXsYzK2ojuhdEBGI2znLiwyPuF0QEYmJzo74eZ+oXRARjNkbDy4ZDFhtEBGOqw2OCLhdCG0QEY67P0tp7x2YXRARjfsODwkfnGhtEBGIqw7JyQkv+F0QEY9bOc1/PX+IXRARiOlryz4ejDhtEBGM61xO3D5u6F0QEYhpWosLjPyYbRARjGu6CyrJTRhtEBGK6Q/JbGqvOF0QEYjbD8oPOFhobRARi1t4ya5O/3hdEBGMKzhIXB8NmF0QEYyLuw9YCj/oXRARjOu7Th97HzhdEBGPG1rPqw4++F0QEYjbKg9Pfp9oXRARjqsNjgi4XQhtEBMAE4////////////AQ==",
-  "updated_at": 1795746056
+  "primary_count": 35,
+  "reply_count": 4,
+  "reply_pages": 35,
+  "analysis": {
+    "no_comments": false,
+    "overall": "本批评论整体以正面情绪为主，包含17条正面、7条中立和8条负面评论。正面评论多为点赞表情和鼓励支持；负面评论则集中质疑敲钟、上市进展，并嘲讽日期承诺。",
+    "negatives": [
+      {
+        "number": 5,
+        "reason": "用户指定的负面评论"
+      },
+      {
+        "number": 6,
+        "reason": "用户指定的负面评论"
+      },
+      {
+        "number": 8,
+        "reason": "用户指定的负面评论"
+      },
+      {
+        "number": 11,
+        "reason": "嘲讽五年内不可能上市"
+      },
+      {
+        "number": 35,
+        "reason": "嘲讽上市日期一再落空"
+      },
+      {
+        "number": 36,
+        "reason": "反问嘲讽，带负面情绪"
+      },
+      {
+        "number": 37,
+        "reason": "捂脸表情，嘲讽质疑"
+      },
+      {
+        "number": 39,
+        "reason": "嘲讽下个月18号的说法"
+      }
+    ],
+    "positive_count": 17,
+    "neutral_count": 7,
+    "analyzed_count": 32,
+    "classification_valid": true,
+    "themes": [],
+    "urgent": [],
+    "response_suggestions": [],
+    "unavailable_count": 7
+  },
+  "video": {
+    "description": "所有难熬的时刻，都是登顶前最后的考验，看得懂长远布局，才懂得这份坚守有多珍贵，脚步不停 一起静待佳音。#万全通 #新健康运动 #健康运动 ",
+    "create_time": 1795675590,
+    "account_name": ""
+  }
 }
