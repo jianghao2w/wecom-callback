@@ -1,17 +1,43 @@
 {
-  "status": "complete",
+  "status": "collecting",
   "platform": "channels",
   "content_id": "15063218626332068385",
-  "started_at": 1795719184,
-  "completed_at": 1795719192,
-  "pages": 3,
-  "page_limit_reached": false,
   "comments": [
+    {
+      "comment_id": "15063282229864632751",
+      "author": "郑万山",
+      "content": "黎明前的黑暗是最难熬的，家人们坚持坚持坚持就是胜利！！！",
+      "likes": 5,
+      "replies": 0,
+      "created_at": 1795683172,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063726879231449183",
+      "author": "青山绿水3904",
+      "content": "[强][强][强]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795736179,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063330008627943727",
+      "author": "爱在深秋837",
+      "content": "敲钟了吗",
+      "likes": 4,
+      "replies": 0,
+      "created_at": 1795688868,
+      "platform": "channels",
+      "content_unavailable": false
+    },
     {
       "comment_id": "15063489598811413659",
       "author": "^_^⊙_⊙笑看人世间",
       "content": "[评论内容无法获取]",
-      "likes": 1,
+      "likes": 4,
       "replies": 0,
       "created_at": 1795707893,
       "platform": "channels",
@@ -21,9 +47,99 @@
       "comment_id": "15063437990953882004",
       "author": "동백향기",
       "content": "天天喊敲钟，到现在也没敲上",
-      "likes": 0,
+      "likes": 3,
       "replies": 0,
       "created_at": 1795701741,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063667349040995230",
+      "author": "孙群",
+      "content": "别忘了合发伙伴们",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795729082,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063482557775617559",
+      "author": "无名",
+      "content": "不急，每个月都有18号",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795707053,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063438621659106219",
+      "author": "银河系大呲花",
+      "content": "全是手机还没玩明白的中老年人",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795701816,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063395350318881165",
+      "author": "熊猫4399",
+      "content": "合发还行吗",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795696657,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063358162177301691",
+      "author": "爱真之音生态农业",
+      "content": "坚定不移，不忘初心，方能致远[强][强][强]\n​",
+      "likes": 2,
+      "replies": 0,
+      "created_at": 1795692224,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063419333021206686",
+      "author": "龙业江文正",
+      "content": "在等5年都不可能上市[捂脸]",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795699516,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063311410904762937",
+      "author": "雷峰苗木-王绍贵",
+      "content": "努力奋斗[强][强][强][强][强][强][强]",
+      "likes": 2,
+      "replies": 0,
+      "created_at": 1795686651,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063275721815689941",
+      "author": "张国凤1353",
+      "content": "[强][强][强][强][强][强]万总辛苦了",
+      "likes": 3,
+      "replies": 0,
+      "created_at": 1795682397,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063455475016146388",
+      "author": "博爱之义",
+      "content": "最后不要辜负我们，但是我们必须支持你",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795703825,
       "platform": "channels",
       "content_unavailable": false
     },
@@ -38,92 +154,42 @@
       "content_unavailable": true
     },
     {
-      "comment_id": "15063330008627943727",
-      "author": "爱在深秋837",
-      "content": "敲钟了吗",
-      "likes": 2,
-      "replies": 0,
-      "created_at": 1795688868,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063282229864632751",
-      "author": "郑万山",
-      "content": "黎明前的黑暗是最难熬的，家人们坚持坚持坚持就是胜利！！！",
-      "likes": 2,
-      "replies": 0,
-      "created_at": 1795683172,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063311410904762937",
-      "author": "雷峰苗木-王绍贵",
-      "content": "努力奋斗[强][强][强][强][强][强][强]",
-      "likes": 1,
-      "replies": 0,
-      "created_at": 1795686651,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063275721815689941",
-      "author": "张国凤1353",
-      "content": "[强][强][强][强][强][强]万总辛苦了",
-      "likes": 1,
-      "replies": 0,
-      "created_at": 1795682397,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063419333021206686",
-      "author": "龙业江文正",
-      "content": "在等5年都不可能上市[捂脸]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795699516,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063438621659106219",
-      "author": "银河系大呲花",
-      "content": "全是手机还没玩明白的中老年人",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795701816,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
       "comment_id": "15063335988002756759",
       "author": "莎莎女土",
       "content": "坚持到底……[强][强][强][强][强]",
-      "likes": 0,
+      "likes": 1,
       "replies": 0,
       "created_at": 1795689581,
       "platform": "channels",
       "content_unavailable": false
     },
     {
-      "comment_id": "15063482557775617559",
-      "author": "无名",
-      "content": "不急，每个月都有18号",
+      "comment_id": "15063738640595815046",
+      "author": "御风乎",
+      "content": "[评论内容无法获取]",
       "likes": 0,
       "replies": 0,
-      "created_at": 1795707053,
+      "created_at": 1795737581,
+      "platform": "channels",
+      "content_unavailable": true
+    },
+    {
+      "comment_id": "15063718894890649805",
+      "author": "松林子度假村",
+      "content": "合发都激活了，百分之八十以上",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795735227,
       "platform": "channels",
       "content_unavailable": false
     },
     {
-      "comment_id": "15063455475016146388",
-      "author": "博爱之义",
-      "content": "最后不要辜负我们，但是我们必须支持你",
+      "comment_id": "15063411078431709194",
+      "author": "任东虎",
+      "content": "[拳头][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰]",
       "likes": 0,
       "replies": 0,
-      "created_at": 1795703825,
+      "created_at": 1795698532,
       "platform": "channels",
       "content_unavailable": false
     },
@@ -138,34 +204,14 @@
       "content_unavailable": true
     },
     {
-      "comment_id": "15063389326475398680",
-      "author": "杨记水产$138××××9799",
+      "comment_id": "15063247195583093186",
+      "author": "龙怡山庄...",
       "content": "[评论内容无法获取]",
       "likes": 0,
       "replies": 0,
-      "created_at": 1795695939,
+      "created_at": 1795678996,
       "platform": "channels",
       "content_unavailable": true
-    },
-    {
-      "comment_id": "15063411078431709194",
-      "author": "任东虎",
-      "content": "[拳头][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795698532,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063395350318881165",
-      "author": "熊猫4399",
-      "content": "合发还行吗",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795696657,
-      "platform": "channels",
-      "content_unavailable": false
     },
     {
       "comment_id": "15063382689625610741",
@@ -178,34 +224,24 @@
       "content_unavailable": false
     },
     {
-      "comment_id": "15063247195583093186",
-      "author": "龙怡山庄...",
+      "comment_id": "15063636472478047151",
+      "author": "黄河",
+      "content": "[强][强][强][强][强][强]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795725401,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063389326475398680",
+      "author": "杨记水产$138××××9799",
       "content": "[评论内容无法获取]",
       "likes": 0,
       "replies": 0,
-      "created_at": 1795678996,
+      "created_at": 1795695939,
       "platform": "channels",
       "content_unavailable": true
-    },
-    {
-      "comment_id": "15063339211718466254",
-      "author": "江振兰",
-      "content": "[强][强][强]万总辛苦了[爱心][爱心][爱心]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795689965,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063358162177301691",
-      "author": "爱真之音生态农业",
-      "content": "坚定不移，不忘初心，方能致远[强][强][强]\n​",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795692224,
-      "platform": "channels",
-      "content_unavailable": false
     },
     {
       "comment_id": "15063441444664449037",
@@ -216,84 +252,10 @@
       "created_at": 1795702152,
       "platform": "channels",
       "content_unavailable": false
-    },
-    {
-      "comment_id": "15063359140990486574",
-      "author": "袁袁9435",
-      "content": "[评论内容无法获取]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795692341,
-      "platform": "channels",
-      "content_unavailable": true
-    },
-    {
-      "comment_id": "15063343501612358385",
-      "author": "林美珍6050",
-      "content": "[强][强][强][强][强]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795690477,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063407260391448008",
-      "author": "知足常乐颜姣美",
-      "content": "[强][强][强][强][爱心][爱心][爱心][爱心]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795698077,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063379112058100661",
-      "author": "蓉蓉0257",
-      "content": "[强][强][强]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795694722,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063359394818104782",
-      "author": "知心二姐",
-      "content": "[强][强][强]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795692371,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063374513142503693",
-      "author": "章齐姜",
-      "content": "‘",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795694173,
-      "platform": "channels",
-      "content_unavailable": false
     }
   ],
-  "analysis": {
-    "no_comments": false,
-    "overall": "本批评论整体情绪积极，以正面鼓励和支持为主，包含较多表情符号与坚持奋斗的鼓励语；另有少量中性评论，表现为对上市进度的普通质疑或含义不明的陈述；未发现明确辱骂或攻击性内容，负面评论为零。",
-    "negatives": [],
-    "positive_count": 13,
-    "neutral_count": 8,
-    "analyzed_count": 21,
-    "classification_valid": true,
-    "themes": [],
-    "urgent": [],
-    "response_suggestions": [],
-    "unavailable_count": 6
-  },
-  "video": {
-    "description": "所有难熬的时刻，都是登顶前最后的考验，看得懂长远布局，才懂得这份坚守有多珍贵，脚步不停 一起静待佳音。#万全通 #新健康运动 #健康运动 ",
-    "create_time": 1795675590,
-    "account_name": ""
-  }
+  "pages": 1,
+  "cursor": 0,
+  "last_buffer": "CqsCCP///////////wEYr6Ok9JHs4YXRARjfsODwkfnGhtEBGK+ygNbX2uyF0QEYm7nIt6//kIbRARiUo7iXsaGFhtEBGJ639NHKtLmG0QEYl7yIxLmyj4bRARirl5Df3rOFhtEBGI2znLiwyPuF0QEYu7m86IeO84XRARiekez7roKBhtEBGLmUxOC1veiF0QEY1ZXcxN2u4IXRARjUu4Cynp6JhtEBGKi37K7Npe6F0QEYl7GMytqI7oXRARiGlaiwuM/JhtEBGM2RsPLhkMWG0QEYirDsnJCS/4XRARjrs/S2nvHZhdEBGMKzhIXB8NmF0QEY9bOc1/PX+IXRARivt7C9+rGyhtEBGJic6O+HmfqF0QEYjbD8oPOFhobRATABOP///////////wE=",
+  "updated_at": 1795740846
 }
