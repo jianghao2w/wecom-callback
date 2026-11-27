@@ -1,11 +1,7 @@
 {
-  "status": "complete",
+  "status": "collecting",
   "platform": "channels",
   "content_id": "15063218626332068385",
-  "started_at": 1795749078,
-  "completed_at": 1795749163,
-  "pages": 3,
-  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15063282229864632751",
@@ -45,19 +41,12 @@
       "replies": 0,
       "created_at": 1795707893,
       "platform": "channels",
-      "content_unavailable": true,
+      "content_unavailable": false,
       "media_only": true,
-      "media_status": "unavailable"
-    },
-    {
-      "comment_id": "15063667349040995230",
-      "author": "孙群",
-      "content": "别忘了合发伙伴们",
-      "likes": 1,
-      "replies": 0,
-      "created_at": 1795729082,
-      "platform": "channels",
-      "content_unavailable": false
+      "media_status": "analyzed",
+      "media_description": "手写文字“呸”，表达轻蔑。",
+      "visual_sentiment": "negative",
+      "analysis_content": "图片或表情描述：手写文字“呸”，表达轻蔑。"
     },
     {
       "comment_id": "15063311410904762937",
@@ -66,41 +55,6 @@
       "likes": 2,
       "replies": 0,
       "created_at": 1795686651,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063336980888361896",
-      "author": "蓝天。",
-      "content": "[评论内容无法获取]",
-      "likes": 2,
-      "replies": 0,
-      "created_at": 1795689699,
-      "platform": "channels",
-      "content_unavailable": false,
-      "media_only": true,
-      "media_status": "analyzed",
-      "media_description": "图片展示一只手握着一把绿色细叶蔬菜，另一只手拿刀准备切割。",
-      "visual_sentiment": "neutral",
-      "analysis_content": "图片或表情描述：图片展示一只手握着一把绿色细叶蔬菜，另一只手拿刀准备切割。"
-    },
-    {
-      "comment_id": "15063455475016146388",
-      "author": "博爱之义",
-      "content": "最后不要辜负我们，但是我们必须支持你",
-      "likes": 1,
-      "replies": 0,
-      "created_at": 1795703825,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063358162177301691",
-      "author": "爱真之音生态农业",
-      "content": "坚定不移，不忘初心，方能致远[强][强][强]\n​",
-      "likes": 2,
-      "replies": 0,
-      "created_at": 1795692224,
       "platform": "channels",
       "content_unavailable": false
     },
@@ -115,99 +69,56 @@
       "content_unavailable": false
     },
     {
+      "comment_id": "15063358162177301691",
+      "author": "爱真之音生态农业",
+      "content": "坚定不移，不忘初心，方能致远[强][强][强]\n​",
+      "likes": 2,
+      "replies": 0,
+      "created_at": 1795692224,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063455475016146388",
+      "author": "博爱之义",
+      "content": "最后不要辜负我们，但是我们必须支持你",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795703825,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063336980888361896",
+      "author": "蓝天。",
+      "content": "[评论内容无法获取]",
+      "likes": 2,
+      "replies": 0,
+      "created_at": 1795689699,
+      "platform": "channels",
+      "content_unavailable": true,
+      "media_only": true,
+      "media_status": "unavailable",
+      "media_description": "图片展示一只手握住韭菜并用刀切割，无文字；评论文字为空，无法判断情感。",
+      "media_reason": "画面语义不明确"
+    },
+    {
+      "comment_id": "15063667349040995230",
+      "author": "孙群",
+      "content": "别忘了合发伙伴们",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795729082,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
       "comment_id": "15063395350318881165",
       "author": "熊猫4399",
       "content": "合发还行吗",
       "likes": 1,
       "replies": 0,
       "created_at": 1795696657,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063718894890649805",
-      "author": "松林子度假村",
-      "content": "合发都激活了，百分之八十以上",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795735227,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063636472478047151",
-      "author": "黄河",
-      "content": "[强][强][强][强][强][强]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795725401,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063713122322680590",
-      "author": "钱法珍",
-      "content": "感恩感谢万董[合十][合十][合十]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795734539,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063411078431709194",
-      "author": "任东虎",
-      "content": "[拳头][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795698532,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063247220652186091",
-      "author": "龙怡山庄...",
-      "content": "[评论内容无法获取]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795678999,
-      "platform": "channels",
-      "content_unavailable": false,
-      "media_only": true,
-      "media_status": "analyzed",
-      "media_description": "四张相同的祈福表情包，红色背景配双手合十图案及“平安吉祥”文字",
-      "visual_sentiment": "positive",
-      "analysis_content": "图片或表情描述：四张相同的祈福表情包，红色背景配双手合十图案及“平安吉祥”文字"
-    },
-    {
-      "comment_id": "15063389326475398680",
-      "author": "杨记水产$138××××9799",
-      "content": "[评论内容无法获取]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795695939,
-      "platform": "channels",
-      "content_unavailable": true,
-      "media_only": true,
-      "media_status": "unavailable"
-    },
-    {
-      "comment_id": "15063382689625610741",
-      "author": "东方鲁",
-      "content": "12月18日。",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795695148,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063339211718466254",
-      "author": "江振兰",
-      "content": "[强][强][强]万总辛苦了[爱心][爱心][爱心]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795689965,
       "platform": "channels",
       "content_unavailable": false
     },
@@ -222,6 +133,36 @@
       "content_unavailable": false
     },
     {
+      "comment_id": "15063636472478047151",
+      "author": "黄河",
+      "content": "[强][强][强][强][强][强]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795725401,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063718894890649805",
+      "author": "松林子度假村",
+      "content": "合发都激活了，百分之八十以上",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795735227,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063713122322680590",
+      "author": "钱法珍",
+      "content": "感恩感谢万董[合十][合十][合十]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795734539,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
       "comment_id": "15063441444664449037",
       "author": "刘金花",
       "content": "范总辛苦。[强][强][强][强][强][强][强][强][强][强][强][强][强][强]",
@@ -232,56 +173,14 @@
       "content_unavailable": false
     },
     {
-      "comment_id": "15063247195583093186",
-      "author": "龙怡山庄...",
-      "content": "[评论内容无法获取]",
+      "comment_id": "15063382689625610741",
+      "author": "东方鲁",
+      "content": "12月18日。",
       "likes": 0,
       "replies": 0,
-      "created_at": 1795678996,
-      "platform": "channels",
-      "content_unavailable": false,
-      "media_only": true,
-      "media_status": "analyzed",
-      "media_description": "三幅复古风格插画，三人挥槌击鼓，表情欢快",
-      "visual_sentiment": "positive",
-      "analysis_content": "图片或表情描述：三幅复古风格插画，三人挥槌击鼓，表情欢快"
-    },
-    {
-      "comment_id": "15063738640595815046",
-      "author": "御风乎",
-      "content": "[评论内容无法获取]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795737581,
-      "platform": "channels",
-      "content_unavailable": true,
-      "media_only": true,
-      "media_status": "unavailable"
-    },
-    {
-      "comment_id": "15063407260391448008",
-      "author": "知足常乐颜姣美",
-      "content": "[强][强][强][强][爱心][爱心][爱心][爱心]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795698077,
+      "created_at": 1795695148,
       "platform": "channels",
       "content_unavailable": false
-    },
-    {
-      "comment_id": "15063359140990486574",
-      "author": "袁袁9435",
-      "content": "[评论内容无法获取]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795692341,
-      "platform": "channels",
-      "content_unavailable": false,
-      "media_only": true,
-      "media_status": "analyzed",
-      "media_description": "三人在红色大鼓前挥槌击鼓，表情喜悦，画面为宣传画风格",
-      "visual_sentiment": "positive",
-      "analysis_content": "图片或表情描述：三人在红色大鼓前挥槌击鼓，表情喜悦，画面为宣传画风格"
     },
     {
       "comment_id": "15063726879231449183",
@@ -294,83 +193,101 @@
       "content_unavailable": false
     },
     {
-      "comment_id": "15063343501612358385",
-      "author": "林美珍6050",
-      "content": "[强][强][强][强][强]",
+      "comment_id": "15063738640595815046",
+      "author": "御风乎",
+      "content": "[评论内容无法获取]",
       "likes": 0,
       "replies": 0,
-      "created_at": 1795690477,
+      "created_at": 1795737581,
       "platform": "channels",
-      "content_unavailable": false
+      "content_unavailable": true,
+      "media_only": true,
+      "media_status": "unavailable",
+      "media_description": "图片为手写文字“最佳表演奖”配奖杯简笔画，评论文字和父评论为空，含义不清。",
+      "media_reason": "画面语义不明确"
     },
     {
-      "comment_id": "15063359394818104782",
-      "author": "知心二姐",
-      "content": "[强][强][强]",
+      "comment_id": "15063389326475398680",
+      "author": "杨记水产$138××××9799",
+      "content": "[评论内容无法获取]",
       "likes": 0,
       "replies": 0,
-      "created_at": 1795692371,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063374513142503693",
-      "author": "章齐姜",
-      "content": "‘",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795694173,
+      "created_at": 1795695939,
       "platform": "channels",
       "content_unavailable": false,
-      "media_only": false,
-      "media_status": "unavailable"
+      "media_only": true,
+      "media_status": "analyzed",
+      "media_description": "钓鱼表情：手握鱼竿和鱼钩。",
+      "visual_sentiment": "negative",
+      "analysis_content": "图片或表情描述：钓鱼表情：手握鱼竿和鱼钩。"
     },
     {
-      "comment_id": "15063379112058100661",
-      "author": "蓉蓉0257",
-      "content": "[强][强][强]",
+      "comment_id": "15063247195583093186",
+      "author": "龙怡山庄...",
+      "content": "[评论内容无法获取]",
       "likes": 0,
       "replies": 0,
-      "created_at": 1795694722,
+      "created_at": 1795678996,
+      "platform": "channels",
+      "content_unavailable": true,
+      "media_only": true,
+      "media_status": "unavailable",
+      "media_description": "图片为三人打鼓的插画，无文字，评论文字为空，无法判断情感倾向。",
+      "media_reason": "画面语义不明确"
+    },
+    {
+      "comment_id": "15063339211718466254",
+      "author": "江振兰",
+      "content": "[强][强][强]万总辛苦了[爱心][爱心][爱心]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795689965,
       "platform": "channels",
       "content_unavailable": false
     },
     {
-      "comment_id": "15063478531089701614",
-      "author": "联智一哥",
-      "content": "上市否",
+      "comment_id": "15063247220652186091",
+      "author": "龙怡山庄...",
+      "content": "[评论内容无法获取]",
       "likes": 0,
       "replies": 0,
-      "created_at": 1795706573,
+      "created_at": 1795678999,
       "platform": "channels",
       "content_unavailable": false,
-      "parent_comment_id": "15063455475016146388"
+      "media_only": true,
+      "media_status": "analyzed",
+      "media_description": "四张相同的祈福表情包，画面为双手合十，底部印有文字“平安吉祥”",
+      "visual_sentiment": "positive",
+      "analysis_content": "图片或表情描述：四张相同的祈福表情包，画面为双手合十，底部印有文字“平安吉祥”"
+    },
+    {
+      "comment_id": "15063411078431709194",
+      "author": "任东虎",
+      "content": "[拳头][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795698532,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063359140990486574",
+      "author": "袁袁9435",
+      "content": "[评论内容无法获取]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795692341,
+      "platform": "channels",
+      "content_unavailable": true,
+      "media_only": true,
+      "media_status": "unavailable",
+      "media_description": "三张图片均为三人打鼓的插画，无文字，评论文字为空，无法判断情感倾向。",
+      "media_reason": "画面语义不明确"
     }
   ],
-  "primary_count": 30,
-  "reply_count": 1,
-  "reply_pages": 30,
-  "analysis": {
-    "no_comments": false,
-    "overall": "本批评论以正面鼓励和支持为主，夹杂少量普通询问与图片描述，另有一条质疑上市进展的负面评论。",
-    "negatives": [
-      {
-        "number": 31,
-        "reason": "质疑上市进展"
-      }
-    ],
-    "positive_count": 20,
-    "neutral_count": 7,
-    "analyzed_count": 28,
-    "classification_valid": true,
-    "themes": [],
-    "urgent": [],
-    "response_suggestions": [],
-    "unavailable_count": 3
-  },
-  "video": {
-    "description": "所有难熬的时刻，都是登顶前最后的考验，看得懂长远布局，才懂得这份坚守有多珍贵，脚步不停 一起静待佳音。#万全通 #新健康运动 #健康运动 ",
-    "create_time": 1795675590,
-    "account_name": ""
-  }
+  "pages": 1,
+  "cursor": 0,
+  "last_buffer": "CqsCCP///////////wEYr6Ok9JHs4YXRARjqsNjgi4XQhtEBGNWV3MTdruCF0QEYm7nIt6//kIbRARi5lMTgtb3ohdEBGJexjMraiO6F0QEYu7m86IeO84XRARjUu4Cynp6JhtEBGKi37K7Npe6F0QEYnrf00cq0uYbRARiNs5y4sMj7hdEBGMa7oLKslNGG0QEYr7ewvfqxsobRARjNkbDy4ZDFhtEBGI6WvLPh6MOG0QEYjbD8oPOFhobRARj1s5zX89f4hdEBGN+w4PCR+caG0QEYhpWosLjPyYbRARiYnOjvh5n6hdEBGMKzhIXB8NmF0QEYzrXE7cPm7oXRARjrs/S2nvHZhdEBGIqw7JyQkv+F0QEYrpD8lsaq84XRATABOP///////////wE=",
+  "source_version": 2,
+  "updated_at": 1795751352
 }
