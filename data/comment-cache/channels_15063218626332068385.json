@@ -1,7 +1,11 @@
 {
-  "status": "collecting",
+  "status": "complete",
   "platform": "channels",
   "content_id": "15063218626332068385",
+  "started_at": 1795749078,
+  "completed_at": 1795749163,
+  "pages": 3,
+  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15063282229864632751",
@@ -330,11 +334,43 @@
       "created_at": 1795694722,
       "platform": "channels",
       "content_unavailable": false
+    },
+    {
+      "comment_id": "15063478531089701614",
+      "author": "联智一哥",
+      "content": "上市否",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795706573,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15063455475016146388"
     }
   ],
-  "pages": 2,
-  "cursor": 0,
-  "last_buffer": "CpkDCP///////////wEYr6Ok9JHs4YXRARjqsNjgi4XQhtEBGNWV3MTdruCF0QEYm7nIt6//kIbRARiet/TRyrS5htEBGLmUxOC1veiF0QEYqLfsrs2l7oXRARjUu4Cynp6JhtEBGLu5vOiHjvOF0QEYl7GMytqI7oXRARiNs5y4sMj7hdEBGM2RsPLhkMWG0QEYr7ewvfqxsobRARiOlryz4ejDhtEBGIqw7JyQkv+F0QEY67P0tp7x2YXRARiYnOjvh5n6hdEBGPWznNfz1/iF0QEYzrXE7cPm7oXRARjGu6CyrJTRhtEBGI2w/KDzhYaG0QEYwrOEhcHw2YXRARiGlaiwuM/JhtEBGMi7sPWAo/6F0QEYrpD8lsaq84XRARjfsODwkfnGhtEBGPG1rPqw4++F0QEYzru04fex84XRARiNsqD09+n2hdEBGLW3jJrk7/eF0QEYxrugsqyU0YbRARjqsNjgi4XQhtEBGIaVqLC4z8mG0QEYzZGw8uGQxYbRARiOlryz4ejDhtEBMAE4////////////AQ==",
-  "source_version": 2,
-  "updated_at": 1795749102
+  "primary_count": 30,
+  "reply_count": 1,
+  "reply_pages": 30,
+  "analysis": {
+    "no_comments": false,
+    "overall": "本批评论以正面鼓励和支持为主，夹杂少量普通询问与图片描述，另有一条质疑上市进展的负面评论。",
+    "negatives": [
+      {
+        "number": 31,
+        "reason": "质疑上市进展"
+      }
+    ],
+    "positive_count": 20,
+    "neutral_count": 7,
+    "analyzed_count": 28,
+    "classification_valid": true,
+    "themes": [],
+    "urgent": [],
+    "response_suggestions": [],
+    "unavailable_count": 3
+  },
+  "video": {
+    "description": "所有难熬的时刻，都是登顶前最后的考验，看得懂长远布局，才懂得这份坚守有多珍贵，脚步不停 一起静待佳音。#万全通 #新健康运动 #健康运动 ",
+    "create_time": 1795675590,
+    "account_name": ""
+  }
 }
