@@ -1,7 +1,11 @@
 {
-  "status": "collecting",
+  "status": "complete",
   "platform": "channels",
   "content_id": "15057417447822133757",
+  "started_at": 1795751627,
+  "completed_at": 1795751831,
+  "pages": 5,
+  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15057607954083220620",
@@ -1006,11 +1010,380 @@
       "created_at": 1794994717,
       "platform": "channels",
       "content_unavailable": false
+    },
+    {
+      "comment_id": "15057673578216425752",
+      "author": "户黄柳宗",
+      "content": "[强]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795014569,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15057999372739743334",
+      "author": "秋实2760",
+      "content": "等待看结果吧…",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795053407,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15058618751876733684",
+      "author": "苗福明（顺程）246",
+      "content": "今20号期待佳音",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795127243,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15057607954083220620"
+    },
+    {
+      "comment_id": "15058194513116466798",
+      "author": "文武",
+      "content": "19 号了",
+      "likes": 2,
+      "replies": 0,
+      "created_at": 1795076669,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15057607954083220620"
+    },
+    {
+      "comment_id": "15057613736482836036",
+      "author": "鸡在笼子猪在案板",
+      "content": "[偷笑]别急，18号有时差，让时间飞一会",
+      "likes": 11,
+      "replies": 0,
+      "created_at": 1795007435,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15057607954083220620"
+    },
+    {
+      "comment_id": "15058730410820504114",
+      "author": "🎥赵帝🎥",
+      "content": "让子弹飞一会儿[捂脸][捂脸][捂脸]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795140553,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15057587143116594775"
+    },
+    {
+      "comment_id": "15057598696326569506",
+      "author": "A手撕面包",
+      "content": "别急，有时差的[捂脸]",
+      "likes": 4,
+      "replies": 0,
+      "created_at": 1795005642,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15057587143116594775"
+    },
+    {
+      "comment_id": "15057486495607365077",
+      "author": "梦非1235",
+      "content": "[Doge][Doge]哪一年",
+      "likes": 4,
+      "replies": 0,
+      "created_at": 1794992267,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15057484478924721055"
+    },
+    {
+      "comment_id": "15058007824749304023",
+      "author": "朵拉",
+      "content": "美国时间18号，相当于国内时间20号。",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795054414,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15057563971633552842",
+      "media_only": false,
+      "media_status": "analyzed",
+      "media_description": "小猪佩奇戴帽围巾滑冰，画面文字为“别慌 稳住 问题不大”，用于回应时间差并安抚对方",
+      "visual_sentiment": "positive",
+      "analysis_content": "美国时间18号，相当于国内时间20号。；图片或表情描述：小猪佩奇戴帽围巾滑冰，画面文字为“别慌 稳住 问题不大”，用于回应时间差并安抚对方"
+    },
+    {
+      "comment_id": "15058730875086441029",
+      "author": "🎥赵帝🎥",
+      "content": "你是个人才，中美时差12个点[捂脸][捂脸][捂脸]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795140609,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15057563971633552842"
+    },
+    {
+      "comment_id": "15058491850145335817",
+      "author": "风.继.续.吹",
+      "content": "没说是26年啊[呲牙]",
+      "likes": 2,
+      "replies": 0,
+      "created_at": 1795112115,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15057964720204548497"
+    },
+    {
+      "comment_id": "15063352485917231661",
+      "author": "（杨）鸿福",
+      "content": "3026年敲钟[捂脸][捂脸]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795691548,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15057964720204548497"
+    },
+    {
+      "comment_id": "15058931564549905690",
+      "author": "辉哥光芒万丈",
+      "content": "成功了么",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795164533,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15057891288693349676"
+    },
+    {
+      "comment_id": "15058731020754160173",
+      "author": "🎥赵帝🎥",
+      "content": "成功了吗",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795140626,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15057891288693349676"
+    },
+    {
+      "comment_id": "15057467088555936713",
+      "author": "山也还是那座山984",
+      "content": "美国敲了什么钟",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1794989954,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15057455387745131807"
     }
   ],
-  "pages": 4,
-  "cursor": 0,
-  "last_buffer": "CuQICP///////////wEYjJnosf3U1/vQARi1t+jyqfnhhtEBGMeUzOqnzrf80AEYtbvUp5vR4vvQARjEufiQkMC3+9ABGNe80L+m99L70AEY6rqoyZHGovzQARifl5DKsMu7+9ABGP20/OCQ8Nf70AEYq7C4zsXs0fvQARi0meyXpLC/+9ABGJO8vIvK0bv80AEYyrvA//XUzfvQARiDs7Tx1+fU+9ABGO+w0LjmiLv70AEYkZOg4Z7kqPzQARiDk4i9uOvW/NABGKy6kIiNi5j80AEYyZTo3tuBk/3QARjGtOjyg876/tABGMGj1MGTod370AEYj5rIk5qJzfvQARjlt+zioJfP/NABGOa6hP2xodH70AEY7ZqY+oOv2oXRARjHsZDuvqfU+9ABGMS6rIfA+46E0QEYkLXAzqWU0PvQARj1mOSH24up/NABGP+80P2vlMj80AEY5ZykkLvQ1f3QARivl5Dc0urB/dABGJq6vK7EwpP80AEYxJLgjMiqsvzQARj8lrDdnJyf/NABGICd9MfOyd/70AEY9pWUsdL40f3QARj/vNC3mard+9ABGJiavPyMss/70AEYprHsupfqvvvQARj5tqC//Kee/NABGIqb+KuNyu/+0AEY77HE3/Wg5fvQARiWnfiCwaOlgNEBGK+6xLH7jO780AEYvLb83t2q8vzQARiJs/Dm1fHMhNEBGLa1/JbWprmE0QEYuLzsgoqJ1oDRARi1kPSy/5jdhdEBGIuQ5PPxr4aE0QEY9rmMtd/Q14TRARiKtOj5/63Bg9EBGIS3pPL+zZmA0QEYxbzkl//MqITRARixuejvtOTu/tABGPiU+N7Jo+6B0QEYo5jcvZLjgYTRARjpnOjY34nhhNEBGLe61NqC9tyE0QEYj7vslqeXjYLRARjMleiI/NG+/dABGOW78Pny74H+0AEY7pSQ8K6Jmf7QARiCu/yz+6Gy/9ABGOqSvMyWr8z90AEYlpOU7qrR6P3QARi1sbza8Ly4/9ABGKGTtLncs7j70AEY77GIh96v1f7QARiTvYz+zOGDgtEBGKu2qLvz+uX90AEYj7boy7SKgP/QARjplMDSyPiI/9ABGOa7yJjJhZD/0AEYm5Ts/IfRhIDRARiklNTQ7v/NgNEBGLKU0Lil29r90AEY7ZjY8ci46fzQARitnLCPhO/X+9ABGNC0qNCCjf/+0AEY/JCEkJTt6PzQARjilOC/7ImC/9ABGLCcjMiHsY+D0QEYo7L4gMmk5/zQARjHu8Sk4OyC/9ABGLmy1OvinrD70AEYj7zM74CrpvzQARiwmIzrkd7BgNEBGIi6gLTbgJr80AEY/7bo1IqptoDRARiRl5TIhOvk+9ABGPGR9JPwnpr80AEY2bHcw4n9hfzQARifuty+2/y0+9ABGIm06PCH6NT70AEY97XE3peWw/vQARiTk5iO1bK8+9ABGMS6sOXUytH70AEY2bToypXcwPvQATABOP///////////wE=",
-  "source_version": 2,
-  "updated_at": 1795751645
+  "primary_count": 102,
+  "reply_count": 13,
+  "reply_pages": 102,
+  "analysis": {
+    "no_comments": false,
+    "overall": "本批评论主要围绕上市敲钟承诺展开，大量用户质疑敲钟真实性、催促进展、表达失望和嘲讽，少数表达赞美、鼓励或普通提问；整体情绪偏负面，负面评论46条，正面40条，中性28条。",
+    "negatives": [
+      {
+        "number": 1,
+        "reason": "质疑敲钟，带有催促和嘲讽"
+      },
+      {
+        "number": 3,
+        "reason": "质疑敲钟视频，催促"
+      },
+      {
+        "number": 4,
+        "reason": "质疑敲钟，带有嘲讽"
+      },
+      {
+        "number": 6,
+        "reason": "质疑敲钟视频缺失"
+      },
+      {
+        "number": 8,
+        "reason": "质疑敲钟"
+      },
+      {
+        "number": 10,
+        "reason": "嘲讽时装表演"
+      },
+      {
+        "number": 11,
+        "reason": "用户指定的负面评论"
+      },
+      {
+        "number": 12,
+        "reason": "催促并问钱到没"
+      },
+      {
+        "number": 14,
+        "reason": "催促，表达失望"
+      },
+      {
+        "number": 15,
+        "reason": "质疑钟在哪里"
+      },
+      {
+        "number": 16,
+        "reason": "质疑敲钟"
+      },
+      {
+        "number": 19,
+        "reason": "催促消息"
+      },
+      {
+        "number": 20,
+        "reason": "贬损参与者为老头老太太"
+      },
+      {
+        "number": 21,
+        "reason": "质疑上市可能性"
+      },
+      {
+        "number": 23,
+        "reason": "质疑上市"
+      },
+      {
+        "number": 25,
+        "reason": "质疑10年没看到钱"
+      },
+      {
+        "number": 26,
+        "reason": "质疑敲钟地点"
+      },
+      {
+        "number": 29,
+        "reason": "用户指定的负面评论"
+      },
+      {
+        "number": 30,
+        "reason": "嘲讽钟声在远方"
+      },
+      {
+        "number": 31,
+        "reason": "质疑上市公司老板太闲"
+      },
+      {
+        "number": 32,
+        "reason": "质疑敲钟"
+      },
+      {
+        "number": 41,
+        "reason": "暗示已过18号，质疑"
+      },
+      {
+        "number": 42,
+        "reason": "嘲讽打游击战"
+      },
+      {
+        "number": 43,
+        "reason": "嘲讽质疑日期"
+      },
+      {
+        "number": 45,
+        "reason": "质疑敲钟"
+      },
+      {
+        "number": 46,
+        "reason": "质疑产品品牌不明"
+      },
+      {
+        "number": 47,
+        "reason": "催促敲钟"
+      },
+      {
+        "number": 50,
+        "reason": "催问钱"
+      },
+      {
+        "number": 51,
+        "reason": "质疑敲钟视频"
+      },
+      {
+        "number": 53,
+        "reason": "质疑敲钟"
+      },
+      {
+        "number": 55,
+        "reason": "质疑纳斯达克上市"
+      },
+      {
+        "number": 56,
+        "reason": "质疑承诺"
+      },
+      {
+        "number": 57,
+        "reason": "嘲讽高调"
+      },
+      {
+        "number": 64,
+        "reason": "质疑敲钟视频"
+      },
+      {
+        "number": 66,
+        "reason": "质疑敲钟，催促"
+      },
+      {
+        "number": 68,
+        "reason": "暗示被催促下单"
+      },
+      {
+        "number": 72,
+        "reason": "指责没有诚信"
+      },
+      {
+        "number": 74,
+        "reason": "催促更新"
+      },
+      {
+        "number": 81,
+        "reason": "质疑敲钟，带有嘲讽"
+      },
+      {
+        "number": 82,
+        "reason": "质疑敲钟"
+      },
+      {
+        "number": 84,
+        "reason": "质疑敲钟"
+      },
+      {
+        "number": 108,
+        "reason": "嘲讽哪一年"
+      },
+      {
+        "number": 110,
+        "reason": "嘲讽对方不懂时差"
+      },
+      {
+        "number": 111,
+        "reason": "嘲讽上市年份"
+      },
+      {
+        "number": 112,
+        "reason": "嘲讽敲钟在3026年"
+      },
+      {
+        "number": 115,
+        "reason": "质疑敲钟"
+      }
+    ],
+    "positive_count": 40,
+    "neutral_count": 28,
+    "analyzed_count": 114,
+    "classification_valid": true,
+    "themes": [],
+    "urgent": [],
+    "response_suggestions": [],
+    "unavailable_count": 1
+  },
+  "video": {
+    "description": "喜讯不断 大势已成，相信团队 相信方向，所有默默沉淀，都是为了这一刻的高光！！！#万全通 #新健康运动 #健康运动 ",
+    "create_time": 1794984036,
+    "account_name": "万董健身日记"
+  }
 }
