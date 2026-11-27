@@ -41,7 +41,7 @@ TARGETS_PATH = os.environ.get("TARGETS_PATH", "data/targets.json") # 清单文�
 TIKHUB_TOKEN = os.environ.get("TIKHUB_API_TOKEN", "")  # TikHub Token：视频号分享链接换数字ID用
 COMMENTS_PATH = os.environ.get("COMMENTS_PATH", "data/comment-cache")
 COLLECTION_PAGE_LIMIT = max(1, int(os.environ.get("COLLECTION_PAGE_LIMIT", "200")))
-COLLECTION_REQUEST_TIMEOUT = max(3, int(os.environ.get("COLLECTION_REQUEST_TIMEOUT", "20")))
+COLLECTION_REQUEST_TIMEOUT = max(3, int(os.environ.get("COLLECTION_REQUEST_TIMEOUT", "30")))
 APPROVAL_DB_PATH = os.environ.get("APPROVAL_DB_PATH", "")
 APPROVAL_API_TOKEN = os.environ.get("APPROVAL_API_TOKEN", "")
 APPROVAL_CHAT_ID = os.environ.get("APPROVAL_CHAT_ID", "")
@@ -619,7 +619,7 @@ def collect_target(platform, content_id, chat_id="", on_complete=None, first_run
             comments, pages, capped = fetch_all_comments(platform, content_id, checkpoint)
             primary_count = len(comments)
             reply_pages = 0
-            if platform in ('channels', 'douyin'):
+            if platform == 'channels':
                 replies, reply_pages = fetch_all_replies(platform, content_id, comments)
                 comments.extend(replies)
             result = {
