@@ -24,8 +24,11 @@ from channels_session_probe import check_session
 from monitor_schedule import ScheduleStore
 from deepseek_batch import DeepSeekBatch
 from media_comment_analysis import media_urls, analyze_image
+from cloud_moderation import CloudModeration, LOGIN_PAGE
+import secrets
 
 app = Flask(__name__)
+cloud_moderation = None
 
 # ===== 配置（Railway 环境变量里填）=====
 WECOM_TOKEN = os.environ.get("WECOM_CALLBACK_TOKEN", "")
@@ -885,8 +888,52 @@ def run_approved_deletion(batch_id):
 
 def worker_authorized():
     token = request.headers.get('X-Worker-Token', '')
-    return bool(LOCAL_WORKER_ENABLED and LOCAL_WORKER_TOKEN and APPROVAL_DB_PATH and token and
+    return bool(LOCAL_WORKER_ENABLED and not (cloud_moderation and cloud_moderation.active)
+                and LOCAL_WORKER_TOKEN and APPROVAL_DB_PATH and token and
                 hmac.compare_digest(token.encode('utf-8'), LOCAL_WORKER_TOKEN.encode('utf-8')))
+
+
+def cloud_headers():
+    return {'Cache-Control': 'no-store', 'Referrer-Policy': 'no-referrer', 'X-Content-Type-Options': 'nosniff'}
+
+
+@app.get('/cloud-login')
+def cloud_login_page():
+    if not cloud_moderation:
+        return '', 404
+    nonce = secrets.token_urlsafe(24)
+    headers = {**cloud_headers(), 'Content-Security-Policy':
+        f"default-src 'none'; script-src 'nonce-{nonce}'; connect-src 'self'; img-src data:; base-uri 'none'; frame-ancestors 'none'"}
+    return LOGIN_PAGE.replace('NONCE', nonce), 200, headers
+
+
+@app.post('/cloud-login/qr')
+def cloud_login_qr():
+    token = request.headers.get('Authorization', '').removeprefix('Bearer ')
+    data = cloud_moderation.qr_response(token) if cloud_moderation and len(token) == 43 else None
+    return jsonify(data or {}), 200 if data else 403, cloud_headers()
+
+
+@app.route('/cloud-login/manage', methods=['GET', 'POST'])
+def cloud_login_manage():
+    token = request.headers.get('X-Approval-Token', '')
+    if not cloud_moderation or not APPROVAL_API_TOKEN or not hmac.compare_digest(token.encode(), APPROVAL_API_TOKEN.encode()):
+        return '', 403, cloud_headers()
+    cloud = cloud_moderation
+    if request.method == 'GET':
+        return jsonify(account=cloud.account, status=cloud.status, enabled=cloud.active), 200, cloud_headers()
+    action = (request.get_json(silent=True) or {}).get('action')
+    if action == 'login':
+        return jsonify(account=cloud.account, url=cloud.issue_login()), 200, cloud_headers()
+    if action == 'enable':
+        with cloud.lock:
+            if cloud.status != 'ready' or not cloud.store.enable_cloud():
+                return jsonify(error='verified login required or another batch is executing'), 409, cloud_headers()
+            cloud.active = True
+            cloud.store.resume_cloud()
+        cloud.wake.set()
+        return jsonify(enabled=True), 200, cloud_headers()
+    return '', 400, cloud_headers()
 
 @app.route('/local-worker/jobs', methods=['GET'])
 def local_worker_jobs():
@@ -1153,6 +1200,14 @@ def wecom_callback():
         if not content:
             return "ok"
 
+        if cloud_moderation and cloud_moderation.active and re.search(r'(?:^|\s)视频号云端登录$', content.strip()):
+            chat = msg.get('chatid') or msg.get('ChatId') or ''
+            if chat and chat == APPROVAL_CHAT_ID and str(msg.get('chattype') or msg.get('ChatType') or '').lower() == 'group':
+                cloud = cloud_moderation
+                link = cloud.issue_login()
+                reply_to_group(f'目标视频号「{cloud.account}」。请在 5 分钟内打开微信官方扫码入口：{link}')
+            return 'ok'
+
         confirmation = re.search(r'(?:^|\s)确认删除\s+([0-9a-f]{12})(?=\s|@|$)', content.strip())
         if confirmation:
             sender = msg.get("from") or {}
@@ -1166,7 +1221,10 @@ def wecom_callback():
                         confirmation.group(1), chat_id, user_id
                     )
                     if confirmed:
-                        if LOCAL_WORKER_ENABLED:
+                        if cloud_moderation and cloud_moderation.active:
+                            reply_to_group('已收到删除确认，等待云端核验视频号登录和评论。')
+                            cloud_moderation.wake.set()
+                        elif LOCAL_WORKER_ENABLED:
                             reply_to_group("已收到删除确认，等待本机执行程序检查视频号登录。")
                         elif APPROVAL_EXECUTION_ENABLED:
                             reply_to_group("已收到删除确认，正在核验视频号登录和评论。")
@@ -1254,4 +1312,10 @@ if __name__ == '__main__':
     print(f"Webhook: {'已配置' if WECOM_BOT_WEBHOOK else '未配置'}")
     print(f"Dify API: {'已配置' if DIFY_API_URL else '未配置'}")
     threading.Thread(target=monitor_loop, daemon=True).start()
+    if APPROVAL_DB_PATH and APPROVAL_API_TOKEN and APPROVAL_CHAT_ID and WECOM_BOT_WEBHOOK and os.environ.get('RAILWAY_PUBLIC_DOMAIN'):
+        cloud_moderation = CloudModeration(APPROVAL_DB_PATH,
+            os.environ.get('CHANNELS_CLOUD_ACCOUNT', '万董健身日记'),
+            os.environ.get('CHANNELS_CLOUD_ANCHOR', '15063953891783477757'),
+            'https://' + os.environ['RAILWAY_PUBLIC_DOMAIN'], load_video_metadata, send_approval_message)
+        threading.Thread(target=cloud_moderation.loop, daemon=True).start()
     app.run(host='0.0.0.0', port=port, debug=False)
