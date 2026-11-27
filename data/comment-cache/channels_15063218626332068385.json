@@ -1,7 +1,11 @@
 {
-  "status": "collecting",
+  "status": "complete",
   "platform": "channels",
   "content_id": "15063218626332068385",
+  "started_at": 1795789518,
+  "completed_at": 1795789655,
+  "pages": 3,
+  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15063282229864632751",
@@ -387,11 +391,62 @@
       "created_at": 1795692371,
       "platform": "channels",
       "content_unavailable": false
+    },
+    {
+      "comment_id": "15063868915427510593",
+      "author": "Locodocoo",
+      "content": "听懂掌声",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795753111,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15063282229864632751"
+    },
+    {
+      "comment_id": "15063901035333224829",
+      "author": "李霞",
+      "content": "激活了需要交1280元吗，",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795756940,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15063718894890649805"
     }
   ],
-  "pages": 2,
-  "cursor": 0,
-  "last_buffer": "CqQDCP///////////wEYr6Ok9JHs4YXRARjkubSa18z3htEBGPeY1IuqjZuH0QEYhpWosLjPyYbRARjVldzE3a7ghdEBGMKzhIXB8NmF0QEYxrugsqyU0YbRARiXsYzK2ojuhdEBGLu5vOiHjvOF0QEYnrf00cq0uYbRARj1s5zX89f4hdEBGI2znLiwyPuF0QEY1LuAsp6eiYbRARi5lMTgtb3ohdEBGOqw2OCLhdCG0QEY3ZnQ+5H1+YbRARjNkbDy4ZDFhtEBGI6WvLPh6MOG0QEYlbz4lPXi74bRARivt7C9+rGyhtEBGOuz9Lae8dmF0QEYzrXE7cPm7oXRARjfseDj/f/phtEBGI2w/KDzhYaG0QEYkLzgyo247YbRARidt7D/3KbwhtEBGJ+7pKj2ouyG0QEYirDsnJCS/4XRARjuutCR6/v3htEBGK6Q/JbGqvOF0QEY37Dg8JH5xobRARjIu7D1gKP+hdEBGPG1rPqw4++F0QEYtbeMmuTv94XRARiNsqD09+n2hdEBGM67tOH3sfOF0QEwATj///////////8B",
-  "source_version": 2,
-  "updated_at": 1795789550
+  "primary_count": 36,
+  "reply_count": 2,
+  "reply_pages": 36,
+  "analysis": {
+    "no_comments": false,
+    "overall": "本批评论整体以正面支持为主，多数表达对万董的赞美、鼓励和感恩；少数负面评论质疑敲钟时间或公司现状；中性评论多为日期陈述或普通提问。共计正面24条、中性7条、负面3条。",
+    "negatives": [
+      {
+        "number": 3,
+        "reason": "质疑敲钟时间，带有催促和嘲讽意味"
+      },
+      {
+        "number": 12,
+        "reason": "质疑公司现状，表达不信任"
+      },
+      {
+        "number": 13,
+        "reason": "表达不要辜负的担忧，隐含质疑"
+      }
+    ],
+    "positive_count": 24,
+    "neutral_count": 7,
+    "analyzed_count": 34,
+    "classification_valid": true,
+    "themes": [],
+    "urgent": [],
+    "response_suggestions": [],
+    "unavailable_count": 4
+  },
+  "video": {
+    "description": "所有难熬的时刻，都是登顶前最后的考验，看得懂长远布局，才懂得这份坚守有多珍贵，脚步不停 一起静待佳音。#万全通 #新健康运动 #健康运动 ",
+    "create_time": 1795675590,
+    "account_name": ""
+  }
 }
