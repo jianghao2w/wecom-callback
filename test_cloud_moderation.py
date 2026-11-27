@@ -1,9 +1,10 @@
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
-from cloud_moderation import CloudModeration, LoginRequired
+from cloud_moderation import CloudModeration, LoginRequired, MatchError
+from cloud_accounts import CloudAccounts
 
 
 class CloudRecoveryTest(unittest.TestCase):
@@ -61,6 +62,64 @@ class CloudRecoveryTest(unittest.TestCase):
         self.cloud.publish_status('ready')
         self.assertTrue(self.cloud.enable_if_verified())
         self.assertFalse(self.store.cloud_enrollment_armed())
+
+
+class CloudAccountRoutingTest(unittest.TestCase):
+    def setUp(self):
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        self.metadata = {
+            'one': {'id':'one','account_name':'账号甲','description':'甲作品','create_time':123},
+            'two': {'id':'two','account_name':'账号乙','description':'乙作品','create_time':123},
+            'two-more': {'id':'two-more','account_name':'账号乙','description':'乙新作品','create_time':124},
+        }
+        with patch('cloud_accounts.threading.Thread'):
+            self.directory = CloudAccounts(str(Path(temp.name) / 'test.db'), '账号甲','one',
+                'https://example.test', self.metadata.get, Mock())
+            self.other = self.directory.choose(video_id='two')
+        self.first = self.directory.default
+        self.store = self.directory.store
+        for worker in (self.first, self.other):
+            worker.publish_status('ready')
+            self.assertTrue(worker.enable_if_verified())
+
+    def create(self, video):
+        comments = [{'platform':'channels','object_id':video,'comment_id':'comment','content':'text'}]
+        key = self.store.create('group',comments)
+        self.store.confirm(key,'group','operator')
+        return key, comments
+
+    def test_profiles_and_claims_are_independent(self):
+        self.assertNotEqual(self.first.profile, self.other.profile)
+        a, comments_a = self.create('one')
+        b, comments_b = self.create('two-more')
+        self.assertIs(self.directory.resolve_route(a, comments_a), self.first)
+        self.assertIs(self.directory.resolve_route(b, comments_b), self.other)
+        self.assertIsNone(self.store.claim_cloud(b, self.first.account_key, routed=True))
+        self.assertFalse(self.store.claim(b))
+        self.assertTrue(self.store.claim_cloud(b, self.other.account_key, routed=True))
+        self.store.wait_cloud(b)
+        self.store.resume_cloud(self.first.account_key)
+        self.assertEqual(self.store.get(b)['state'], 'waiting_login')
+        self.store.resume_cloud(self.other.account_key)
+        self.assertEqual(self.store.get(b)['state'], 'confirmed')
+
+    def test_duplicate_label_does_not_route_unbound_video(self):
+        self.store.add_cloud_account('账号乙', 'third-anchor')
+        b, comments_b = self.create('two-more')
+        self.assertIsNone(self.directory.resolve_route(b, comments_b))
+        self.assertEqual(self.store.get(b)['state'], 'confirmed')
+
+    def test_wrong_account_holds_without_attempting_delete(self):
+        batch, comments = self.create('two-more')
+        self.directory.resolve_route(batch, comments)
+        browser = Mock()
+        browser.export_id.side_effect = MatchError
+        self.other.process(browser, batch)
+        browser.delete.assert_not_called()
+        self.assertEqual(self.store.get(batch)['state'], 'waiting_owner')
+        self.store.requeue_cloud_owner('two-more', self.first.account_key)
+        self.assertEqual(self.store.confirmed_batches(self.first.account_key), [batch])
 
 
 if __name__ == '__main__':

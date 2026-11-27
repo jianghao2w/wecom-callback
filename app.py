@@ -24,7 +24,8 @@ from channels_session_probe import check_session
 from monitor_schedule import ScheduleStore
 from deepseek_batch import DeepSeekBatch
 from media_comment_analysis import media_urls, analyze_image
-from cloud_moderation import CloudModeration, LOGIN_PAGE
+from cloud_moderation import LOGIN_PAGE
+from cloud_accounts import CloudAccounts
 import secrets
 
 app = Flask(__name__)
@@ -888,7 +889,7 @@ def run_approved_deletion(batch_id):
 
 def worker_authorized():
     token = request.headers.get('X-Worker-Token', '')
-    return bool(LOCAL_WORKER_ENABLED and not (cloud_moderation and cloud_moderation.active)
+    return bool(LOCAL_WORKER_ENABLED and not (cloud_moderation and cloud_moderation.default.active)
                 and LOCAL_WORKER_TOKEN and APPROVAL_DB_PATH and token and
                 hmac.compare_digest(token.encode('utf-8'), LOCAL_WORKER_TOKEN.encode('utf-8')))
 
@@ -919,10 +920,15 @@ def cloud_login_manage():
     token = request.headers.get('X-Approval-Token', '')
     if not cloud_moderation or not APPROVAL_API_TOKEN or not hmac.compare_digest(token.encode(), APPROVAL_API_TOKEN.encode()):
         return '', 403, cloud_headers()
-    cloud = cloud_moderation
+    body = request.get_json(silent=True) or {}
+    try:
+        cloud = cloud_moderation.choose(name=body.get('account'))
+    except (AttributeError, ValueError):
+        return '', 400, cloud_headers()
     if request.method == 'GET':
-        return jsonify(account=cloud.account, status=cloud.status, enabled=cloud.active, armed=cloud.armed), 200, cloud_headers()
-    action = (request.get_json(silent=True) or {}).get('action')
+        counts = len(cloud_moderation.store.cloud_accounts())
+        return jsonify(account=cloud.account, status=cloud.status, enabled=cloud.active, armed=cloud.armed, accounts=counts), 200, cloud_headers()
+    action = body.get('action')
     if action == 'login':
         return jsonify(account=cloud.account, url=cloud.issue_login()), 200, cloud_headers()
     if action == 'arm':
@@ -1200,14 +1206,13 @@ def wecom_callback():
         if not content:
             return "ok"
 
-        if cloud_moderation and (cloud_moderation.active or cloud_moderation.armed) and re.search(r'(?:^|\s)视频号云端登录$', content.strip()):
+        cloud_login = re.search(r'(?:^|\s)视频号云端登录(?:\s+(.+))?$', content.strip())
+        if cloud_moderation and cloud_login:
             chat = msg.get('chatid') or msg.get('ChatId') or ''
             sender = msg.get('from') or {}
             user_id = (sender.get('userid') if isinstance(sender, dict) else None) or msg.get('FromUserName')
             if chat and user_id and chat == APPROVAL_CHAT_ID and str(msg.get('chattype') or msg.get('ChatType') or '').lower() == 'group':
-                cloud = cloud_moderation
-                link = cloud.issue_login()
-                reply_to_group(f'目标视频号「{cloud.account}」。请在 5 分钟内打开微信官方扫码入口：{link}')
+                threading.Thread(target=handle_cloud_login, args=(cloud_login.group(1) or '',), daemon=True).start()
             return 'ok'
 
         confirmation = re.search(r'(?:^|\s)确认删除\s+([0-9a-f]{12})(?=\s|@|$)', content.strip())
@@ -1223,9 +1228,8 @@ def wecom_callback():
                         confirmation.group(1), chat_id, user_id
                     )
                     if confirmed:
-                        if cloud_moderation and cloud_moderation.active:
-                            reply_to_group('已收到删除确认，等待云端核验视频号登录和评论。')
-                            cloud_moderation.wake.set()
+                        if cloud_moderation and cloud_moderation.default.active:
+                            threading.Thread(target=route_cloud_confirmation, args=(confirmation.group(1),), daemon=True).start()
                         elif LOCAL_WORKER_ENABLED:
                             reply_to_group("已收到删除确认，等待本机执行程序检查视频号登录。")
                         elif APPROVAL_EXECUTION_ENABLED:
@@ -1250,6 +1254,48 @@ def wecom_callback():
     except Exception as e:
         print(f"❌ 回调处理错误: {e}")
         return "ok"
+
+def handle_cloud_login(selection):
+    try:
+        selection = selection.strip()
+        platform, content_id = extract_platform_and_id(selection)
+        video_id = None
+        if platform == 'channels':
+            video_id = channels_resolve_id(content_id, TIKHUB_TOKEN)
+            if not any(row.get('platform') == 'channels' and str(row.get('id')) == video_id for row in load_targets()):
+                raise ValueError('请先发送该视频号的作品分享链接完成登记。')
+        worker = cloud_moderation.choose(name=selection if not video_id else None, video_id=video_id)
+        if not worker.active:
+            worker.arm_enrollment()
+        link = worker.issue_login()
+        cloud_moderation.wake.set()
+        hint = ''
+        if video_id:
+            title = str((load_video_metadata(video_id) or {}).get('description') or '').strip().replace('\n',' ')
+            if title:
+                hint = f'（作品：{title[:28]}）'
+        reply_to_group(f'目标视频号「{worker.account}」{hint}。请在 5 分钟内打开微信官方扫码入口：{link}')
+    except ValueError as error:
+        reply_to_group('视频号云端登录：' + str(error))
+    except Exception as error:
+        print(f'云端登录入口生成失败: {type(error).__name__}', flush=True)
+        reply_to_group('暂时无法生成视频号扫码入口，请稍后重试。')
+
+
+def route_cloud_confirmation(batch_id):
+    try:
+        batch = cloud_moderation.store.get(batch_id)
+        worker = cloud_moderation.resolve_route(batch_id, batch['payload'])
+        if worker and worker.active:
+            reply_to_group(f'已收到删除确认，等待「{worker.account}」的云端执行器核验作品和评论。')
+        elif worker:
+            reply_to_group(f'已收到删除确认，等待「{worker.account}」扫码登录。请 @机器人 发送「视频号云端登录 账号名」或附上已登记作品链接。')
+        else:
+            reply_to_group('已收到删除确认，尚未匹配云端账号。请 @机器人 发送「视频号云端登录 作品分享链接」。')
+    except Exception as error:
+        print(f'确认批次分流暂不可用: {type(error).__name__}', flush=True)
+        cloud_moderation.wake.set()
+
 
 def handle_registration(content, chat_id):
     try:
@@ -1315,7 +1361,7 @@ if __name__ == '__main__':
     print(f"Dify API: {'已配置' if DIFY_API_URL else '未配置'}")
     threading.Thread(target=monitor_loop, daemon=True).start()
     if APPROVAL_DB_PATH and APPROVAL_API_TOKEN and APPROVAL_CHAT_ID and WECOM_BOT_WEBHOOK and os.environ.get('RAILWAY_PUBLIC_DOMAIN'):
-        cloud_moderation = CloudModeration(APPROVAL_DB_PATH,
+        cloud_moderation = CloudAccounts(APPROVAL_DB_PATH,
             os.environ.get('CHANNELS_CLOUD_ACCOUNT', '万董健身日记'),
             os.environ.get('CHANNELS_CLOUD_ANCHOR', '15063953891783477757'),
             'https://' + os.environ['RAILWAY_PUBLIC_DOMAIN'], load_video_metadata, send_approval_message)

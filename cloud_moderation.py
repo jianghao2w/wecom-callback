@@ -116,6 +116,9 @@ class ChannelsBrowser:
                    and str(post.get('createTime')) == str(video['create_time']) and post.get('exportId')]
         if len(matches) != 1:
             raise MatchError
+        official_id = matches[0].get('objectId')
+        if isinstance(official_id, str) and official_id.isdigit() and official_id != str(video['id']):
+            raise MatchError
         return matches[0]['exportId']
 
     def verify_comments(self, export_id, comments):
@@ -177,9 +180,12 @@ update();
 
 
 class CloudModeration:
-    def __init__(self, path, account, anchor_id, origin, metadata, notice):
+    def __init__(self, path, account, anchor_id, origin, metadata, notice, *, account_key='default', capacity=None):
         self.store = ApprovalStore(path)
-        self.profile = Path(path).parent / 'channels-browser'
+        self.account_key = account_key
+        self.capacity = capacity
+        folder = 'channels-browser' if account_key == 'default' else 'channels-browser-' + account_key
+        self.profile = Path(path).parent / folder
         self.account, self.anchor_id = account, anchor_id
         self.origin, self.metadata, self.notice = origin, metadata, notice
         self.lock = threading.Lock()
@@ -188,8 +194,8 @@ class CloudModeration:
         self.png = None
         self.wake = threading.Event()
         self.reset = False
-        self.active = self.store.cloud_enabled()
-        self.armed = self.store.cloud_enrollment_armed()
+        self.active = self.store.cloud_enabled(account_key)
+        self.armed = self.store.cloud_enrollment_armed(account_key)
 
     def issue_login(self):
         token = secrets.token_urlsafe(32)
@@ -203,7 +209,7 @@ class CloudModeration:
 
     def arm_enrollment(self):
         with self.lock:
-            self.store.arm_cloud_enrollment()
+            self.store.arm_cloud_enrollment(self.account_key)
             self.armed = True
         self.wake.set()
 
@@ -211,10 +217,10 @@ class CloudModeration:
         with self.lock:
             if self.active:
                 return True
-            if self.status != 'ready' or self.reset or not self.store.enable_cloud():
+            if self.status != 'ready' or self.reset or not self.store.enable_cloud(self.account_key):
                 return False
             self.active, self.armed = True, False
-        self.store.resume_cloud()
+            self.store.resume_cloud(self.account_key)
         self.wake.set()
         return True
 
@@ -238,7 +244,7 @@ class CloudModeration:
             self.status, self.png = status, png
 
     def process(self, browser, batch_id):
-        batch = self.store.claim_cloud(batch_id)
+        batch = self.store.claim_cloud(batch_id, self.account_key, routed=self.capacity is not None)
         if not batch:
             return
         comments = batch['payload']
@@ -247,13 +253,20 @@ class CloudModeration:
         try:
             video_id = comments[0]['object_id']
             video = self.metadata(video_id)
-            if not video or str(video.get('id')) != video_id or video.get('account_name') not in ('', None, self.account):
+            if not video or str(video.get('id')) != video_id:
                 raise MatchError
             if (len({item['comment_id'] for item in comments}) != len(comments)
                 or any(item['platform'] != 'channels' or item['object_id'] != video_id for item in comments)):
                 raise MatchError
             if remaining:
-                export_id = browser.export_id(video)
+                try:
+                    export_id = browser.export_id(video)
+                except MatchError:
+                    self.store.hold_cloud_owner(batch_id)
+                    self.notice(f'视频号「{self.account}」无法核验批次 {batch_id} 的作品归属，任务已暂停。请用该作品链接重新绑定正确账号。')
+                    return
+                if not self.store.bind_cloud_video(video_id, self.account_key):
+                    raise MatchError
                 browser.verify_comments(export_id, remaining)
         except LoginRequired:
             self.store.wait_cloud(batch_id)
@@ -284,95 +297,139 @@ class CloudModeration:
         from playwright.sync_api import sync_playwright
 
         self.profile.mkdir(mode=0o700, parents=True, exist_ok=True)
-        with (self.profile.parent / 'channels-browser.lock').open('a') as guard:
+        with self.profile.with_suffix('.lock').open('a') as guard:
             fcntl.flock(guard, fcntl.LOCK_EX)
-            if self.store.recover_cloud():
+            if self.store.recover_cloud(self.account_key):
                 try:
                     self.notice('云端执行曾中断，结果不明的批次已停止，请核对视频号后台。')
                 except Exception as error:
                     print(f'云端通知发送失败: {type(error).__name__}', flush=True)
-            with sync_playwright() as pw:
-                context = None
-                browser = None
-                verified = None
-                opened_at = 0
-                wrong_account = False
-                needs_notice = self.active
-                while True:
-                    with self.lock:
-                        challenge, status = self.challenge, self.status
-                        reset, self.reset = self.reset, False
-                    pending_login = challenge and status != 'ready' and time.monotonic() < challenge[1]
-                    if not self.active and not pending_login and not (self.armed and status == 'ready'):
-                        self.wake.wait(5)
-                        self.wake.clear()
+            pw = None
+            context = None
+            browser = None
+            verified = None
+            opened_at = 0
+            wrong_account = False
+            needs_notice = self.active
+            blocked_login = False
+            slot = False
+            idle_since = time.monotonic()
+            while True:
+                with self.lock:
+                    challenge, status = self.challenge, self.status
+                    reset, self.reset = self.reset, False
+                pending_login = challenge and status != 'ready' and time.monotonic() < challenge[1]
+                batches = self.store.confirmed_batches(self.account_key if self.capacity is not None else None) if self.active else []
+                waiting = self.active and self.store.cloud_waiting(self.account_key)
+                work = pending_login or (self.armed and status == 'ready') or (not blocked_login and (batches or waiting))
+                if work:
+                    idle_since = time.monotonic()
+                if not work:
+                    if context and time.monotonic() - idle_since > 30:
+                        try:
+                            context.close()
+                        except Exception:
+                            pass
+                        context = browser = None
+                        try:
+                            pw.stop()
+                        except Exception:
+                            pass
+                        pw = None
+                        if slot:
+                            self.capacity.release()
+                            slot = False
+                    self.wake.wait(5)
+                    self.wake.clear()
+                    continue
+                try:
+                    if browser is None:
+                        if self.capacity and not slot:
+                            if not self.capacity.acquire(timeout=2):
+                                if reset:
+                                    with self.lock:
+                                        self.reset = True
+                                continue
+                            slot = True
+                        pw = sync_playwright().start()
+                        context = pw.chromium.launch_persistent_context(str(self.profile), headless=True)
+                        browser = ChannelsBrowser(context)
+                        reset = True
+                    if reset:
+                        if wrong_account:
+                            context.clear_cookies()
+                            wrong_account = False
+                        verified = None
+                        browser.open()
+                        opened_at = time.monotonic()
+                    browser.page.wait_for_timeout(900)
+                    if browser.auth is not None and verified != browser.generation:
+                        anchor = self.metadata(self.anchor_id)
+                        if not anchor or str(anchor.get('id')) != self.anchor_id:
+                            raise MatchError
+                        try:
+                            browser.export_id(anchor)
+                            if not self.store.bind_cloud_video(self.anchor_id, self.account_key):
+                                raise MatchError
+                        except MatchError:
+                            self.publish_status('wrong_account')
+                            wrong_account = True
+                            browser.auth = None
+                            continue
+                        verified = browser.generation
+                        blocked_login = False
+                        self.publish_status('ready')
+                        self.store.requeue_cloud_owner(self.anchor_id, self.account_key)
+                        needs_notice = True
+                        if self.active:
+                            self.store.resume_cloud(self.account_key)
+                    if browser.auth is None and pending_login:
+                        qr = browser.qr()
+                        if qr:
+                            self.publish_status('scan', qr)
+                    if self.armed and not self.active and browser.auth is not None and verified == browser.generation:
+                        if self.enable_if_verified():
+                            self.notice(f'视频号「{self.account}」已验证，云端删除执行器已启用。')
+                    if not self.active:
                         continue
-                    try:
-                        if browser is None:
-                            context = pw.chromium.launch_persistent_context(str(self.profile), headless=True)
-                            browser = ChannelsBrowser(context)
-                            reset = True
-                        if reset:
-                            if wrong_account:
-                                context.clear_cookies()
-                                wrong_account = False
-                            verified = None
+                    batches = self.store.confirmed_batches(self.account_key if self.capacity is not None else None)
+                    if browser.auth is not None and verified == browser.generation and batches:
+                        if time.monotonic() - opened_at > 60:
                             browser.open()
                             opened_at = time.monotonic()
-                        browser.page.wait_for_timeout(900)
-                        if browser.auth is not None and verified != browser.generation:
-                            anchor = self.metadata(self.anchor_id)
-                            if not anchor or anchor.get('account_name') != self.account:
-                                raise MatchError
-                            try:
-                                browser.export_id(anchor)
-                            except MatchError:
-                                self.publish_status('wrong_account')
-                                wrong_account = True
-                                browser.auth = None
-                                continue
-                            verified = browser.generation
-                            self.publish_status('ready')
-                            needs_notice = True
-                            if self.active:
-                                self.store.resume_cloud()
-                        if browser.auth is None and pending_login:
-                            qr = browser.qr()
-                            if qr:
-                                self.publish_status('scan', qr)
-                        if self.armed and not self.active and browser.auth is not None and verified == browser.generation:
-                            if self.enable_if_verified():
-                                self.notice(f'视频号「{self.account}」已验证，云端删除执行器已启用。')
-                        if not self.active:
                             continue
-                        batches = self.store.confirmed_batches()
-                        if browser.auth is not None and verified == browser.generation and batches:
-                            if time.monotonic() - opened_at > 60:
-                                browser.open()
-                                opened_at = time.monotonic()
-                                continue
-                            self.process(browser, batches[0])
-                        elif (browser.auth is None and needs_notice and not pending_login and
-                              time.monotonic() - opened_at > 8 and (batches or self.store.cloud_waiting())):
-                            needs_notice = False
-                            link = self.issue_login()
-                            self.notice(f'目标视频号「{self.account}」需要重新验证，待删除任务已暂停。请在 5 分钟内打开官方二维码：{link}')
-                    except LoginRequired:
-                        browser.auth = None
-                        verified = None
-                        opened_at = 0
-                    except Exception as error:
-                        print(f'云端浏览器暂不可用: {type(error).__name__}', flush=True)
-                        self.publish_status('unavailable')
-                        if context:
-                            try:
-                                context.close()
-                            except Exception:
-                                pass
-                        context = browser = None
-                        if self.store.recover_cloud():
-                            try:
-                                self.notice('云端执行曾中断，结果不明的批次已停止，请核对视频号后台。')
-                            except Exception:
-                                pass
-                        self.wake.wait(10)
+                        self.process(browser, batches[0])
+                    elif (browser.auth is None and needs_notice and not pending_login and
+                          time.monotonic() - opened_at > 8 and (batches or self.store.cloud_waiting(self.account_key))):
+                        needs_notice = False
+                        blocked_login = True
+                        link = self.issue_login()
+                        self.notice(f'目标视频号「{self.account}」需要重新验证，待删除任务已暂停。请在 5 分钟内打开官方二维码：{link}')
+                except LoginRequired:
+                    browser.auth = None
+                    verified = None
+                    opened_at = 0
+                except Exception as error:
+                    print(f'云端浏览器暂不可用: {type(error).__name__}', flush=True)
+                    self.publish_status('unavailable')
+                    if context:
+                        try:
+                            context.close()
+                        except Exception:
+                            pass
+                    context = browser = None
+                    if pw:
+                        try:
+                            pw.stop()
+                        except Exception:
+                            pass
+                        pw = None
+                    if slot:
+                        self.capacity.release()
+                        slot = False
+                    if self.store.recover_cloud(self.account_key):
+                        try:
+                            self.notice('云端执行曾中断，结果不明的批次已停止，请核对视频号后台。')
+                        except Exception:
+                            pass
+                    self.wake.wait(10)
