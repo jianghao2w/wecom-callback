@@ -43,12 +43,6 @@ class ScheduleStore:
         finally:
             db.close()
 
-    def _remove_retired_targets(self):
-        with self._connect() as db:
-            removed = db.execute("DELETE FROM monitor_schedule WHERE platform = ? AND content_id IN (?, ?, ?)", ("channels", "15061803593908554244", "15056547298779859484", "15057417447822133757")).rowcount
-            remaining = db.execute("SELECT platform,content_id FROM monitor_schedule").fetchall()
-            print("SCHEDULE_CLEANUP", removed, "REMAINING", remaining, flush=True)
-
     def register(self, platform, content_id, published_at, chat_id):
         next_monitor_time(published_at)
         if not chat_id:
@@ -60,7 +54,6 @@ class ScheduleStore:
                        (platform,content_id,int(published_at),chat_id))
 
     def claim_due(self, now=None):
-        self._remove_retired_targets()
         now=int(time.time() if now is None else now)
         with self._connect() as db:
             db.row_factory=sqlite3.Row
