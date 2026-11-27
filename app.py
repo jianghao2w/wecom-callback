@@ -921,17 +921,17 @@ def cloud_login_manage():
         return '', 403, cloud_headers()
     cloud = cloud_moderation
     if request.method == 'GET':
-        return jsonify(account=cloud.account, status=cloud.status, enabled=cloud.active), 200, cloud_headers()
+        return jsonify(account=cloud.account, status=cloud.status, enabled=cloud.active, armed=cloud.armed), 200, cloud_headers()
     action = (request.get_json(silent=True) or {}).get('action')
     if action == 'login':
         return jsonify(account=cloud.account, url=cloud.issue_login()), 200, cloud_headers()
+    if action == 'arm':
+        if not cloud.active:
+            cloud.arm_enrollment()
+        return jsonify(armed=cloud.armed, enabled=cloud.active), 200, cloud_headers()
     if action == 'enable':
-        with cloud.lock:
-            if cloud.status != 'ready' or not cloud.store.enable_cloud():
-                return jsonify(error='verified login required or another batch is executing'), 409, cloud_headers()
-            cloud.active = True
-            cloud.store.resume_cloud()
-        cloud.wake.set()
+        if not cloud.enable_if_verified():
+            return jsonify(error='verified login required or another batch is executing'), 409, cloud_headers()
         return jsonify(enabled=True), 200, cloud_headers()
     return '', 400, cloud_headers()
 
@@ -1200,9 +1200,11 @@ def wecom_callback():
         if not content:
             return "ok"
 
-        if cloud_moderation and cloud_moderation.active and re.search(r'(?:^|\s)视频号云端登录$', content.strip()):
+        if cloud_moderation and (cloud_moderation.active or cloud_moderation.armed) and re.search(r'(?:^|\s)视频号云端登录$', content.strip()):
             chat = msg.get('chatid') or msg.get('ChatId') or ''
-            if chat and chat == APPROVAL_CHAT_ID and str(msg.get('chattype') or msg.get('ChatType') or '').lower() == 'group':
+            sender = msg.get('from') or {}
+            user_id = (sender.get('userid') if isinstance(sender, dict) else None) or msg.get('FromUserName')
+            if chat and user_id and chat == APPROVAL_CHAT_ID and str(msg.get('chattype') or msg.get('ChatType') or '').lower() == 'group':
                 cloud = cloud_moderation
                 link = cloud.issue_login()
                 reply_to_group(f'目标视频号「{cloud.account}」。请在 5 分钟内打开微信官方扫码入口：{link}')

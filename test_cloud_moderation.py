@@ -54,6 +54,14 @@ class CloudRecoveryTest(unittest.TestCase):
         self.cloud.issue_login()
         self.assertIsNone(self.cloud.qr_response(token))
 
+    def test_armed_enrollment_still_requires_verified_login(self):
+        self.cloud.arm_enrollment()
+        self.assertTrue(self.store.cloud_enrollment_armed())
+        self.assertFalse(self.cloud.enable_if_verified())
+        self.cloud.publish_status('ready')
+        self.assertTrue(self.cloud.enable_if_verified())
+        self.assertFalse(self.store.cloud_enrollment_armed())
+
 
 if __name__ == '__main__':
     unittest.main()

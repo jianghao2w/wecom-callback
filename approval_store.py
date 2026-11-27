@@ -157,12 +157,21 @@ class ApprovalStore:
         with self._connect() as db:
             return db.execute("SELECT 1 FROM cloud_settings WHERE name='enabled'").fetchone() is not None
 
+    def cloud_enrollment_armed(self):
+        with self._connect() as db:
+            return db.execute("SELECT 1 FROM cloud_settings WHERE name='enroll'").fetchone() is not None
+
+    def arm_cloud_enrollment(self):
+        with self._connect() as db:
+            db.execute("INSERT OR IGNORE INTO cloud_settings VALUES ('enroll')")
+
     def enable_cloud(self):
         with self._connect() as db:
             db.execute('BEGIN IMMEDIATE')
             if db.execute("SELECT 1 FROM deletion_batches WHERE state='executing'").fetchone():
                 return False
             db.execute("INSERT OR IGNORE INTO cloud_settings VALUES ('enabled')")
+            db.execute("DELETE FROM cloud_settings WHERE name='enroll'")
             return True
 
     def claim_cloud(self, batch_id):

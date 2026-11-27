@@ -189,6 +189,7 @@ class CloudModeration:
         self.wake = threading.Event()
         self.reset = False
         self.active = self.store.cloud_enabled()
+        self.armed = self.store.cloud_enrollment_armed()
 
     def issue_login(self):
         token = secrets.token_urlsafe(32)
@@ -199,6 +200,23 @@ class CloudModeration:
             self.reset = True
         self.wake.set()
         return self.origin + '/cloud-login#' + token
+
+    def arm_enrollment(self):
+        with self.lock:
+            self.store.arm_cloud_enrollment()
+            self.armed = True
+        self.wake.set()
+
+    def enable_if_verified(self):
+        with self.lock:
+            if self.active:
+                return True
+            if self.status != 'ready' or self.reset or not self.store.enable_cloud():
+                return False
+            self.active, self.armed = True, False
+        self.store.resume_cloud()
+        self.wake.set()
+        return True
 
     def qr_response(self, token):
         with self.lock:
@@ -285,7 +303,7 @@ class CloudModeration:
                         challenge, status = self.challenge, self.status
                         reset, self.reset = self.reset, False
                     pending_login = challenge and status != 'ready' and time.monotonic() < challenge[1]
-                    if not self.active and not pending_login:
+                    if not self.active and not pending_login and not (self.armed and status == 'ready'):
                         self.wake.wait(5)
                         self.wake.clear()
                         continue
@@ -322,6 +340,9 @@ class CloudModeration:
                             qr = browser.qr()
                             if qr:
                                 self.publish_status('scan', qr)
+                        if self.armed and not self.active and browser.auth is not None and verified == browser.generation:
+                            if self.enable_if_verified():
+                                self.notice(f'视频号「{self.account}」已验证，云端删除执行器已启用。')
                         if not self.active:
                             continue
                         batches = self.store.confirmed_batches()
