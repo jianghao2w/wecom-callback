@@ -1,13 +1,11 @@
 """Determine when a registered work is eligible for comment monitoring."""
 HOUR = 3600
-# Per-work cadence requested for the video published on 2026-11-26 at 14:46.
-WORK_INTERVAL_OVERRIDES = {('channels', '15063218626332068385'): HOUR}
 import sqlite3
 import time
 from contextlib import contextmanager
 
 
-def next_monitor_time(published_at, last_run_at=None, interval_seconds=None):
+def next_monitor_time(published_at, last_run_at=None):
     """Return the earliest next run; the first run starts six hours after publication."""
     published_at = int(published_at)
     if published_at <= 0:
@@ -18,17 +16,13 @@ def next_monitor_time(published_at, last_run_at=None, interval_seconds=None):
     last_run_at = int(last_run_at)
     if last_run_at < first:
         return first
-    if interval_seconds is not None:
-        if int(interval_seconds) <= 0:
-            raise ValueError('监控间隔无效')
-        return last_run_at + int(interval_seconds)
     if last_run_at < published_at + 12 * HOUR:
         return last_run_at + HOUR
     return last_run_at + 6 * HOUR
 
 
-def due_for_monitoring(published_at, now, last_run_at=None, interval_seconds=None):
-    return int(now) >= next_monitor_time(published_at, last_run_at, interval_seconds)
+def due_for_monitoring(published_at, now, last_run_at=None):
+    return int(now) >= next_monitor_time(published_at, last_run_at)
 
 
 class ScheduleStore:
@@ -67,8 +61,7 @@ class ScheduleStore:
             rows=db.execute('SELECT * FROM monitor_schedule WHERE lease_until<=?',(now,)).fetchall()
             selected=[]
             for row in rows:
-                interval = WORK_INTERVAL_OVERRIDES.get((row['platform'], row['content_id']))
-                if due_for_monitoring(row['published_at'],now,row['last_success'],interval):
+                if due_for_monitoring(row['published_at'],now,row['last_success']):
                     db.execute('UPDATE monitor_schedule SET lease_until=? WHERE platform=? AND content_id=?',
                                (now+1800,row['platform'],row['content_id']))
                     selected.append(dict(row))
