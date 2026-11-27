@@ -1,11 +1,7 @@
 {
-  "status": "complete",
+  "status": "collecting",
   "platform": "channels",
   "content_id": "15063953891783477757",
-  "started_at": 1795784898,
-  "completed_at": 1795784956,
-  "pages": 2,
-  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15064111711457975202",
@@ -23,12 +19,32 @@
       "analysis_content": "图片或表情描述：割韭菜"
     },
     {
-      "comment_id": "15064126918240771535",
-      "author": "知足常乐颜姣美",
-      "content": "[强][强][强][强][强][爱心][爱心][爱心][爱心][爱心]",
+      "comment_id": "15064166152465485248",
+      "author": "盗龄瑞丰商博城店",
+      "content": "相信万董不会错[强][强][强]",
       "likes": 0,
       "replies": 0,
-      "created_at": 1795783867,
+      "created_at": 1795788544,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15064159636210911769",
+      "author": "祭酒",
+      "content": "我相信万董一定不会辜负我们！万董您辛苦了？[强]",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795787767,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15064161564459867797",
+      "author": "乾符",
+      "content": "赶紧上市吧，把我们的血汗钱还了",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795787997,
       "platform": "channels",
       "content_unavailable": false
     },
@@ -36,9 +52,19 @@
       "comment_id": "15064110515675863205",
       "author": "张思全4182",
       "content": "凭良心给投资者一个回复呀",
-      "likes": 1,
+      "likes": 3,
       "replies": 0,
       "created_at": 1795781912,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15064135990200896197",
+      "author": "水聚天心9475",
+      "content": "这背景音乐，真正的印记了万百万十几年的经历，不达目的不罢休的意志！他真的太辛苦了",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795784949,
       "platform": "channels",
       "content_unavailable": false
     },
@@ -53,12 +79,22 @@
       "content_unavailable": false
     },
     {
-      "comment_id": "15064028264362937197",
-      "author": "李宝强",
-      "content": "感恩万董",
-      "likes": 1,
+      "comment_id": "15064018299731385018",
+      "author": "一米阳光",
+      "content": "18号敲钟上市了吗",
+      "likes": 2,
       "replies": 0,
-      "created_at": 1795772107,
+      "created_at": 1795770919,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063994961160248800",
+      "author": "锦绣窗帘3061",
+      "content": "相信财富就拥有财富[合十][合十][合十][合十][合十][合十]",
+      "likes": 2,
+      "replies": 0,
+      "created_at": 1795768137,
       "platform": "channels",
       "content_unavailable": false
     },
@@ -73,22 +109,12 @@
       "content_unavailable": false
     },
     {
-      "comment_id": "15064018299731385018",
-      "author": "一米阳光",
-      "content": "18号敲钟上市了吗",
+      "comment_id": "15064028264362937197",
+      "author": "李宝强",
+      "content": "感恩万董",
       "likes": 1,
       "replies": 0,
-      "created_at": 1795770919,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063994961160248800",
-      "author": "锦绣窗帘3061",
-      "content": "相信财富就拥有财富[合十][合十][合十][合十][合十][合十]",
-      "likes": 1,
-      "replies": 0,
-      "created_at": 1795768137,
+      "created_at": 1795772107,
       "platform": "channels",
       "content_unavailable": false
     },
@@ -96,39 +122,19 @@
       "comment_id": "15063974725213166936",
       "author": "一小杯酒",
       "content": "万哥！加油！[强][强]",
-      "likes": 1,
+      "likes": 2,
       "replies": 0,
       "created_at": 1795765724,
       "platform": "channels",
       "content_unavailable": false
     },
     {
-      "comment_id": "15064079986035198287",
-      "author": "宋召枝19974434768",
-      "content": "相信团队感恩万总[合十][合十][合十]",
-      "likes": 0,
+      "comment_id": "15064069277883637254",
+      "author": "psq4915",
+      "content": "[强][强][强]",
+      "likes": 1,
       "replies": 0,
-      "created_at": 1795778272,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15064068673533516502",
-      "author": "郭亚洲",
-      "content": "感恩感谢万总[合十][合十]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795776924,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15064084241193962608",
-      "author": "包谷满仓",
-      "content": "[强][强][强][强][强][强][强][强][强][强]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795778780,
+      "created_at": 1795776996,
       "platform": "channels",
       "content_unavailable": false
     },
@@ -143,32 +149,32 @@
       "content_unavailable": false
     },
     {
+      "comment_id": "15064068673533516502",
+      "author": "郭亚洲",
+      "content": "感恩感谢万总[合十][合十]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795776924,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15064079986035198287",
+      "author": "宋召枝19974434768",
+      "content": "相信团队感恩万总[合十][合十][合十]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795778272,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
       "comment_id": "15064081539365476870",
       "author": "烟酒～搜乐",
       "content": "[强][强][强][强][强][强]",
       "likes": 0,
       "replies": 0,
       "created_at": 1795778458,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15064069277883637254",
-      "author": "psq4915",
-      "content": "[强][强][强]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795776996,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15064097842464824674",
-      "author": "君子兰",
-      "content": "[强][强][强][强]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795780401,
       "platform": "channels",
       "content_unavailable": false
     },
@@ -183,12 +189,42 @@
       "content_unavailable": false
     },
     {
+      "comment_id": "15064084241193962608",
+      "author": "包谷满仓",
+      "content": "[强][强][强][强][强][强][强][强][强][强]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795778780,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
       "comment_id": "15064114875964198157",
       "author": "丽萍🌺",
       "content": "[强][强][强][合十][合十][合十][爱心][爱心]",
       "likes": 0,
       "replies": 0,
       "created_at": 1795782432,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15064097842464824674",
+      "author": "君子兰",
+      "content": "[强][强][强][强]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795780401,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15064126918240771535",
+      "author": "知足常乐颜姣美",
+      "content": "[强][强][强][强][强][爱心][爱心][爱心][爱心][爱心]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795783867,
       "platform": "channels",
       "content_unavailable": false
     },
@@ -211,144 +247,11 @@
       "created_at": 1795767731,
       "platform": "channels",
       "content_unavailable": false
-    },
-    {
-      "comment_id": "15064027729620573712",
-      "author": "朱芙蓉1...",
-      "content": "[评论内容无法获取]",
-      "likes": 1,
-      "replies": 0,
-      "created_at": 1795772043,
-      "platform": "channels",
-      "content_unavailable": false,
-      "media_only": true,
-      "media_status": "analyzed",
-      "media_description": "红色背景金色祝福文字，寓意顺风顺水、顺财神、一帆风顺",
-      "visual_sentiment": "positive",
-      "analysis_content": "图片或表情描述：红色背景金色祝福文字，寓意顺风顺水、顺财神、一帆风顺"
-    },
-    {
-      "comment_id": "15064027671423098450",
-      "author": "朱芙蓉1...",
-      "content": "加油加油加油[强][强][强][强][合十]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795772036,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15064075874213300235",
-      "author": "封岗",
-      "content": "敲锣了[呲牙]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795777782,
-      "platform": "channels",
-      "content_unavailable": false,
-      "parent_comment_id": "15064018299731385018"
-    },
-    {
-      "comment_id": "15064071545259957796",
-      "author": "万友，金林",
-      "content": "推迟到下个月或下…下个月18",
-      "likes": 2,
-      "replies": 0,
-      "created_at": 1795777266,
-      "platform": "channels",
-      "content_unavailable": false,
-      "parent_comment_id": "15064018299731385018"
-    },
-    {
-      "comment_id": "15064073127774330286",
-      "author": "李维庆 ...",
-      "content": "⚠️重要结论先说：合发全球（合发上海网络）是已经被司法认定的传销项目，不是正规上市公司，风险极高\n\n1. 主体与定性\n主体：合发（上海）网络技术有限公司，创始人万炳水（万百万）。\n早在2018年上海市场监管局就认定其构成传销、大额罚没；后续山东滨州法院作出刑事判决，认定组织、领导传销活动罪，主犯判刑，涉案金额1.86亿元、冻结资金超4亿元。\n各地打非办多次发预警：它长期用“马上美国纳斯达克上市、卖原始期权、上市暴富”作为诱饵拉人头交入门费（1万/3万/5万档位），靠发展下线层级返利，属于典型传销模式。\n\n2. 关于大家常听到的AAQL、盗龄\n\n• AAQL只是美国OTC粉单（场外柜台），不是纳斯达克主板，粉单监管极松、流动性极差，和大家理解的正规上市完全两码事；\n• “盗龄医生”是其换壳后的新项目，还是同一班底，继续沿用层级分销、宣传股权暴富的套路，监管同样警示风险。很多宣传的“上市签约仪式”≠上市，只是中介签约，不等于拿到上市",
-      "likes": 1,
-      "replies": 0,
-      "created_at": 1795777455,
-      "platform": "channels",
-      "content_unavailable": false,
-      "parent_comment_id": "15064018299731385018"
-    },
-    {
-      "comment_id": "15064076038365710381",
-      "author": "封岗",
-      "content": "或者都不说了[呲牙]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795777802,
-      "platform": "channels",
-      "content_unavailable": false,
-      "parent_comment_id": "15064018299731385018"
-    },
-    {
-      "comment_id": "15064076677352136232",
-      "author": "万友，金林",
-      "content": "问题是还有人相信继续投资[捂脸]",
-      "likes": 2,
-      "replies": 0,
-      "created_at": 1795777878,
-      "platform": "channels",
-      "content_unavailable": false,
-      "parent_comment_id": "15064018299731385018"
     }
   ],
-  "primary_count": 22,
-  "reply_count": 5,
-  "reply_pages": 22,
-  "analysis": {
-    "no_comments": false,
-    "overall": "本批评论中，正面多为表情符号和感恩支持，负面则集中质疑上市承诺、嘲讽推迟、揭露传销风险，整体负面情绪显著。计数显示正面18条、中性0条、负面9条。",
-    "negatives": [
-      {
-        "number": 1,
-        "reason": "表情图片分析"
-      },
-      {
-        "number": 3,
-        "reason": "要求凭良心回复，隐含质疑公司不诚信"
-      },
-      {
-        "number": 4,
-        "reason": "鼓励充值会员，疑似传销拉人头或诱导投资"
-      },
-      {
-        "number": 7,
-        "reason": "质疑敲钟上市是否兑现，催促和怀疑"
-      },
-      {
-        "number": 23,
-        "reason": "“敲锣了”嘲讽上市未兑现"
-      },
-      {
-        "number": 24,
-        "reason": "讽刺上市不断推迟"
-      },
-      {
-        "number": 25,
-        "reason": "揭露传销定性，质疑公司合法性"
-      },
-      {
-        "number": 26,
-        "reason": "嘲讽无话可说，暗示上市无望"
-      },
-      {
-        "number": 27,
-        "reason": "质疑还有人相信投资，表达失望"
-      }
-    ],
-    "positive_count": 18,
-    "neutral_count": 0,
-    "analyzed_count": 27,
-    "classification_valid": true,
-    "themes": [],
-    "urgent": [],
-    "response_suggestions": [],
-    "unavailable_count": 0
-  },
-  "video": {
-    "description": "所有难熬的时刻，都是登顶前最后的考验，同心聚力 沉心深耕，相信万总 相信我们团队！#万全通 #新健康运动 #健康运动",
-    "create_time": 1795763241,
-    "account_name": "万董健身日记"
-  }
+  "pages": 1,
+  "cursor": 0,
+  "last_buffer": "CqACCP///////////wEYoreE0p25nofRARjAm6yZ1umqh9EBGJmUhKGDrKmH0QEYlb3kxZLkqYfRARilsdiAt5aeh9EBGMWV6IDr+6OH0QEY0LeA+ZeBmIfRARi6teTry5qJh9EBGOC77PGs84OH0QEYmpqowL3Ah4fRARjtlrD+zLyLh9EBGNi6rI60pv+G0QEYhryEoaDmlIfRARjYkui59rKih9EBGNa1uPDU1JSH0QEYz5LMnfOdl4fRARiGtJjrjcuXh9EBGP61zPW3rJWH0QEY8Ji0996ZmIfRARiNmpisqpWfh9EBGOK64M7LpZuH0QEYz7uQqefzoYfRARj0usSx9bWQh9EBGIWwjLykkIOH0QEwATj///////////8B",
+  "source_version": 2,
+  "updated_at": 1795788624
 }
