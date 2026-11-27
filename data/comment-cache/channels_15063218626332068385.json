@@ -1,7 +1,11 @@
 {
-  "status": "collecting",
+  "status": "complete",
   "platform": "channels",
   "content_id": "15063218626332068385",
+  "started_at": 1795751339,
+  "completed_at": 1795751417,
+  "pages": 3,
+  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15063282229864632751",
@@ -340,9 +344,34 @@
       "content_unavailable": false
     }
   ],
-  "pages": 2,
-  "cursor": 0,
-  "last_buffer": "CpkDCP///////////wEYr6Ok9JHs4YXRARjqsNjgi4XQhtEBGNWV3MTdruCF0QEYm7nIt6//kIbRARi5lMTgtb3ohdEBGJexjMraiO6F0QEYu7m86IeO84XRARjUu4Cynp6JhtEBGKi37K7Npe6F0QEYnrf00cq0uYbRARiNs5y4sMj7hdEBGMa7oLKslNGG0QEYr7ewvfqxsobRARjNkbDy4ZDFhtEBGI6WvLPh6MOG0QEYjbD8oPOFhobRARj1s5zX89f4hdEBGN+w4PCR+caG0QEYhpWosLjPyYbRARiYnOjvh5n6hdEBGMKzhIXB8NmF0QEYzrXE7cPm7oXRARjrs/S2nvHZhdEBGIqw7JyQkv+F0QEYrpD8lsaq84XRARjxtaz6sOPvhdEBGMi7sPWAo/6F0QEYzru04fex84XRARiNsqD09+n2hdEBGLW3jJrk7/eF0QEYxrugsqyU0YbRARjqsNjgi4XQhtEBGIaVqLC4z8mG0QEY37Dg8JH5xobRARjNkbDy4ZDFhtEBMAE4////////////AQ==",
-  "source_version": 2,
-  "updated_at": 1795751357
+  "primary_count": 30,
+  "reply_count": 0,
+  "reply_pages": 30,
+  "analysis": {
+    "no_comments": false,
+    "overall": "本批评论整体情绪偏正面，以点赞、鼓励、感谢等正面支持为主，夹杂少量普通提问和日期陈述等中性内容，另有少量负面内容，包括一条“呸”表情属明显轻蔑侮辱。",
+    "negatives": [
+      {
+        "number": 4,
+        "reason": "表情图片分析"
+      },
+      {
+        "number": 20,
+        "reason": "表情图片分析"
+      }
+    ],
+    "positive_count": 18,
+    "neutral_count": 6,
+    "analyzed_count": 26,
+    "classification_valid": true,
+    "themes": [],
+    "urgent": [],
+    "response_suggestions": [],
+    "unavailable_count": 4
+  },
+  "video": {
+    "description": "所有难熬的时刻，都是登顶前最后的考验，看得懂长远布局，才懂得这份坚守有多珍贵，脚步不停 一起静待佳音。#万全通 #新健康运动 #健康运动 ",
+    "create_time": 1795675590,
+    "account_name": ""
+  }
 }
