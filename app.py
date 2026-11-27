@@ -1052,7 +1052,7 @@ def wecom_callback():
         if not content:
             return "ok"
 
-        confirmation = re.search(r'(?:^|\s)确认删除\s+([0-9a-f]{12})(?:\s|$)', content.strip())
+        confirmation = re.search(r'(?:^|\s)确认删除\s+([0-9a-f]{12})(?=\s|@|$)', content.strip())
         if confirmation:
             sender = msg.get("from") or {}
             user_id = sender.get("userid", "") if isinstance(sender, dict) else ""
