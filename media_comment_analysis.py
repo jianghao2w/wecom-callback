@@ -15,6 +15,7 @@ PROMPT = ('判断这条评论中的表情或图片，结合评论文字和父评
           '先逐字识别画面中的印刷或手写文字并写在描述里，再描述画面，再判定 positive、neutral、negative 或 unknown；'
           '无法辨认的字标明无法辨认，不要编造。'
           '鱼钩或钓鱼表情按用户要求判 negative，描述为“钓鱼表情”；'
+          '割韭菜、收割韭菜或用刀切割韭菜的图片和动画表达讽刺，判 negative，描述为“割韭菜”；'
           '明确讽刺、质疑、催促、辱骂或贬损可判 negative；含义不清不要猜测，判 unknown。'
           '只返回 JSON：{"description":"简短中文描述","sentiment":"positive|neutral|negative|unknown"}。')
 EXACT_MEDIA_RULES = {
@@ -89,4 +90,6 @@ def analyze_image(url, api_url, api_key, model='deepseek-flash', context='', par
     with opener(req,timeout=90) as response:result=json.load(response)
     parsed=json.loads(result['choices'][0]['message']['content']);sentiment=parsed.get('sentiment');description=parsed.get('description')
     if sentiment not in ('positive','neutral','negative','unknown') or not isinstance(description,str) or not description.strip():raise ValueError('视觉模型结果无效')
+    if '韭菜' in description and any(word in description for word in ('割', '切', '收割', '收获')):
+        description, sentiment = '割韭菜', 'negative'
     return {'description':description.strip()[:300],'sentiment':sentiment,'frame_count':len(frames)}
