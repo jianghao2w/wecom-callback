@@ -1,7 +1,11 @@
 {
-  "status": "collecting",
+  "status": "complete",
   "platform": "channels",
   "content_id": "15063953891783477757",
+  "started_at": 1795807218,
+  "completed_at": 1795807323,
+  "pages": 3,
+  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15064110515675863205",
@@ -392,11 +396,198 @@
       "created_at": 1795767731,
       "platform": "channels",
       "content_unavailable": false
+    },
+    {
+      "comment_id": "15064027729620573712",
+      "author": "朱芙蓉1...",
+      "content": "[评论内容无法获取]",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795772043,
+      "platform": "channels",
+      "content_unavailable": false,
+      "media_only": true,
+      "media_status": "analyzed",
+      "media_description": "红色背景金色祝福文字，寓意顺风顺水、顺财神、一帆风顺",
+      "visual_sentiment": "positive",
+      "analysis_content": "图片或表情描述：红色背景金色祝福文字，寓意顺风顺水、顺财神、一帆风顺"
+    },
+    {
+      "comment_id": "15064027671423098450",
+      "author": "朱芙蓉1...",
+      "content": "加油加油加油[强][强][强][强][合十]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795772036,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15064075874213300235",
+      "author": "封岗",
+      "content": "敲锣了[呲牙]",
+      "likes": 3,
+      "replies": 0,
+      "created_at": 1795777782,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15064018299731385018"
+    },
+    {
+      "comment_id": "15064071545259957796",
+      "author": "万友，金林",
+      "content": "推迟到下个月或下…下个月18",
+      "likes": 5,
+      "replies": 0,
+      "created_at": 1795777266,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15064018299731385018"
+    },
+    {
+      "comment_id": "15064073127774330286",
+      "author": "李维庆 ...",
+      "content": "⚠️重要结论先说：合发全球（合发上海网络）是已经被司法认定的传销项目，不是正规上市公司，风险极高\n\n1. 主体与定性\n主体：合发（上海）网络技术有限公司，创始人万炳水（万百万）。\n早在2018年上海市场监管局就认定其构成传销、大额罚没；后续山东滨州法院作出刑事判决，认定组织、领导传销活动罪，主犯判刑，涉案金额1.86亿元、冻结资金超4亿元。\n各地打非办多次发预警：它长期用“马上美国纳斯达克上市、卖原始期权、上市暴富”作为诱饵拉人头交入门费（1万/3万/5万档位），靠发展下线层级返利，属于典型传销模式。\n\n2. 关于大家常听到的AAQL、盗龄\n\n• AAQL只是美国OTC粉单（场外柜台），不是纳斯达克主板，粉单监管极松、流动性极差，和大家理解的正规上市完全两码事；\n• “盗龄医生”是其换壳后的新项目，还是同一班底，继续沿用层级分销、宣传股权暴富的套路，监管同样警示风险。很多宣传的“上市签约仪式”≠上市，只是中介签约，不等于拿到上市",
+      "likes": 5,
+      "replies": 0,
+      "created_at": 1795777455,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15064018299731385018"
+    },
+    {
+      "comment_id": "15064076038365710381",
+      "author": "封岗",
+      "content": "或者都不说了[呲牙]",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795777802,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15064018299731385018"
+    },
+    {
+      "comment_id": "15064076677352136232",
+      "author": "万友，金林",
+      "content": "问题是还有人相信继续投资[捂脸]",
+      "likes": 3,
+      "replies": 0,
+      "created_at": 1795777878,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15064018299731385018"
+    },
+    {
+      "comment_id": "15064138383535704220",
+      "author": "龙业江文正",
+      "content": "是的中老年人，上了一当，又一当，当当不一样[捂脸]",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795785234,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15064018299731385018"
+    },
+    {
+      "comment_id": "15064241741166218500",
+      "author": "林奇",
+      "content": "明年如果还没敲，那后年一定敲",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795797555,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15064018299731385018"
     }
   ],
-  "pages": 2,
-  "cursor": 0,
-  "last_buffer": "CsUDCP///////////wEYpbHYgLeWnofRARjftbTx/qLLh9EBGLq15OvLmomH0QEY5LqsyLjrvYfRARiZlIShg6yph9EBGIe6yOLA+6+H0QEYxbDkhbztuofRARjFleiA6/ujh9EBGMC0qPiLn7KH0QEYjZqYrKqVn4fRARiVveTFkuSph9EBGNC3gPmXgZiH0QEYhryEoaDmlIfRARizsty9mbysh9EBGJqaqMC9wIeH0QEYwJusmdbpqofRARjgu+zxrPODh9EBGO2WsP7MvIuH0QEY2LqsjrSm/4bRARiQvKjSguezh9EBGM+SzJ3znZeH0QEY1rW48NTUlIfRARjYkui59rKih9EBGJ2c6Jyl16yH0QEYoLrQy6ybxYfRARiFsbDIs8qxh9EBGOS38M3V9cqH0QEY6rTI+66YzYfRARjKsOz5pZOrh9EBGO20wM/htauH0QEYnZSM/7iosofRARiGtJjrjcuXh9EBGP61zPW3rJWH0QEY8Ji0996ZmIfRARjateD+z7Sth9EBGM+7kKnn86GH0QEY9LrEsfW1kIfRARjiuuDOy6Wbh9EBGIWwjLykkIOH0QEwATj///////////8B",
-  "source_version": 2,
-  "updated_at": 1795807225
+  "primary_count": 41,
+  "reply_count": 7,
+  "reply_pages": 41,
+  "analysis": {
+    "no_comments": false,
+    "overall": "本批评论呈现两极分化：部分用户表达对万董的感恩、信任和支持，属于正面；但大量评论质疑上市进展、催促敲钟、要求还钱，或直接揭露传销风险，负面情绪显著。整体反映出对项目承诺的普遍怀疑和不满。正面29条、中性2条、负面17条。",
+    "negatives": [
+      {
+        "number": 1,
+        "reason": "要求给投资者回复，隐含对公司未回应或进展的质疑"
+      },
+      {
+        "number": 3,
+        "reason": "质疑18号是否敲钟上市，表达对承诺未兑现的怀疑"
+      },
+      {
+        "number": 4,
+        "reason": "质疑上市承诺，催促并表达失望"
+      },
+      {
+        "number": 6,
+        "reason": "质疑改名并要求回报，隐含不满和催促"
+      },
+      {
+        "number": 7,
+        "reason": "询问钟响了吗，质疑上市进展"
+      },
+      {
+        "number": 9,
+        "reason": "用户指定的负面评论"
+      },
+      {
+        "number": 11,
+        "reason": "催促上市并要求还血汗钱，表达不满和失望"
+      },
+      {
+        "number": 12,
+        "reason": "鼓励会员充值，涉及拉人头投资，结合语境有传销风险暗示"
+      },
+      {
+        "number": 20,
+        "reason": "催促变现，隐含对进展的不满"
+      },
+      {
+        "number": 27,
+        "reason": "连续质问钟声在哪里，强烈质疑上市进展"
+      },
+      {
+        "number": 42,
+        "reason": "以“敲锣了”嘲讽上市敲钟的承诺"
+      },
+      {
+        "number": 43,
+        "reason": "讽刺上市时间不断推迟"
+      },
+      {
+        "number": 44,
+        "reason": "揭露传销定性，警示风险，对公司及项目构成负面质疑"
+      },
+      {
+        "number": 45,
+        "reason": "暗示不再提及上市，表达失望和嘲讽"
+      },
+      {
+        "number": 46,
+        "reason": "指出仍有人相信继续投资，隐含对项目的负面评价"
+      },
+      {
+        "number": 47,
+        "reason": "描述中老年人上当受骗，表达负面看法"
+      },
+      {
+        "number": 48,
+        "reason": "讽刺上市承诺遥遥无期"
+      }
+    ],
+    "positive_count": 29,
+    "neutral_count": 2,
+    "analyzed_count": 48,
+    "classification_valid": true,
+    "themes": [],
+    "urgent": [],
+    "response_suggestions": [],
+    "unavailable_count": 0
+  },
+  "video": {
+    "description": "所有难熬的时刻，都是登顶前最后的考验，同心聚力 沉心深耕，相信万总 相信我们团队！#万全通 #新健康运动 #健康运动",
+    "create_time": 1795763241,
+    "account_name": "万董健身日记"
+  }
 }
