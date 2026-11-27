@@ -1,7 +1,11 @@
 {
-  "status": "collecting",
+  "status": "complete",
   "platform": "channels",
   "content_id": "15063218626332068385",
+  "started_at": 1795753049,
+  "completed_at": 1795753129,
+  "pages": 2,
+  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15063489598811413659",
@@ -285,11 +289,94 @@
       "media_description": "三人围绕红色大鼓持鼓槌击鼓的画面",
       "visual_sentiment": "neutral",
       "analysis_content": "图片或表情描述：三人围绕红色大鼓持鼓槌击鼓的画面"
+    },
+    {
+      "comment_id": "15063407260391448008",
+      "author": "知足常乐颜姣美",
+      "content": "[强][强][强][强][爱心][爱心][爱心][爱心]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795698077,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063379112058100661",
+      "author": "蓉蓉0257",
+      "content": "[强][强][强]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795694722,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063374513142503693",
+      "author": "章齐姜",
+      "content": "‘",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795694173,
+      "platform": "channels",
+      "content_unavailable": false,
+      "media_only": false,
+      "media_status": "unavailable",
+      "media_description": "评论仅含一个左引号，无实质内容，含义不清",
+      "media_reason": "画面语义不明确"
+    },
+    {
+      "comment_id": "15063359394818104782",
+      "author": "知心二姐",
+      "content": "[强][强][强]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795692371,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063343501612358385",
+      "author": "林美珍6050",
+      "content": "[强][强][强][强][强]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795690477,
+      "platform": "channels",
+      "content_unavailable": false
     }
   ],
-  "pages": 1,
-  "cursor": 0,
-  "last_buffer": "CqsCCP///////////wEYm7nIt6//kIbRARjqsNjgi4XQhtEBGK+jpPSR7OGF0QEY1ZXcxN2u4IXRARiGlaiwuM/JhtEBGJic6O+HmfqF0QEYqLfsrs2l7oXRARi5lMTgtb3ohdEBGJ639NHKtLmG0QEY1LuAsp6eiYbRARi7ubzoh47zhdEBGI2znLiwyPuF0QEYl7GMytqI7oXRARivt7C9+rGyhtEBGI6WvLPh6MOG0QEYzZGw8uGQxYbRARjGu6CyrJTRhtEBGPWznNfz1/iF0QEYirDsnJCS/4XRARjOtcTtw+buhdEBGMKzhIXB8NmF0QEYjbD8oPOFhobRARjfsODwkfnGhtEBGOuz9Lae8dmF0QEYrpD8lsaq84XRATABOP///////////wE=",
-  "source_version": 2,
-  "updated_at": 1795753068
+  "primary_count": 30,
+  "reply_count": 0,
+  "reply_pages": 30,
+  "analysis": {
+    "no_comments": false,
+    "overall": "本批评论整体以正面为主，包含点赞、感谢和鼓励坚持等内容；同时存在少量轻蔑或“割韭菜”等贬损性负面表达，另有若干仅含表情或日期、含义不明的中性评论。分类计数为正面18条、中性7条、负面3条。",
+    "negatives": [
+      {
+        "number": 1,
+        "reason": "表情图片分析"
+      },
+      {
+        "number": 6,
+        "reason": "表情图片分析"
+      },
+      {
+        "number": 7,
+        "reason": "表情图片分析"
+      }
+    ],
+    "positive_count": 18,
+    "neutral_count": 7,
+    "analyzed_count": 28,
+    "classification_valid": true,
+    "themes": [],
+    "urgent": [],
+    "response_suggestions": [],
+    "unavailable_count": 2
+  },
+  "video": {
+    "description": "所有难熬的时刻，都是登顶前最后的考验，看得懂长远布局，才懂得这份坚守有多珍贵，脚步不停 一起静待佳音。#万全通 #新健康运动 #健康运动 ",
+    "create_time": 1795675590,
+    "account_name": ""
+  }
 }
