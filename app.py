@@ -493,20 +493,27 @@ def add_media_analysis(item, raw, parent=''):
     assets = [x for group in (info.get('emoticonInfos'),info.get('imageInfos')) if isinstance(group,list) for x in group]
     failed = len(assets) > 8 or len(urls) < min(len(assets), 8)
     item['media_only']=bool(item.get('content_unavailable'))
-    if not urls or not FULL_ANALYSIS_ENABLED: failed=True
+    if not urls or not FULL_ANALYSIS_ENABLED:
+        failed=True
+        item['media_reason']='资源地址不可用' if not urls else '视觉分析未启用'
     for url in urls:
         try:
             results.append(analyze_image(url,LLM_API_URL,LLM_API_KEY,LLM_VISION_MODEL,
                                          '' if item['media_only'] else item['content'],parent))
         except Exception as error:
-            failed=True;print(f'表情图片分析失败: {type(error).__name__}')
+            failed=True;item['media_reason']='图片获取或视觉分析失败';print(f'表情图片分析失败: {type(error).__name__}')
     # Multiple candidate URLs can be different variants of one image; deduplicate descriptions.
     recognized=[r for r in results if r.get('sentiment')!='unknown']
     if not recognized:
-        item['media_status']='unavailable';return item
+        item['media_status']='unavailable'
+        if results:
+            item['media_description']='；'.join(dict.fromkeys(r['description'] for r in results))[:600]
+            if not failed: item['media_reason']='画面语义不明确'
+        return item
     descriptions=list(dict.fromkeys(r['description'] for r in results))
     sentiments=[r['sentiment'] for r in results]
     item['media_status']='partial' if failed or 'unknown' in sentiments else 'analyzed'
+    if 'unknown' in sentiments and not failed:item['media_reason']='部分画面语义不明确'
     item['media_description']='；'.join(descriptions)[:600]
     item['visual_sentiment']='negative' if 'negative' in sentiments else 'unknown' if 'unknown' in sentiments or failed else 'positive' if 'positive' in sentiments else 'neutral'
     if item['media_only'] and item['visual_sentiment']!='unknown':
