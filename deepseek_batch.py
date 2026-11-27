@@ -40,14 +40,17 @@ class DeepSeekBatch:
         def batch(rows):
             items=[]
             for r in rows:
-                item={'number':r['number'],'content':str(r.get('content') or '')}
+                item={'number':r['number'],'content':str(r.get('analysis_content') or r.get('content') or '')}
                 if r.get('parent_comment_id') and str(r['parent_comment_id']) in parents:
                     item['parent_content']=parents[str(r['parent_comment_id'])]
                 items.append(item)
             response=self._request(RULES,{'comments':items})
             exact={r['number'] for r in rows if re.sub(r'[\s\W_]+', '', str(r.get('content') or '')).casefold() in EXPLICIT_NEGATIVE}
             if isinstance(response,dict) and isinstance(response.get('classifications'),list):
+                visual={r['number']:r.get('visual_sentiment') for r in rows if r.get('media_only')}
                 for item in response['classifications']:
+                    if isinstance(item,dict) and visual.get(item.get('number')) in ('positive','neutral','negative'):
+                        sentiment=visual[item['number']];item.update(sentiment=sentiment,reason='表情图片分析' if sentiment=='negative' else '')
                     if isinstance(item,dict) and item.get('number') in exact:
                         item.update(sentiment='negative',reason='用户指定的负面评论')
             return response

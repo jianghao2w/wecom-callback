@@ -23,6 +23,7 @@ from channels_delete import delete_verified_batch
 from channels_session_probe import check_session
 from monitor_schedule import ScheduleStore
 from deepseek_batch import DeepSeekBatch
+from media_comment_analysis import media_urls, analyze_image
 
 app = Flask(__name__)
 
@@ -56,6 +57,7 @@ FULL_ANALYSIS_ENABLED = os.environ.get("FULL_ANALYSIS_ENABLED", "").lower() == "
 LLM_API_URL = os.environ.get("LLM_API_URL", "")
 LLM_API_KEY = os.environ.get("LLM_API_KEY", "")
 LLM_MODEL = os.environ.get("LLM_MODEL", "")
+LLM_VISION_MODEL = os.environ.get("LLM_VISION_MODEL", "deepseek-flash")
 
 # ===== 企微加解密 =====
 def get_aes_key():
@@ -389,7 +391,7 @@ def register_target(platform, cid):
 
 # ===== 后台全量评论采集 =====
 COMMENT_LIST_PATHS = [
-    ("data", "aweme_list", "comments"), ("data", "comments"),
+    ("data", "aweme_list", "comments"), ("data", "comments"), ("data", "commentInfo"),
     ("data", "data", "comments"), ("data", "data", "comment_list"),
     ("data", "comment_list"), ("data", "comments_data"),
     ("data", "note_comments"), ("data", "comment_resp"),
@@ -456,7 +458,7 @@ def normalise_comment(platform, row):
     content = str(first_value(row, "content", "text", "comment", "content_desc") or "").strip()
     unavailable = not content
     if not content:
-        if platform != 'channels' or not first_value(row, 'id', 'comment_id', 'cid'):
+        if platform != 'channels' or not first_value(row, 'id', 'comment_id', 'commentId', 'cid'):
             return None
         content = '[评论内容无法获取]'
     author = first_value(row, "author", "nickname", "user_name", "nick_name")
@@ -466,19 +468,57 @@ def normalise_comment(platform, row):
             if author:
                 break
     return {
-        "comment_id": str(first_value(row, "id", "comment_id", "cid") or "")[:100],
+        "comment_id": str(first_value(row, "id", "comment_id", "commentId", "cid") or "")[:100],
         "author": str(author or "匿名")[:50],
         "content": content[:1500],
-        "likes": safe_int(first_value(row, "likes", "like_count", "digg_count", "likemount")),
+        "likes": safe_int(first_value(row, "likes", "like_count", "likeCount", "digg_count", "likemount")),
         "replies": safe_int(first_value(row, "reply_count", "sub_comment_count")),
-        "created_at": first_value(row, "create_time", "created_at", "createTime", "timestamp") or 0,
+        "created_at": first_value(row, "create_time", "created_at", "createTime", "createtime", "timestamp") or 0,
         "platform": platform,
         "content_unavailable": unavailable,
     }
 
+def channel_page(data):
+    if not isinstance(data, dict): raise RuntimeError('视频号评论响应格式错误')
+    rows = data.get('commentInfo') if isinstance(data.get('commentInfo'),list) else data.get('comments')
+    flag = data.get('downContinueFlag') if 'downContinueFlag' in data else data.get('down_continue')
+    if not isinstance(rows,list) or flag not in (0,1,False,True):
+        raise RuntimeError('视频号评论响应缺少评论列表或分页状态，采集未完成')
+    return rows, bool(flag), data.get('last_buffer') or data.get('lastBuffer')
+
+def add_media_analysis(item, raw, parent=''):
+    info=raw.get('contentInfo') if isinstance(raw,dict) else None
+    if not isinstance(info,dict) or not (info.get('emoticonInfos') or info.get('imageInfos')): return item
+    urls=media_urls(raw);results=[]
+    assets = [x for group in (info.get('emoticonInfos'),info.get('imageInfos')) if isinstance(group,list) for x in group]
+    failed = len(assets) > 8 or len(urls) < min(len(assets), 8)
+    item['media_only']=bool(item.get('content_unavailable'))
+    if not urls or not FULL_ANALYSIS_ENABLED: failed=True
+    for url in urls:
+        try:
+            results.append(analyze_image(url,LLM_API_URL,LLM_API_KEY,LLM_VISION_MODEL,
+                                         '' if item['media_only'] else item['content'],parent))
+        except Exception as error:
+            failed=True;print(f'表情图片分析失败: {type(error).__name__}')
+    # Multiple candidate URLs can be different variants of one image; deduplicate descriptions.
+    recognized=[r for r in results if r.get('sentiment')!='unknown']
+    if not recognized:
+        item['media_status']='unavailable';return item
+    descriptions=list(dict.fromkeys(r['description'] for r in results))
+    sentiments=[r['sentiment'] for r in results]
+    item['media_status']='partial' if failed or 'unknown' in sentiments else 'analyzed'
+    item['media_description']='；'.join(descriptions)[:600]
+    item['visual_sentiment']='negative' if 'negative' in sentiments else 'unknown' if 'unknown' in sentiments or failed else 'positive' if 'positive' in sentiments else 'neutral'
+    if item['media_only'] and item['visual_sentiment']!='unknown':
+        item['content_unavailable']=False
+    item['analysis_content']=('' if item['media_only'] else item['content']+'；')+'图片或表情描述：'+item['media_description']
+    return item
+
 def fetch_all_comments(platform, content_id, checkpoint=None):
     """在 Railway 后台抓取所有可用分页；不受 Dify Sandbox 的 15 秒限制。"""
     checkpoint = checkpoint or {}
+    if platform == 'channels' and checkpoint.get('source_version') != 2:
+        checkpoint = {}
     comments = [comment for comment in (checkpoint.get("comments") or [])
                 if not comment.get("parent_comment_id")]
     seen = {c.get("comment_id") or (c.get("author", "") + "\n" + c.get("content", "")) for c in comments}
@@ -495,15 +535,12 @@ def fetch_all_comments(platform, content_id, checkpoint=None):
             more = bool((payload.get("data") or {}).get("has_more"))
             next_cursor = (payload.get("data") or {}).get("cursor")
         elif platform == "channels":
-            body = {"object_id": content_id, "raw": False}
+            body = {"object_id": content_id, "raw": True}
             if last_buffer:
                 body["last_buffer"] = last_buffer
             payload = tikhub_json("https://api.tikhub.io/api/v1/wechat_channels/v2/fetch_video_comments", body)
             data = payload.get("data") or {}
-            if not isinstance(data, dict) or "down_continue" not in data or not isinstance(data.get("comments"), list):
-                raise RuntimeError("视频号评论响应缺少评论列表或分页状态，采集未完成")
-            more = data.get("down_continue") == 1
-            next_buffer = data.get("last_buffer")
+            rows, more, next_buffer = channel_page(data)
         elif platform == "xiaohongshu":
             note_id = str(content_id).split("?", 1)[0]
             query = {"note_id": note_id, "sort_strategy": "latest_v2"}
@@ -531,6 +568,7 @@ def fetch_all_comments(platform, content_id, checkpoint=None):
             if identity in seen:
                 continue
             seen.add(identity)
+            if platform == 'channels': add_media_analysis(item,row)
             comments.append(item)
         pages += 1
         if not more:
@@ -550,6 +588,7 @@ def fetch_all_comments(platform, content_id, checkpoint=None):
         save_comment_cache(platform, content_id, {
             "status": "collecting", "platform": platform, "content_id": content_id,
             "comments": comments, "pages": pages, "cursor": cursor, "last_buffer": last_buffer,
+            "source_version": 2 if platform == 'channels' else 1,
             "updated_at": int(time.time()),
         }, f"collect: checkpoint {platform} {content_id}")
     if pages >= COLLECTION_PAGE_LIMIT and more:
@@ -569,13 +608,11 @@ def fetch_all_replies(platform, content_id, primary_comments):
         cursor, last_buffer = 0, None
         for page in range(COLLECTION_PAGE_LIMIT):
             if platform == 'channels':
-                body = {'object_id': str(content_id), 'comment_id': parent_id, 'raw': False}
+                body = {'object_id': str(content_id), 'comment_id': parent_id, 'raw': True}
                 if last_buffer: body['last_buffer'] = last_buffer
                 payload = tikhub_json('https://api.tikhub.io/api/v1/wechat_channels/v2/fetch_video_comments', body)
                 data = payload.get('data') or {}
-                if not isinstance(data, dict) or 'down_continue' not in data or not isinstance(data.get('comments'), list):
-                    raise RuntimeError('视频号楼中楼响应缺少分页状态或评论')
-                rows, more, next_cursor = data['comments'], bool(data['down_continue']), data.get('last_buffer')
+                rows, more, next_cursor = channel_page(data)
                 prior_cursor = last_buffer
             else:
                 query = urllib.parse.urlencode({'item_id': str(content_id), 'comment_id': parent_id, 'cursor': cursor, 'count': 20})
@@ -593,7 +630,9 @@ def fetch_all_replies(platform, content_id, primary_comments):
                     raise RuntimeError('楼中楼缺少评论内容或 ID，无法完整采集')
                 key = (parent_id, item['comment_id'])
                 if key in seen: continue
-                seen.add(key); item['parent_comment_id'] = parent_id; replies.append(item)
+                seen.add(key); item['parent_comment_id'] = parent_id
+                if platform == 'channels': add_media_analysis(item,row,parent.get('content') or '')
+                replies.append(item)
             if not more: break
             if not rows or next_cursor is None or next_cursor == '' or next_cursor == prior_cursor:
                 raise RuntimeError('楼中楼分页异常，采集未完成')
