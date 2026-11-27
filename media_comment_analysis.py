@@ -1,5 +1,6 @@
 """Fetch WeChat comment images and classify selected frames using a vision model."""
 import base64
+import hashlib
 import io
 import json
 import urllib.parse
@@ -11,9 +12,15 @@ MAX_BYTES = 4 * 1024 * 1024
 Image.MAX_IMAGE_PIXELS = 12_000_000
 ALLOWED_HOSTS = ('mmbiz.qpic.cn', 'wxapp.tc.qq.com', 'snsvideo.hk.wechat.com')
 PROMPT = ('判断这条评论中的表情或图片，结合评论文字和父评论语境。图片按时间顺序展示，'
-          '先描述画面及文字，再判定 positive、neutral、negative 或 unknown。'
+          '先逐字识别画面中的印刷或手写文字并写在描述里，再描述画面，再判定 positive、neutral、negative 或 unknown；'
+          '无法辨认的字标明无法辨认，不要编造。'
+          '鱼钩或钓鱼表情按用户要求判 negative，描述为“钓鱼表情”；'
           '明确讽刺、质疑、催促、辱骂或贬损可判 negative；含义不清不要猜测，判 unknown。'
           '只返回 JSON：{"description":"简短中文描述","sentiment":"positive|neutral|negative|unknown"}。')
+EXACT_MEDIA_RULES = {
+    '0bfb071d7085271f4bae6d2dd29c9dfc2ba0cc3cd18ffba7c95a5ab6854926ab': ('手写文字“呸”，表达轻蔑。', 'negative'),
+    'b2e43479add40f91cb62b8c75f7b4416c9d62186c4194e7d31b0e18e8260f6ed': ('钓鱼表情：手握鱼竿和鱼钩。', 'negative'),
+}
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, *args, **kwargs):
@@ -48,7 +55,7 @@ def media_urls(raw):
         if urls and urls[0] not in selected:selected.append(urls[0])
     return selected[:8]
 
-def download_frames(url, opener=None):
+def download_frames(url, opener=None, include_fingerprint=False):
     parsed=urllib.parse.urlsplit(url)
     if parsed.scheme!='https' or parsed.hostname not in ALLOWED_HOSTS or parsed.username or parsed.password or parsed.port not in (None,443):
         raise ValueError('图片地址不受信任')
@@ -66,11 +73,14 @@ def download_frames(url, opener=None):
             for i in indices:
                 im.seek(i); frame=ImageOps.exif_transpose(im.convert('RGB'));frame.thumbnail((512,512))
                 out=io.BytesIO();frame.save(out,format='PNG',optimize=True);frames.append(out.getvalue())
-            return frames
+            return (frames, hashlib.sha256(data).hexdigest()) if include_fingerprint else frames
 
 def analyze_image(url, api_url, api_key, model='deepseek-flash', context='', parent='', opener=urllib.request.urlopen):
     if not api_url.startswith('https://') or not api_key or not model:raise ValueError('视觉模型配置不完整')
-    frames=download_frames(url)
+    frames,fingerprint=download_frames(url,include_fingerprint=True)
+    if fingerprint in EXACT_MEDIA_RULES:
+        description,sentiment=EXACT_MEDIA_RULES[fingerprint]
+        return {'description':description,'sentiment':sentiment,'frame_count':len(frames)}
     content=[{'type':'text','text':'评论文字：'+str(context)[:1000]+'\n父评论：'+str(parent)[:1000]}]
     content += [{'type':'image_url','image_url':{'url':'data:image/png;base64,'+base64.b64encode(frame).decode('ascii')}} for frame in frames]
     payload={'model':model,'thinking':{'type':'disabled'},'temperature':0,'max_tokens':500,
