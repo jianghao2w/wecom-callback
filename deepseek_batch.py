@@ -1,14 +1,21 @@
 """DeepSeek adapter for batched comment classification."""
 import json
+import re
 import urllib.request
 from full_comment_analysis import analyze_all
 
 RULES = ('你是评论分析助手。对每条评论分别分类：positive表示明确赞美、感谢、支持或鼓励；'
-         'neutral表示普通提问、陈述、合理质疑、温和批评或含义不明；negative仅限明确辱骂、人身攻击、'
-         '恶意诽谤、威胁、垃圾广告或明显具有攻击性的强烈贬损。存疑归neutral。'
+         'neutral表示不含明显负面倾向的普通提问、陈述或含义不明；negative包括辱骂、人身攻击、'
+         '恶意诽谤、威胁、垃圾广告、贬损，以及对公司、承诺或进展的质疑、催促、失望和嘲讽。'
+         '例如“敲钟了吗”“天天喊敲钟，到现在也没敲上”“不急，每个月都有18号”'
+         '“还钱”“送钟”“再等5年也不可能上市”均判negative。结合语境，含义不明则neutral。'
          '输入编号必须全部各出现一次。返回JSON对象：{"classifications":[{"number":1,'
          '"sentiment":"positive","reason":""}],"overall":"本批中文总结"}。'
          'sentiment只能是positive、neutral或negative，negative给出简短原因。')
+
+EXPLICIT_NEGATIVE = frozenset(re.sub(r'[\s\W_]+', '', text).casefold() for text in (
+    '敲钟了吗', '天天喊敲钟，到现在也没敲上', '不急，每个月都有18号',
+    '还钱', '送钟', '再等5年也不可能上市'))
 
 class DeepSeekBatch:
     def __init__(self, url, api_key, model, opener=urllib.request.urlopen):
@@ -29,7 +36,13 @@ class DeepSeekBatch:
 
     def analyze(self, comments):
         def batch(rows):
-            return self._request(RULES,{'comments':[{'number':r['number'],'content':str(r.get('content') or '')} for r in rows]})
+            response=self._request(RULES,{'comments':[{'number':r['number'],'content':str(r.get('content') or '')} for r in rows]})
+            exact={r['number'] for r in rows if re.sub(r'[\s\W_]+', '', str(r.get('content') or '')).casefold() in EXPLICIT_NEGATIVE}
+            if isinstance(response,dict) and isinstance(response.get('classifications'),list):
+                for item in response['classifications']:
+                    if isinstance(item,dict) and item.get('number') in exact:
+                        item.update(sentiment='negative',reason='用户指定的负面评论')
+            return response
         def summary(summaries, counts):
             result=self._request('根据所有分批总结与分类计数，返回JSON：{"overall":"中文总体总结"}。不要编造信息。',
                                  {'batch_summaries':summaries,'counts':counts})
