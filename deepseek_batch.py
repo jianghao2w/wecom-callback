@@ -9,6 +9,7 @@ RULES = ('你是评论分析助手。对每条评论分别分类：positive表�
          '恶意诽谤、威胁、垃圾广告、贬损，以及对公司、承诺或进展的质疑、催促、失望和嘲讽。'
          '例如“敲钟了吗”“天天喊敲钟，到现在也没敲上”“不急，每个月都有18号”'
          '“还钱”“送钟”“再等5年也不可能上市”均判negative。结合语境，含义不明则neutral。'
+         '若提供parent_content，它仅是上下文；只分类content，不要把父评论当作新增评论。'
          '输入编号必须全部各出现一次。返回JSON对象：{"classifications":[{"number":1,'
          '"sentiment":"positive","reason":""}],"overall":"本批中文总结"}。'
          'sentiment只能是positive、neutral或negative，negative给出简短原因。')
@@ -35,8 +36,15 @@ class DeepSeekBatch:
         return json.loads(result['choices'][0]['message']['content'])
 
     def analyze(self, comments):
+        parents={str(row.get('comment_id')):str(row.get('content') or '') for row in comments if row.get('comment_id') and not row.get('parent_comment_id')}
         def batch(rows):
-            response=self._request(RULES,{'comments':[{'number':r['number'],'content':str(r.get('content') or '')} for r in rows]})
+            items=[]
+            for r in rows:
+                item={'number':r['number'],'content':str(r.get('content') or '')}
+                if r.get('parent_comment_id') and str(r['parent_comment_id']) in parents:
+                    item['parent_content']=parents[str(r['parent_comment_id'])]
+                items.append(item)
+            response=self._request(RULES,{'comments':items})
             exact={r['number'] for r in rows if re.sub(r'[\s\W_]+', '', str(r.get('content') or '')).casefold() in EXPLICIT_NEGATIVE}
             if isinstance(response,dict) and isinstance(response.get('classifications'),list):
                 for item in response['classifications']:

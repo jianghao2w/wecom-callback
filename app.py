@@ -556,6 +556,53 @@ def fetch_all_comments(platform, content_id, checkpoint=None):
         raise RuntimeError("达到分页上限，但接口仍有下一页；采集未完成")
     return comments, pages, False
 
+
+def fetch_all_replies(platform, content_id, primary_comments):
+    """Fetch every parent's replies, preserving IDs for later verification."""
+    if platform not in ('channels', 'douyin'):
+        raise ValueError('该平台暂不支持楼中楼采集')
+    replies, seen, page_count = [], set(), 0
+    for parent in primary_comments:
+        parent_id = str(parent.get('comment_id') or '').strip()
+        if not parent_id:
+            raise RuntimeError('一级评论缺少 ID，无法完整采集楼中楼')
+        cursor, last_buffer = 0, None
+        for page in range(COLLECTION_PAGE_LIMIT):
+            if platform == 'channels':
+                body = {'object_id': str(content_id), 'comment_id': parent_id, 'raw': False}
+                if last_buffer: body['last_buffer'] = last_buffer
+                payload = tikhub_json('https://api.tikhub.io/api/v1/wechat_channels/v2/fetch_video_comments', body)
+                data = payload.get('data') or {}
+                if not isinstance(data, dict) or 'down_continue' not in data or not isinstance(data.get('comments'), list):
+                    raise RuntimeError('视频号楼中楼响应缺少分页状态或评论')
+                rows, more, next_cursor = data['comments'], bool(data['down_continue']), data.get('last_buffer')
+                prior_cursor = last_buffer
+            else:
+                query = urllib.parse.urlencode({'item_id': str(content_id), 'comment_id': parent_id, 'cursor': cursor, 'count': 20})
+                payload = tikhub_json('https://api.tikhub.io/api/v1/douyin/web/fetch_video_comment_replies?' + query)
+                data = payload.get('data') or {}
+                if not isinstance(data, dict) or 'has_more' not in data or not isinstance(data.get('comments'), list):
+                    raise RuntimeError('抖音楼中楼响应缺少分页状态或评论')
+                rows, more, next_cursor = data['comments'], bool(data['has_more']), data.get('cursor')
+                prior_cursor = cursor
+            page_count += 1
+            for row in rows:
+                if not isinstance(row,dict): continue
+                item = normalise_comment(platform, row)
+                if not item or not item.get('comment_id'):
+                    raise RuntimeError('楼中楼缺少评论内容或 ID，无法完整采集')
+                key = (parent_id, item['comment_id'])
+                if key in seen: continue
+                seen.add(key); item['parent_comment_id'] = parent_id; replies.append(item)
+            if not more: break
+            if not rows or next_cursor is None or next_cursor == '' or next_cursor == prior_cursor:
+                raise RuntimeError('楼中楼分页异常，采集未完成')
+            if platform == 'channels': last_buffer = next_cursor
+            else: cursor = next_cursor
+        else:
+            raise RuntimeError('楼中楼达到分页上限，采集未完成')
+    return replies, page_count
+
 def collect_target(platform, content_id, chat_id="", on_complete=None, first_run=False):
     key = (str(platform), str(content_id))
     with COLLECTION_LOCK:
@@ -570,10 +617,17 @@ def collect_target(platform, content_id, chat_id="", on_complete=None, first_run
             previous = load_comment_cache(platform, content_id)
             checkpoint = previous if previous.get("status") in ("collecting", "failed") else {}
             comments, pages, capped = fetch_all_comments(platform, content_id, checkpoint)
+            primary_count = len(comments)
+            reply_pages = 0
+            if platform in ('channels', 'douyin'):
+                replies, reply_pages = fetch_all_replies(platform, content_id, comments)
+                comments.extend(replies)
             result = {
                 "status": "complete", "platform": platform, "content_id": content_id,
                 "started_at": started, "completed_at": int(time.time()), "pages": pages,
                 "page_limit_reached": capped, "comments": comments,
+                "primary_count": primary_count, "reply_count": len(comments) - primary_count,
+                "reply_pages": reply_pages,
             }
             if FULL_ANALYSIS_ENABLED:
                 numbered = [{**comment, 'number': i + 1} for i, comment in enumerate(comments)]
@@ -707,7 +761,8 @@ def approval_messages(comments):
         author = str(comment.get("author") or "匿名").replace("@", "＠").replace("\n", " ").replace("\r", " ")
         content = comment["content"].replace("@", "＠").replace("\n", " ").replace("\r", " ")
         reason = str(comment.get("reason") or "").replace("@", "＠").replace("\n", " ").replace("\r", " ")
-        lines.append(f"{index}. {author}：{content}" + (f"（{reason}）" if reason else ""))
+        label = "[楼中楼] " if comment.get('parent_comment_id') else ""
+        lines.append(f"{index}. {label}{author}：{content}" + (f"（{reason}）" if reason else ""))
     text = "\n".join(lines)
     chunks = []
     chunk = ""
