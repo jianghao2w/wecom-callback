@@ -9,7 +9,7 @@ from PIL import Image, ImageOps, UnidentifiedImageError
 
 MAX_BYTES = 4 * 1024 * 1024
 Image.MAX_IMAGE_PIXELS = 12_000_000
-ALLOWED_HOSTS = ('mmbiz.qpic.cn', 'wxapp.tc.qq.com')
+ALLOWED_HOSTS = ('mmbiz.qpic.cn', 'wxapp.tc.qq.com', 'snsvideo.hk.wechat.com')
 PROMPT = ('判断这条评论中的表情或图片，结合评论文字和父评论语境。图片按时间顺序展示，'
           '先描述画面及文字，再判定 positive、neutral、negative 或 unknown。'
           '明确讽刺、质疑、催促、辱骂或贬损可判 negative；含义不清不要猜测，判 unknown。'
