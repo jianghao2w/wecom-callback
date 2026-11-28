@@ -1,7 +1,11 @@
 {
-  "status": "collecting",
+  "status": "complete",
   "platform": "channels",
   "content_id": "15063218626332068385",
+  "started_at": 1795876497,
+  "completed_at": 1795876587,
+  "pages": 3,
+  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15063738640595815046",
@@ -401,11 +405,49 @@
       "media_status": "unavailable",
       "media_description": "评论仅含一个左引号，无实质内容",
       "media_reason": "画面语义不明确"
+    },
+    {
+      "comment_id": "15063868915427510593",
+      "author": "Locodocoo",
+      "content": "听懂掌声",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795753111,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15063282229864632751"
+    },
+    {
+      "comment_id": "15063901035333224829",
+      "author": "李霞",
+      "content": "激活了需要交1280元吗，",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795756940,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15063718894890649805"
     }
   ],
-  "pages": 2,
-  "cursor": 0,
-  "last_buffer": "Cq8DCP///////////wEYhpWosLjPyYbRARjcs8S1rZWJiNEBGK+jpPSR7OGF0QEY1ZXcxN2u4IXRARjGu6CyrJTRhtEBGLu5vOiHjvOF0QEY1LuAsp6eiYbRARi5lMTgtb3ohdEBGMKzhIXB8NmF0QEYl7GMytqI7oXRARj1s5zX89f4hdEBGI2znLiwyPuF0QEYnrf00cq0uYbRARjqsNjgi4XQhtEBGN2Z0PuR9fmG0QEY5Lm0mtfM94bRARiOlryz4ejDhtEBGK+3sL36sbKG0QEY0LKQvPDCt4jRARiukPyWxqrzhdEBGOuz9Lae8dmF0QEYzrXE7cPm7oXRARjNkbDy4ZDFhtEBGIqw7JyQkv+F0QEY8bWs+rDj74XRARidt7D/3KbwhtEBGO660JHr+/eG0QEY37Hg4/3/6YbRARiQvODKjbjthtEBGJ+7pKj2ouyG0QEYjbD8oPOFhobRARiVvPiU9eLvhtEBGN+w4PCR+caG0QEYyLuw9YCj/oXRARi1t4ya5O/3hdEBGM67tOH3sfOF0QEYjbKg9Pfp9oXRATABOP///////////wE=",
-  "source_version": 2,
-  "updated_at": 1795876521
+  "primary_count": 37,
+  "reply_count": 2,
+  "reply_pages": 37,
+  "analysis": {
+    "no_comments": false,
+    "overall": "所有评论整体以正面支持为主，包含大量鼓励、赞美和感谢；少数为中性提问和陈述；无明确负面评论。",
+    "negatives": [],
+    "positive_count": 29,
+    "neutral_count": 10,
+    "analyzed_count": 39,
+    "classification_valid": true,
+    "themes": [],
+    "urgent": [],
+    "response_suggestions": [],
+    "unavailable_count": 0
+  },
+  "video": {
+    "description": "所有难熬的时刻，都是登顶前最后的考验，看得懂长远布局，才懂得这份坚守有多珍贵，脚步不停 一起静待佳音。#万全通 #新健康运动 #健康运动 ",
+    "create_time": 1795675590,
+    "account_name": "万董健身日记"
+  }
 }
