@@ -46,6 +46,8 @@ class DeepSeekBatch:
                 items.append(item)
             response=self._request(RULES,{'comments':items})
             exact={r['number'] for r in rows if re.sub(r'[\s\W_]+', '', str(r.get('content') or '')).casefold() in EXPLICIT_NEGATIVE}
+            punctuation = {r['number'] for r in rows if not r.get('media_status')
+                           and str(r.get('content') or '').strip() in ("'", '‘', '’', '＇')}
             if isinstance(response,dict) and isinstance(response.get('classifications'),list):
                 visual={r['number']:r.get('visual_sentiment') for r in rows if r.get('media_only')}
                 for item in response['classifications']:
@@ -53,6 +55,8 @@ class DeepSeekBatch:
                         sentiment=visual[item['number']];item.update(sentiment=sentiment,reason='表情图片分析' if sentiment=='negative' else '')
                     if isinstance(item,dict) and item.get('number') in exact:
                         item.update(sentiment='negative',reason='用户指定的负面评论')
+                    if isinstance(item,dict) and item.get('number') in punctuation:
+                        item.update(sentiment='neutral',reason='')
             return response
         def summary(summaries, counts):
             result=self._request('根据所有分批总结与分类计数，返回JSON：{"overall":"中文总体总结"}。不要编造信息。',

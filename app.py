@@ -686,10 +686,15 @@ def collect_target(platform, content_id, chat_id="", on_complete=None, first_run
                 try:
                     metadata = load_video_metadata(content_id) if platform == 'channels' else douyin_publication_metadata(content_id)
                     if str(metadata.get('id') or '') == str(content_id):
+                        account_name = str(metadata.get('account_name') or '').strip()
+                        if not account_name and platform == 'channels' and cloud_moderation:
+                            account_key = cloud_moderation.store.cloud_video_account(str(content_id))
+                            account_name = next((row['name'] for row in cloud_moderation.store.cloud_accounts()
+                                                 if row['account_key'] == account_key), '')
                         result['video'] = {'description': str(metadata.get('description') or ''),
                                            'create_time': metadata.get('create_time'),
-                                           'account_name': str(metadata.get('account_name') or '')}
-                except (OSError, ValueError, RuntimeError, TypeError, urllib.error.URLError) as error:
+                                           'account_name': account_name}
+                except (OSError, ValueError, RuntimeError, TypeError, urllib.error.URLError, sqlite3.Error) as error:
                     print(f"读取作品信息失败: {type(error).__name__}")
             save_comment_cache(platform, content_id, result, f"collect: complete {platform} {content_id}")
             approval_chat = chat_id or APPROVAL_CHAT_ID

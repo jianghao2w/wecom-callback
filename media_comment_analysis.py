@@ -22,12 +22,24 @@ PROMPT = ('根据画面观察、画中文字、评论文字和父评论语境判
           '鱼钩或钓鱼表情按用户要求判 negative，描述为“钓鱼表情”；'
           '割韭菜、收割韭菜或用刀切割韭菜的图片和动画表达讽刺，判 negative，描述为“割韭菜”；'
           '没有相反语境时，“平安吉祥”“感恩”等明确祝福和感谢属于 positive；'
+          '“最佳表演奖”配简笔画奖杯判 neutral；三人持红绸鼓槌击鼓判 positive；多帧展示红色切割宝石判 positive。'
           '明确讽刺、质疑、催促、辱骂或贬损可判 negative；含义不清不要猜测，判 unknown。'
           '只返回 JSON：{"description":"简短中文描述","sentiment":"positive|neutral|negative|unknown"}。')
 EXACT_MEDIA_RULES = {
     '0bfb071d7085271f4bae6d2dd29c9dfc2ba0cc3cd18ffba7c95a5ab6854926ab': ('手写文字“呸”，表达轻蔑。', 'negative'),
     'b2e43479add40f91cb62b8c75f7b4416c9d62186c4194e7d31b0e18e8260f6ed': ('钓鱼表情：手握鱼竿和鱼钩。', 'negative'),
 }
+
+
+def specified_media_sentiment(scene, visible_text, description, frame_count):
+    evidence = ' '.join((scene, visible_text, description))
+    if '最佳表演奖' in evidence and '奖杯' in evidence:
+        return 'neutral'
+    if any(word in evidence for word in ('三人','三个人','三名')) and any(word in evidence for word in ('红绸','红丝带')) and any(word in evidence for word in ('击鼓','打鼓','敲鼓','鼓槌','鼓锤')):
+        return 'positive'
+    if frame_count > 1 and '红色' in evidence and '宝石' in evidence and any(word in evidence for word in ('切割','切面','刻面','多面')):
+        return 'positive'
+    return None
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, *args, **kwargs):
@@ -116,6 +128,8 @@ def analyze_image(url, api_url, api_key, model='deepseek-flash', context='', par
     evidence_text=description+' '+scene+' '+text
     if '韭菜' in evidence_text and any(word in evidence_text for word in ('割', '切', '收割', '收获')):
         description, sentiment = '割韭菜', 'negative'
+    elif specified := specified_media_sentiment(scene, text, description, len(frames)):
+        sentiment = specified
     elif sentiment == 'unknown' and not context and not parent and any(word in text for word in ('平安吉祥', '感恩')):
         sentiment = 'positive'
     return {'description':description.strip()[:300],'sentiment':sentiment,'frame_count':len(frames)}
