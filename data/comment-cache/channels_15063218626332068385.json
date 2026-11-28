@@ -1,11 +1,7 @@
 {
-  "status": "complete",
+  "status": "collecting",
   "platform": "channels",
   "content_id": "15063218626332068385",
-  "started_at": 1795854739,
-  "completed_at": 1795854831,
-  "pages": 3,
-  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15063738640595815046",
@@ -15,19 +11,20 @@
       "replies": 0,
       "created_at": 1795737581,
       "platform": "channels",
-      "content_unavailable": true,
+      "content_unavailable": false,
       "media_only": true,
-      "media_status": "unavailable",
-      "media_description": "白底手写文字“最佳表演奖”配简笔画奖杯，无评论语境，含义不明。",
-      "media_reason": "画面语义不明确"
+      "media_status": "analyzed",
+      "media_description": "白底手写文字“最佳表演奖”配简笔画奖杯",
+      "visual_sentiment": "neutral",
+      "analysis_content": "图片或表情描述：白底手写文字“最佳表演奖”配简笔画奖杯"
     },
     {
-      "comment_id": "15063951042187365597",
-      "author": "环保.草木神话顶俏水果多酶洗护",
-      "content": "能遇到万董这么优秀的人，真是我的幸运[合十]",
+      "comment_id": "15064581069719280092",
+      "author": "省团装码刘姐",
+      "content": "1月18敲",
       "likes": 0,
       "replies": 0,
-      "created_at": 1795762901,
+      "created_at": 1795838006,
       "platform": "channels",
       "content_unavailable": false
     },
@@ -52,16 +49,6 @@
       "content_unavailable": false
     },
     {
-      "comment_id": "15064097008832023671",
-      "author": "佳隆",
-      "content": "马上12月份了。是12月18号敲吗[捂脸]？",
-      "likes": 1,
-      "replies": 0,
-      "created_at": 1795780302,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
       "comment_id": "15063771794526182854",
       "author": "半山",
       "content": "18号",
@@ -70,6 +57,51 @@
       "created_at": 1795741533,
       "platform": "channels",
       "content_unavailable": false
+    },
+    {
+      "comment_id": "15063358162177301691",
+      "author": "爱真之音生态农业",
+      "content": "坚定不移，不忘初心，方能致远[强][强][强]\n​",
+      "likes": 3,
+      "replies": 0,
+      "created_at": 1795692224,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063455475016146388",
+      "author": "博爱之义",
+      "content": "最后不要辜负我们，但是我们必须支持你",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795703825,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063311410904762937",
+      "author": "雷峰苗木-王绍贵",
+      "content": "努力奋斗[强][强][强][强][强][强][强]",
+      "likes": 2,
+      "replies": 0,
+      "created_at": 1795686651,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063247195583093186",
+      "author": "龙怡山庄...",
+      "content": "[评论内容无法获取]",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795678996,
+      "platform": "channels",
+      "content_unavailable": false,
+      "media_only": true,
+      "media_status": "analyzed",
+      "media_description": "三人持红绸鼓槌击鼓",
+      "visual_sentiment": "positive",
+      "analysis_content": "图片或表情描述：三人持红绸鼓槌击鼓"
     },
     {
       "comment_id": "15063335988002756759",
@@ -92,46 +124,12 @@
       "content_unavailable": false
     },
     {
-      "comment_id": "15063247195583093186",
-      "author": "龙怡山庄...",
-      "content": "[评论内容无法获取]",
+      "comment_id": "15063395350318881165",
+      "author": "熊猫4399",
+      "content": "合发还行吗",
       "likes": 1,
       "replies": 0,
-      "created_at": 1795678996,
-      "platform": "channels",
-      "content_unavailable": true,
-      "media_only": true,
-      "media_status": "unavailable",
-      "media_description": "画面为三人持鼓槌击鼓的民俗表演场景，无文字及评论信息。",
-      "media_reason": "画面语义不明确"
-    },
-    {
-      "comment_id": "15063358162177301691",
-      "author": "爱真之音生态农业",
-      "content": "坚定不移，不忘初心，方能致远[强][强][强]\n​",
-      "likes": 3,
-      "replies": 0,
-      "created_at": 1795692224,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063311410904762937",
-      "author": "雷峰苗木-王绍贵",
-      "content": "努力奋斗[强][强][强][强][强][强][强]",
-      "likes": 2,
-      "replies": 0,
-      "created_at": 1795686651,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063940855931673828",
-      "author": "吴新军",
-      "content": "相信万董不负众望，带领会员走向光明。",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795761687,
+      "created_at": 1795696657,
       "platform": "channels",
       "content_unavailable": false
     },
@@ -146,26 +144,6 @@
       "content_unavailable": false
     },
     {
-      "comment_id": "15063455475016146388",
-      "author": "博爱之义",
-      "content": "最后不要辜负我们，但是我们必须支持你",
-      "likes": 1,
-      "replies": 0,
-      "created_at": 1795703825,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063395350318881165",
-      "author": "熊猫4399",
-      "content": "合发还行吗",
-      "likes": 1,
-      "replies": 0,
-      "created_at": 1795696657,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
       "comment_id": "15063766872322611306",
       "author": "郭利富1...",
       "content": "放心老天看正能量。善良正能量人",
@@ -176,12 +154,22 @@
       "content_unavailable": false
     },
     {
-      "comment_id": "15064581069719280092",
-      "author": "省团装码刘姐",
-      "content": "1月18敲",
+      "comment_id": "15063951042187365597",
+      "author": "环保.草木神话顶俏水果多酶洗护",
+      "content": "能遇到万董这么优秀的人，真是我的幸运[合十]",
       "likes": 0,
       "replies": 0,
-      "created_at": 1795838006,
+      "created_at": 1795762901,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063940855931673828",
+      "author": "吴新军",
+      "content": "相信万董不负众望，带领会员走向光明。",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795761687,
       "platform": "channels",
       "content_unavailable": false
     },
@@ -206,27 +194,12 @@
       "content_unavailable": false
     },
     {
-      "comment_id": "15063247220652186091",
-      "author": "龙怡山庄...",
-      "content": "[评论内容无法获取]",
+      "comment_id": "15064784944046020944",
+      "author": "好运连连一唐",
+      "content": "[强][强][强][强][强][强][爱心][爱心][爱心][爱心][爱心][爱心][合十][合十][合十][合十][合十][合十]",
       "likes": 0,
       "replies": 0,
-      "created_at": 1795678999,
-      "platform": "channels",
-      "content_unavailable": false,
-      "media_only": true,
-      "media_status": "analyzed",
-      "media_description": "红色背景配黄色光芒与合十图案，文字为平安吉祥祝福语",
-      "visual_sentiment": "positive",
-      "analysis_content": "图片或表情描述：红色背景配黄色光芒与合十图案，文字为平安吉祥祝福语"
-    },
-    {
-      "comment_id": "15063718894890649805",
-      "author": "松林子度假村",
-      "content": "合发都激活了，百分之八十以上",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795735227,
+      "created_at": 1795862310,
       "platform": "channels",
       "content_unavailable": false
     },
@@ -238,95 +211,27 @@
       "replies": 0,
       "created_at": 1795692341,
       "platform": "channels",
-      "content_unavailable": true,
+      "content_unavailable": false,
       "media_only": true,
-      "media_status": "unavailable",
-      "media_description": "三人持红绸鼓槌击鼓的动画画面，无文字与评论",
-      "media_reason": "画面语义不明确"
+      "media_status": "analyzed",
+      "media_description": "三人持红绸鼓槌击鼓",
+      "visual_sentiment": "positive",
+      "analysis_content": "图片或表情描述：三人持红绸鼓槌击鼓"
     },
     {
-      "comment_id": "15063411078431709194",
-      "author": "任东虎",
-      "content": "[拳头][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795698532,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063896168508956176",
-      "author": "王余堂",
-      "content": "主播说的太对了太棒啦值得点赞宣传推广万董事长你辛苦啦注意安全[合十][合十][合十][合十][合十][强][强][强][强][强][爱心][爱心][爱心][爱心][爱心]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795756360,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063441444664449037",
-      "author": "刘金花",
-      "content": "范总辛苦。[强][强][强][强][强][强][强][强][强][强][强][强][强][强]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795702152,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063942476189670766",
-      "author": "李英子",
-      "content": "[强][强][强][强][强][强][强][强][强][强][强]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795761880,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063908765489961885",
-      "author": "快乐",
-      "content": "[强][强][强][强][强][强]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795757861,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063891042661637535",
-      "author": "静璟姐",
+      "comment_id": "15063247220652186091",
+      "author": "龙怡山庄...",
       "content": "[评论内容无法获取]",
       "likes": 0,
       "replies": 0,
-      "created_at": 1795755749,
+      "created_at": 1795678999,
       "platform": "channels",
-      "content_unavailable": true,
+      "content_unavailable": false,
       "media_only": true,
-      "media_status": "unavailable",
-      "media_description": "多帧展示红色切割宝石，无文字和评论",
-      "media_reason": "画面语义不明确"
-    },
-    {
-      "comment_id": "15063881045981534431",
-      "author": "芝兰1911",
-      "content": "主播讲的对，让自己的呼吸充满力量，压倒一切小人[强][强][强][太阳]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795754557,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063906435515424277",
-      "author": "何玲芳",
-      "content": "[强][强][强][爱心][爱心][爱心][福][福][福]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795757584,
-      "platform": "channels",
-      "content_unavailable": false
+      "media_status": "analyzed",
+      "media_description": "红色背景配双手合十图案和“平安吉祥”祝福文字",
+      "visual_sentiment": "positive",
+      "analysis_content": "图片或表情描述：红色背景配双手合十图案和“平安吉祥”祝福文字"
     },
     {
       "comment_id": "15063339211718466254",
@@ -339,6 +244,26 @@
       "content_unavailable": false
     },
     {
+      "comment_id": "15063718894890649805",
+      "author": "松林子度假村",
+      "content": "合发都激活了，百分之八十以上",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795735227,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15063411078431709194",
+      "author": "任东虎",
+      "content": "[拳头][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰][玫瑰]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795698532,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
       "comment_id": "15063343501612358385",
       "author": "林美珍6050",
       "content": "[强][强][强][强][强]",
@@ -347,108 +272,11 @@
       "created_at": 1795690477,
       "platform": "channels",
       "content_unavailable": false
-    },
-    {
-      "comment_id": "15063726879231449183",
-      "author": "青山绿水3904",
-      "content": "[强][强][强]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795736179,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063374513142503693",
-      "author": "章齐姜",
-      "content": "‘",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795694173,
-      "platform": "channels",
-      "content_unavailable": false,
-      "media_only": false,
-      "media_status": "unavailable",
-      "media_description": "评论仅为单引号，无实质内容，含义不清",
-      "media_reason": "画面语义不明确"
-    },
-    {
-      "comment_id": "15063359394818104782",
-      "author": "知心二姐",
-      "content": "[强][强][强]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795692371,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063407260391448008",
-      "author": "知足常乐颜姣美",
-      "content": "[强][强][强][强][爱心][爱心][爱心][爱心]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795698077,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063379112058100661",
-      "author": "蓉蓉0257",
-      "content": "[强][强][强]",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795694722,
-      "platform": "channels",
-      "content_unavailable": false
-    },
-    {
-      "comment_id": "15063868915427510593",
-      "author": "Locodocoo",
-      "content": "听懂掌声",
-      "likes": 1,
-      "replies": 0,
-      "created_at": 1795753111,
-      "platform": "channels",
-      "content_unavailable": false,
-      "parent_comment_id": "15063282229864632751"
-    },
-    {
-      "comment_id": "15063901035333224829",
-      "author": "李霞",
-      "content": "激活了需要交1280元吗，",
-      "likes": 0,
-      "replies": 0,
-      "created_at": 1795756940,
-      "platform": "channels",
-      "content_unavailable": false,
-      "parent_comment_id": "15063718894890649805"
     }
   ],
-  "primary_count": 37,
-  "reply_count": 2,
-  "reply_pages": 37,
-  "analysis": {
-    "no_comments": false,
-    "overall": "本批评论整体以正面支持为主，多数表达对万董的感谢和鼓励，另有少量对敲钟时间的质疑和普通询问；分类计数为正面24条、中性10条、负面1条。",
-    "negatives": [
-      {
-        "number": 5,
-        "reason": "对敲钟时间进行质疑和催促"
-      }
-    ],
-    "positive_count": 24,
-    "neutral_count": 10,
-    "analyzed_count": 35,
-    "classification_valid": true,
-    "themes": [],
-    "urgent": [],
-    "response_suggestions": [],
-    "unavailable_count": 4
-  },
-  "video": {
-    "description": "所有难熬的时刻，都是登顶前最后的考验，看得懂长远布局，才懂得这份坚守有多珍贵，脚步不停 一起静待佳音。#万全通 #新健康运动 #健康运动 ",
-    "create_time": 1795675590,
-    "account_name": ""
-  }
+  "pages": 1,
+  "cursor": 0,
+  "last_buffer": "CqsCCP///////////wEYhpWosLjPyYbRARjcs8S1rZWJiNEBGK+jpPSR7OGF0QEY1ZXcxN2u4IXRARjGu6CyrJTRhtEBGLu5vOiHjvOF0QEY1LuAsp6eiYbRARi5lMTgtb3ohdEBGMKzhIXB8NmF0QEYl7GMytqI7oXRARj1s5zX89f4hdEBGI2znLiwyPuF0QEYnrf00cq0uYbRARjqsNjgi4XQhtEBGN2Z0PuR9fmG0QEY5Lm0mtfM94bRARiOlryz4ejDhtEBGK+3sL36sbKG0QEY0LKQvPDCt4jRARiukPyWxqrzhdEBGOuz9Lae8dmF0QEYzrXE7cPm7oXRARjNkbDy4ZDFhtEBGIqw7JyQkv+F0QEY8bWs+rDj74XRATABOP///////////wE=",
+  "source_version": 2,
+  "updated_at": 1795876513
 }
