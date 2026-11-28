@@ -1,8 +1,18 @@
 """Determine when a registered work is eligible for comment monitoring."""
-HOUR = 3600
 import sqlite3
 import time
 from contextlib import contextmanager
+
+HOUR = 3600
+DAY = 24 * HOUR
+BEIJING_OFFSET = 8 * HOUR
+QUIET_END = 9 * HOUR
+
+
+def resume_after_quiet_hours(timestamp):
+    """Return the same time, or 09:00 Beijing time on that day."""
+    second_of_day = (timestamp + BEIJING_OFFSET) % DAY
+    return timestamp + max(0, QUIET_END - second_of_day)
 
 
 def next_monitor_time(published_at, last_run_at=None):
@@ -12,17 +22,18 @@ def next_monitor_time(published_at, last_run_at=None):
         raise ValueError('作品发布时间无效')
     first = published_at + 6 * HOUR
     if last_run_at is None:
-        return first
+        return resume_after_quiet_hours(first)
     last_run_at = int(last_run_at)
     if last_run_at < first:
-        return first
+        return resume_after_quiet_hours(first)
     if last_run_at < published_at + 12 * HOUR:
-        return last_run_at + HOUR
-    return last_run_at + 6 * HOUR
+        return resume_after_quiet_hours(last_run_at + HOUR)
+    return resume_after_quiet_hours(last_run_at + 6 * HOUR)
 
 
 def due_for_monitoring(published_at, now, last_run_at=None):
-    return int(now) >= next_monitor_time(published_at, last_run_at)
+    now = int(now)
+    return now == resume_after_quiet_hours(now) and now >= next_monitor_time(published_at, last_run_at)
 
 
 class ScheduleStore:
@@ -55,6 +66,8 @@ class ScheduleStore:
 
     def claim_due(self, now=None):
         now=int(time.time() if now is None else now)
+        if now != resume_after_quiet_hours(now):
+            return []
         with self._connect() as db:
             db.row_factory=sqlite3.Row
             db.execute('BEGIN IMMEDIATE')
