@@ -1,7 +1,11 @@
 {
-  "status": "collecting",
+  "status": "complete",
   "platform": "channels",
   "content_id": "15063218626332068385",
+  "started_at": 1795833019,
+  "completed_at": 1795833113,
+  "pages": 3,
+  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15063738640595815046",
@@ -387,11 +391,54 @@
       "created_at": 1795694722,
       "platform": "channels",
       "content_unavailable": false
+    },
+    {
+      "comment_id": "15063868915427510593",
+      "author": "Locodocoo",
+      "content": "听懂掌声",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795753111,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15063282229864632751"
+    },
+    {
+      "comment_id": "15063901035333224829",
+      "author": "李霞",
+      "content": "激活了需要交1280元吗，",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795756940,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15063718894890649805"
     }
   ],
-  "pages": 2,
-  "cursor": 0,
-  "last_buffer": "CqQDCP///////////wEYhpWosLjPyYbRARjkubSa18z3htEBGK+jpPSR7OGF0QEY95jUi6qNm4fRARjVldzE3a7ghdEBGLu5vOiHjvOF0QEYxrugsqyU0YbRARi5lMTgtb3ohdEBGMKzhIXB8NmF0QEY9bOc1/PX+IXRARjUu4Cynp6JhtEBGJexjMraiO6F0QEYnrf00cq0uYbRARiNs5y4sMj7hdEBGOqw2OCLhdCG0QEY3ZnQ+5H1+YbRARjrs/S2nvHZhdEBGI6WvLPh6MOG0QEYr7ewvfqxsobRARiNsPyg84WGhtEBGN+x4OP9/+mG0QEYkLzgyo247YbRARiKsOyckJL/hdEBGM2RsPLhkMWG0QEYlbz4lPXi74bRARjuutCR6/v3htEBGJ23sP/cpvCG0QEYrpD8lsaq84XRARifu6So9qLshtEBGM61xO3D5u6F0QEY37Dg8JH5xobRARjxtaz6sOPvhdEBGI2yoPT36faF0QEYzru04fex84XRARjIu7D1gKP+hdEBGLW3jJrk7/eF0QEwATj///////////8B",
-  "source_version": 2,
-  "updated_at": 1795833044
+  "primary_count": 36,
+  "reply_count": 2,
+  "reply_pages": 36,
+  "analysis": {
+    "no_comments": false,
+    "overall": "本批评论整体氛围积极，以正面支持、赞美和鼓励为主，共25条正面评论；另有8条中性评论，主要为对敲钟时间及费用的普通询问；负面评论仅1条。",
+    "negatives": [
+      {
+        "number": 4,
+        "reason": "对敲钟时间提出质疑和催促"
+      }
+    ],
+    "positive_count": 25,
+    "neutral_count": 8,
+    "analyzed_count": 34,
+    "classification_valid": true,
+    "themes": [],
+    "urgent": [],
+    "response_suggestions": [],
+    "unavailable_count": 4
+  },
+  "video": {
+    "description": "所有难熬的时刻，都是登顶前最后的考验，看得懂长远布局，才懂得这份坚守有多珍贵，脚步不停 一起静待佳音。#万全通 #新健康运动 #健康运动 ",
+    "create_time": 1795675590,
+    "account_name": ""
+  }
 }
