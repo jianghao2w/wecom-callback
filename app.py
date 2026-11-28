@@ -815,7 +815,7 @@ def targets_api():
     return jsonify(load_targets())
 
 
-def approval_messages(comments):
+def approval_messages(comments, *, use_overview=False):
     """Render all candidate text without exceeding the robot message size."""
     lines = []
     for index, comment in enumerate(comments, 1):
@@ -834,7 +834,8 @@ def approval_messages(comments):
         chunk += char
     if chunk:
         chunks.append(chunk)
-    return [f"待确认删除评论（{index}/{len(chunks)}）\n{chunk}"
+    title = '评论清单' if use_overview else '待确认删除评论'
+    return [f"{title}（{index}/{len(chunks)}）\n{chunk}"
             for index, chunk in enumerate(chunks, 1)]
 
 
@@ -848,13 +849,14 @@ def send_approval_message(content):
         raise RuntimeError("群消息发送失败")
 
 
-def announce_approval_batch(store, batch_id, comments):
+def announce_approval_batch(store, batch_id, comments, *, use_overview=False):
     try:
-        for message in approval_messages(comments):
+        for message in approval_messages(comments, use_overview=use_overview):
             send_approval_message(message)
         if not store.mark_announced(batch_id):
             raise RuntimeError("确认批次状态错误")
-        send_approval_message(f"以上评论已列出。如确认删除，请 @机器人 发送：确认删除 {batch_id}")
+        if not use_overview:
+            send_approval_message(f"以上评论已列出。如确认删除，请 @机器人 发送：确认删除 {batch_id}")
     except Exception as error:
         store.fail_announcement(batch_id)
         print(f"待确认清单发送失败: {type(error).__name__}")
@@ -1045,7 +1047,8 @@ def create_approval_batch():
         batch_id = store.create(chat_id, comments, announcing=True)
     except (OSError, ValueError, sqlite3.Error):
         return jsonify({"error": "unable to persist batch"}), 503
-    threading.Thread(target=announce_approval_batch, args=(store, batch_id, comments), daemon=True).start()
+    threading.Thread(target=announce_approval_batch, args=(store, batch_id, comments),
+        kwargs={'use_overview': body.get('approval_notice') == 'overview'}, daemon=True).start()
     return jsonify({"batch_id": batch_id, "count": len(comments), "status": "announcing"}), 202
 
 def api_authorized():
