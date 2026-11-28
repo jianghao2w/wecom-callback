@@ -1,7 +1,11 @@
 {
-  "status": "collecting",
+  "status": "complete",
   "platform": "channels",
   "content_id": "15063953891783477757",
+  "started_at": 1795872537,
+  "completed_at": 1795872694,
+  "pages": 4,
+  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15064523457084791736",
@@ -762,11 +766,131 @@
       "created_at": 1795806561,
       "platform": "channels",
       "content_unavailable": false
+    },
+    {
+      "comment_id": "15064456853925863027",
+      "author": "修心6387",
+      "content": "🍎二、提出了3点要求：\n①请大家一定要做到相信万董！支持万董！跟随万董！祝福万董！坚定信念：信念是什么？信念就是不管经历什么风吹草动不动摇，任何时候万董、公司、市场伙伴都是一个三角鼎立坚不可催的整体，每一个人各司其职，这个有机整体就稳步前进。不信谣不传谣.更不要捕风捉影，不要风声鹤唳，要立得住，泰山崩于前而色不变，何况根本没有什么事情，一切以万总的信息为主。万董远在大洋彼岸，还在为我们圆梦马不停蹄奔波拼搏，我们在后方一定要团结一致，全力支持，一个声音，一个阵仗，一个思想。\n②心往一处想劲往一处使：大家各司其职全力以赴：宣总带着我们运营部的伙伴在公司将这份财报加班加点熬了两个通宵，终于全部赶出来并提交了。公司每一个部门的员工都在非常努力踏实的工作，我们市场的每一个伙伴在我们的领导人的带领下，也在稳步地往前推进我们的业务。远在大洋彼岸的万总也是日夜不停的奔波着；",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795823199,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15064456585885785728",
+      "author": "修心6387",
+      "content": "11月23日全国合伙人会议内容摘要：（供未参会者学习参考）\n\n叶总分享：\n🍎一、三个好消息\n①我们Q3季度的财报已经于11月20提交且完全通过审核了，已经可在OTC的官网可以看到了，数据业绩.利润率无论是环比还是同比都非常不错！后期每个季度的业绩.利润都在OTC官网上公开的。\n②万总在百忙之中召集高管们开了会，董事长在美国为我们的圆梦之旅、为我们的梦想做最后的一系列的流程的签订和推进，为我们的梦想奋斗，回国后会如实告知大家的，敬请期待；\n③组织升级：公司市场部已经成立了宣传部，会把第一手资料和消息通过各战区的宣传员精准发送给大家；",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795823167,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15064027729620573712",
+      "author": "朱芙蓉1...",
+      "content": "[评论内容无法获取]",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795772043,
+      "platform": "channels",
+      "content_unavailable": false,
+      "media_only": true,
+      "media_status": "analyzed",
+      "media_description": "红色背景上排列三行金色祝福汉字“顺风顺水顺财神一帆风顺”",
+      "visual_sentiment": "positive",
+      "analysis_content": "图片或表情描述：红色背景上排列三行金色祝福汉字“顺风顺水顺财神一帆风顺”"
+    },
+    {
+      "comment_id": "15064027671423098450",
+      "author": "朱芙蓉1...",
+      "content": "加油加油加油[强][强][强][强][合十]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795772036,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15064780267046309080",
+      "author": "郭大拿8220",
+      "content": "哈哈哈哈哈哈  月月做新郎",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795861752,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15064690235339841017"
+    },
+    {
+      "comment_id": "15064800966970252569",
+      "author": "故往随风",
+      "content": "万董：你好！\n        请问：我们投资“🈴发房银”高级会员五万的本金什么时间可以退给我们？能不能公开正面回答这个问题？",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795864220,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15064159636210911769"
     }
   ],
-  "pages": 3,
-  "cursor": 0,
-  "last_buffer": "CsYGCP///////////wEYuLfQ0M2I/IfRARj1vLSI9bHHiNEBGNC3gPmXgZiH0QEY4Lvs8azzg4fRARiysJS2jKawiNEBGPm76IW//qGI0QEYhrH8o6yYqYjRARjFleiA6/ujh9EBGJmUhKGDrKmH0QEYjrKcq+S6r4jRARizsty9mbysh9EBGNiS5Mm43OWH0QEYvbmAr4+B54fRARinl7zmhtOmiNEBGJqaqMC9wIeH0QEY7Zaw/sy8i4fRARiFsIy8pJCDh9EBGI2amKyqlZ+H0QEYxZCU+dyvm4jRARjAm6yZ1umqh9EBGNi6rI60pv+G0QEYhryEoaDmlIfRARipsMTG7u+yiNEBGMuX8JDV3LaI0QEYrZKM1sX6sIjRARiqm+Cik7OoiNEBGJ2d6OjT6K6I0QEYlrnU4+SihYjRARjUlOShjqu0iNEBGIyQvPT/sIKI0QEYz5K0hPCWq4jRARjytMDtta/1h9EBGMSwjM+uzbKI0QEY8Zi8qcOmsojRARi8kPjY0KWEiNEBGKiUtIvKz+uH0QEYlJzI6O3opojRARj2tYD/6Mzsh9EBGK+w0Mal7KyI0QEYjpKI5sOQ8YfRARjql9z18+yeiNEBGP60xM/98+WH0QEYrrbgtPHh4ofRARjSm4j+362iiNEBGNSTtO+/9Z+I0QEYqZTE6e+KmojRARiLsoT1i/7qh9EBGMuxlKrv2f+H0QEY3LSw0Je9iIjRARjemtDUh5Pzh9EBGJ2c6Jyl16yH0QEY0bKIo5Tp54fRARjttMDP4bWrh9EBGNq14P7PtK2H0QEYnJzw2NbB9IfRARjel+y2xKrdh9EBGJOUvIiT7OGH0QEYhbGwyLPKsYfRARigutDLrJvFh9EBGMqw7Pmlk6uH0QEY1rW48NTUlIfRARj+tcz1t6yVh9EBGJ2UjP+4qLKH0QEYhrSY643Ll4fRARjTs6SMx9X2h9EBGNiS6Ln2sqKH0QEY/7WEhae12ofRARj0usSx9bWQh9EBGPCYtPfemZiH0QEYpbfk4dHN9YfRARjiuuDOy6Wbh9EBGM+7kKnn86GH0QEYz5LMnfOdl4fRARjqtMj7rpjNh9EBMAE4////////////AQ==",
-  "source_version": 2,
-  "updated_at": 1795872553
+  "primary_count": 78,
+  "reply_count": 2,
+  "reply_pages": 78,
+  "analysis": {
+    "no_comments": false,
+    "overall": "本批评论整体以正面支持为主，包含大量表情符号和感恩万董的内容；负面评论主要涉及投资质疑、催促退款和嘲讽进展；中性评论多为普通提问或陈述。分类计数为正面60条、中性9条、负面9条。",
+    "negatives": [
+      {
+        "number": 5,
+        "reason": "表情图片分析"
+      },
+      {
+        "number": 6,
+        "reason": "嘲讽每月18号敲钟，质疑进展"
+      },
+      {
+        "number": 7,
+        "reason": "质疑期权未落地行权"
+      },
+      {
+        "number": 27,
+        "reason": "质疑期权未兑现"
+      },
+      {
+        "number": 31,
+        "reason": "要求给说法，质疑投资"
+      },
+      {
+        "number": 33,
+        "reason": "直接贬损“坑”"
+      },
+      {
+        "number": 34,
+        "reason": "催促发生活费，隐含不满"
+      },
+      {
+        "number": 79,
+        "reason": "嘲讽“月月做新郎”"
+      },
+      {
+        "number": 80,
+        "reason": "质疑本金退还，要求正面回答"
+      }
+    ],
+    "positive_count": 60,
+    "neutral_count": 9,
+    "analyzed_count": 78,
+    "classification_valid": true,
+    "themes": [],
+    "urgent": [],
+    "response_suggestions": [],
+    "unavailable_count": 2
+  },
+  "video": {
+    "description": "所有难熬的时刻，都是登顶前最后的考验，同心聚力 沉心深耕，相信万总 相信我们团队！#万全通 #新健康运动 #健康运动",
+    "create_time": 1795763241,
+    "account_name": "万董健身日记"
+  }
 }
