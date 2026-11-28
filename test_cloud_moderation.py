@@ -121,6 +121,24 @@ class CloudAccountRoutingTest(unittest.TestCase):
         self.store.requeue_cloud_owner('two-more', self.first.account_key)
         self.assertEqual(self.store.confirmed_batches(self.first.account_key), [batch])
 
+    def test_cleanup_preserves_confirmed_batches_and_other_videos(self):
+        executing, _ = self.create('one')
+        self.assertIsNotNone(self.store.claim_cloud(executing))
+        confirmed, comments = self.create('one')
+        old = self.store.create('group', comments)
+        latest = self.store.create('group', comments)
+        other = self.store.create('group', self.create('two')[1])
+        self.assertEqual(self.store.prune_old_unconfirmed(), 1)
+        self.assertIsNone(self.store.get(old))
+        self.assertIsNotNone(self.store.get(latest))
+        self.assertTrue(self.store.finish(executing, {'status':'completed','deleted':['comment']}))
+        self.assertIsNone(self.store.get(latest))
+        self.assertFalse(self.store.confirm(latest, 'group', 'operator'))
+        self.assertEqual(self.store.get(confirmed)['state'], 'confirmed')
+        self.assertEqual(self.store.get(other)['state'], 'pending')
+        self.assertEqual(self.store.clear_unconfirmed('group', 'channels', 'two'), 1)
+        self.assertIsNone(self.store.get(other))
+
 
 if __name__ == '__main__':
     unittest.main()

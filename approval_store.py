@@ -166,7 +166,39 @@ class ApprovalStore:
                 "UPDATE deletion_batches SET state='finished',result=? WHERE batch_id=? AND state='executing'",
                 (value, batch_id),
             )
-            return cursor.rowcount == 1
+            if cursor.rowcount != 1:
+                return False
+            if result.get('status') == 'completed' and result.get('deleted'):
+                batch = connection.execute('SELECT chat_id, payload FROM deletion_batches WHERE batch_id=?', (batch_id,)).fetchone()
+                work = json.loads(batch['payload'])[0]
+                if work.get('platform') and work.get('object_id'):
+                    self._clear_unconfirmed(connection, batch['chat_id'], work['platform'], work['object_id'])
+            return True
+
+    @staticmethod
+    def _clear_unconfirmed(connection, chat_id, platform, object_id):
+        return connection.execute('''DELETE FROM deletion_batches
+            WHERE chat_id=? AND confirmed_at IS NULL AND state IN ('pending','announcing','delivery_failed')
+            AND json_extract(payload,'$[0].platform')=? AND json_extract(payload,'$[0].object_id')=?''',
+            (chat_id, platform, str(object_id))).rowcount
+
+    def clear_unconfirmed(self, chat_id, platform, object_id):
+        with self._connect() as connection:
+            return self._clear_unconfirmed(connection, chat_id, platform, object_id)
+
+    def prune_old_unconfirmed(self):
+        """Discard accumulated older batches, keeping the latest usable batch per work and chat."""
+        with self._connect() as connection:
+            return connection.execute('''DELETE FROM deletion_batches WHERE batch_id IN (
+                SELECT batch_id FROM (
+                    SELECT batch_id, ROW_NUMBER() OVER (
+                        PARTITION BY chat_id, json_extract(payload,'$[0].platform'), json_extract(payload,'$[0].object_id')
+                        ORDER BY state='delivery_failed', created_at DESC, rowid DESC
+                    ) AS position
+                    FROM deletion_batches WHERE confirmed_at IS NULL AND state IN ('pending','announcing','delivery_failed')
+                    AND json_extract(payload,'$[0].platform') IS NOT NULL AND json_extract(payload,'$[0].object_id') IS NOT NULL
+                ) WHERE position > 1
+            )''').rowcount
 
     def cloud_enabled(self, account_key='default'):
         with self._connect() as db:

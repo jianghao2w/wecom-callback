@@ -692,6 +692,12 @@ def collect_target(platform, content_id, chat_id="", on_complete=None, first_run
                 except (OSError, ValueError, RuntimeError, TypeError, urllib.error.URLError) as error:
                     print(f"读取作品信息失败: {type(error).__name__}")
             save_comment_cache(platform, content_id, result, f"collect: complete {platform} {content_id}")
+            approval_chat = chat_id or APPROVAL_CHAT_ID
+            if platform == 'channels' and not capped and APPROVAL_DB_PATH and approval_chat:
+                try:
+                    ApprovalStore(APPROVAL_DB_PATH).clear_unconfirmed(approval_chat, platform, content_id)
+                except sqlite3.Error as error:
+                    print(f'清理旧待确认批次失败: {type(error).__name__}', flush=True)
             print(f"✅ 全量评论采集完成: {platform} {content_id}, {len(comments)} 条, {pages} 页")
             success = trigger_dify(f"{platform} {content_id}", "collected_first" if first_run else "collected", chat_id)
         except Exception as e:
@@ -1365,5 +1371,6 @@ if __name__ == '__main__':
             os.environ.get('CHANNELS_CLOUD_ACCOUNT', '万董健身日记'),
             os.environ.get('CHANNELS_CLOUD_ANCHOR', '15063953891783477757'),
             'https://' + os.environ['RAILWAY_PUBLIC_DOMAIN'], load_video_metadata, send_approval_message)
+        print(f'已清理积压的旧待确认批次: {cloud_moderation.store.prune_old_unconfirmed()}', flush=True)
         threading.Thread(target=cloud_moderation.loop, daemon=True).start()
     app.run(host='0.0.0.0', port=port, debug=False)
