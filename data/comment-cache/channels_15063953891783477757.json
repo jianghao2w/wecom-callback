@@ -1,7 +1,11 @@
 {
-  "status": "collecting",
+  "status": "complete",
   "platform": "channels",
   "content_id": "15063953891783477757",
+  "started_at": 1795828939,
+  "completed_at": 1795829077,
+  "pages": 4,
+  "page_limit_reached": false,
   "comments": [
     {
       "comment_id": "15064110515675863205",
@@ -640,11 +644,295 @@
       "created_at": 1795767731,
       "platform": "channels",
       "content_unavailable": false
+    },
+    {
+      "comment_id": "15064456853925863027",
+      "author": "修心6387",
+      "content": "🍎二、提出了3点要求：\n①请大家一定要做到相信万董！支持万董！跟随万董！祝福万董！坚定信念：信念是什么？信念就是不管经历什么风吹草动不动摇，任何时候万董、公司、市场伙伴都是一个三角鼎立坚不可催的整体，每一个人各司其职，这个有机整体就稳步前进。不信谣不传谣.更不要捕风捉影，不要风声鹤唳，要立得住，泰山崩于前而色不变，何况根本没有什么事情，一切以万总的信息为主。万董远在大洋彼岸，还在为我们圆梦马不停蹄奔波拼搏，我们在后方一定要团结一致，全力支持，一个声音，一个阵仗，一个思想。\n②心往一处想劲往一处使：大家各司其职全力以赴：宣总带着我们运营部的伙伴在公司将这份财报加班加点熬了两个通宵，终于全部赶出来并提交了。公司每一个部门的员工都在非常努力踏实的工作，我们市场的每一个伙伴在我们的领导人的带领下，也在稳步地往前推进我们的业务。远在大洋彼岸的万总也是日夜不停的奔波着；",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795823199,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15064456585885785728",
+      "author": "修心6387",
+      "content": "11月23日全国合伙人会议内容摘要：（供未参会者学习参考）\n\n叶总分享：\n🍎一、三个好消息\n①我们Q3季度的财报已经于11月20提交且完全通过审核了，已经可在OTC的官网可以看到了，数据业绩.利润率无论是环比还是同比都非常不错！后期每个季度的业绩.利润都在OTC官网上公开的。\n②万总在百忙之中召集高管们开了会，董事长在美国为我们的圆梦之旅、为我们的梦想做最后的一系列的流程的签订和推进，为我们的梦想奋斗，回国后会如实告知大家的，敬请期待；\n③组织升级：公司市场部已经成立了宣传部，会把第一手资料和消息通过各战区的宣传员精准发送给大家；",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795823167,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15064027729620573712",
+      "author": "朱芙蓉1...",
+      "content": "[评论内容无法获取]",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795772043,
+      "platform": "channels",
+      "content_unavailable": false,
+      "media_only": true,
+      "media_status": "analyzed",
+      "media_description": "红色背景金色祝福文字，寓意顺风顺水、顺财神、一帆风顺",
+      "visual_sentiment": "positive",
+      "analysis_content": "图片或表情描述：红色背景金色祝福文字，寓意顺风顺水、顺财神、一帆风顺"
+    },
+    {
+      "comment_id": "15064027671423098450",
+      "author": "朱芙蓉1...",
+      "content": "加油加油加油[强][强][强][强][合十]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795772036,
+      "platform": "channels",
+      "content_unavailable": false
+    },
+    {
+      "comment_id": "15064075874213300235",
+      "author": "封岗",
+      "content": "敲锣了[呲牙]",
+      "likes": 4,
+      "replies": 0,
+      "created_at": 1795777782,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15064018299731385018"
+    },
+    {
+      "comment_id": "15064494013563145042",
+      "author": "仙居森林",
+      "content": "没说哪年。猴年马月的11月18号[Facepalm]",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795827628,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15064018299731385018"
+    },
+    {
+      "comment_id": "15064071545259957796",
+      "author": "万友，金林",
+      "content": "推迟到下个月或下…下个月18",
+      "likes": 8,
+      "replies": 0,
+      "created_at": 1795777266,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15064018299731385018"
+    },
+    {
+      "comment_id": "15064073127774330286",
+      "author": "李维庆 ...",
+      "content": "⚠️重要结论先说：合发全球（合发上海网络）是已经被司法认定的传销项目，不是正规上市公司，风险极高\n\n1. 主体与定性\n主体：合发（上海）网络技术有限公司，创始人万炳水（万百万）。\n早在2018年上海市场监管局就认定其构成传销、大额罚没；后续山东滨州法院作出刑事判决，认定组织、领导传销活动罪，主犯判刑，涉案金额1.86亿元、冻结资金超4亿元。\n各地打非办多次发预警：它长期用“马上美国纳斯达克上市、卖原始期权、上市暴富”作为诱饵拉人头交入门费（1万/3万/5万档位），靠发展下线层级返利，属于典型传销模式。\n\n2. 关于大家常听到的AAQL、盗龄\n\n• AAQL只是美国OTC粉单（场外柜台），不是纳斯达克主板，粉单监管极松、流动性极差，和大家理解的正规上市完全两码事；\n• “盗龄医生”是其换壳后的新项目，还是同一班底，继续沿用层级分销、宣传股权暴富的套路，监管同样警示风险。很多宣传的“上市签约仪式”≠上市，只是中介签约，不等于拿到上市",
+      "likes": 9,
+      "replies": 0,
+      "created_at": 1795777455,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15064018299731385018"
+    },
+    {
+      "comment_id": "15064076038365710381",
+      "author": "封岗",
+      "content": "或者都不说了[呲牙]",
+      "likes": 2,
+      "replies": 0,
+      "created_at": 1795777802,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15064018299731385018"
+    },
+    {
+      "comment_id": "15064076677352136232",
+      "author": "万友，金林",
+      "content": "问题是还有人相信继续投资[捂脸]",
+      "likes": 6,
+      "replies": 0,
+      "created_at": 1795777878,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15064018299731385018"
+    },
+    {
+      "comment_id": "15064138383535704220",
+      "author": "龙业江文正",
+      "content": "是的中老年人，上了一当，又一当，当当不一样[捂脸]",
+      "likes": 2,
+      "replies": 0,
+      "created_at": 1795785234,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15064018299731385018"
+    },
+    {
+      "comment_id": "15064241741166218500",
+      "author": "林奇",
+      "content": "明年如果还没敲，那后年一定敲",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795797555,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15064018299731385018"
+    },
+    {
+      "comment_id": "15064450787691989164",
+      "author": "东拼西凑的手",
+      "content": "那你多投点",
+      "likes": 0,
+      "replies": 0,
+      "created_at": 1795822475,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15064018299731385018"
+    },
+    {
+      "comment_id": "15064465429586319651",
+      "author": "好心情",
+      "content": "他，在为他的5个孩子奋斗[流泪]",
+      "likes": 1,
+      "replies": 0,
+      "created_at": 1795824221,
+      "platform": "channels",
+      "content_unavailable": false,
+      "parent_comment_id": "15064129086965811544"
     }
   ],
-  "pages": 3,
-  "cursor": 0,
-  "last_buffer": "Cs0FCP///////////wEYpbHYgLeWnofRARjTs6SMx9X2h9EBGOS6rMi4672H0QEYurXk68uaiYfRARiHusjiwPuvh9EBGIGRpJvas+yH0QEY5Lns0vq05YfRARiVveTFkuSph9EBGNiS5Mm43OWH0QEYxZXogOv7o4fRARi9uYCvj4Hnh9EBGJC8qNKC57OH0QEY0LeA+ZeBmIfRARiamqjAvcCHh9EBGJmUhKGDrKmH0QEYwLSo+IufsofRARiGvIShoOaUh9EBGMWw5IW87bqH0QEYwJusmdbpqofRARiNmpisqpWfh9EBGLOy3L2ZvKyH0QEY4Lvs8azzg4fRARjtlrD+zLyLh9EBGNi6rI60pv+G0QEYpbfk4dHN9YfRARjytMDtta/1h9EBGJyc8NjWwfSH0QEYrrbgtPHh4ofRARiLsoT1i/7qh9EBGJ6S/LqokOGH0QEY9rWA/+jM7IfRARikkviVwpreh9EBGKiUtIvKz+uH0QEY0bKIo5Tp54fRARj+tMTP/fPlh9EBGI63qJTSqumH0QEY3pfstsSq3YfRARibspje6cLuh9EBGI6SiObDkPGH0QEY/7WEhae12ofRARjemtDUh5Pzh9EBGN+1tPH+osuH0QEY5LfwzdX1yofRARiVscCrwMfxh9EBGJOUvIiT7OGH0QEY2JLoufayoofRARjWtbjw1NSUh9EBGOq0yPuumM2H0QEYz5LMnfOdl4fRARigutDLrJvFh9EBGO20wM/htauH0QEYhbGwyLPKsYfRARidnOicpdesh9EBGMqw7Pmlk6uH0QEY2rXg/s+0rYfRARj+tcz1t6yVh9EBGPCYtPfemZiH0QEY4rrgzsulm4fRARiGtJjrjcuXh9EBGM+7kKnn86GH0QEYnZSM/7iosofRARj0usSx9bWQh9EBGIWwjLykkIOH0QEwATj///////////8B",
-  "source_version": 2,
-  "updated_at": 1795828952
+  "primary_count": 67,
+  "reply_count": 10,
+  "reply_pages": 67,
+  "analysis": {
+    "no_comments": false,
+    "overall": "本批评论呈现两极分化：部分用户表达对万董的支持、感恩和鼓励，但大量评论质疑上市承诺、催促变现、表达失望，并出现揭露传销风险的负面信息，整体负面情绪显著。计数显示正面47条、中性1条、负面28条。",
+    "negatives": [
+      {
+        "number": 1,
+        "reason": "要求给投资者回复，隐含对公司未回应或进展的质疑"
+      },
+      {
+        "number": 3,
+        "reason": "质疑承诺的上市未兑现，表达失望"
+      },
+      {
+        "number": 4,
+        "reason": "询问敲钟上市，结合语境是对承诺进展的质疑"
+      },
+      {
+        "number": 5,
+        "reason": "要求给投资者回报，隐含对公司未兑现承诺的质疑"
+      },
+      {
+        "number": 6,
+        "reason": "询问何时见收获，表达对投资回报的催促和失望"
+      },
+      {
+        "number": 7,
+        "reason": "嘲讽每个月18号都敲钟，质疑上市承诺"
+      },
+      {
+        "number": 8,
+        "reason": "催促上市并还钱，表达失望和质疑"
+      },
+      {
+        "number": 12,
+        "reason": "催促变现，隐含对进展的不满"
+      },
+      {
+        "number": 13,
+        "reason": "鼓励会员充值，疑似传销拉人头，具有负面风险"
+      },
+      {
+        "number": 16,
+        "reason": "用户指定的负面评论"
+      },
+      {
+        "number": 18,
+        "reason": "询问钟响了吗，质疑上市承诺"
+      },
+      {
+        "number": 30,
+        "reason": "强调钱到投资人手里才是道理，隐含对现状的不满"
+      },
+      {
+        "number": 32,
+        "reason": "说准备敲钟了并带再见表情，具有嘲讽意味"
+      },
+      {
+        "number": 36,
+        "reason": "询问18号敲钟上市了吗，质疑承诺进展"
+      },
+      {
+        "number": 38,
+        "reason": "询问上市了吗并带流泪表情，表达失望和质疑"
+      },
+      {
+        "number": 42,
+        "reason": "询问这些都拿到了没并带捂脸表情，质疑承诺兑现"
+      },
+      {
+        "number": 43,
+        "reason": "连续问号追问钟声在哪里，强烈质疑上市承诺"
+      },
+      {
+        "number": 44,
+        "reason": "催促变现，表达对进展的不满"
+      },
+      {
+        "number": 68,
+        "reason": "回复敲锣了并带呲牙表情，嘲讽上市承诺"
+      },
+      {
+        "number": 69,
+        "reason": "嘲讽说猴年马月的11月18号，质疑上市时间"
+      },
+      {
+        "number": 70,
+        "reason": "嘲讽不断推迟上市时间"
+      },
+      {
+        "number": 71,
+        "reason": "揭露传销定性，警示风险，对公司负面评价"
+      },
+      {
+        "number": 72,
+        "reason": "嘲讽说或者都不说了，质疑承诺"
+      },
+      {
+        "number": 73,
+        "reason": "质疑还有人相信继续投资，表达讽刺"
+      },
+      {
+        "number": 74,
+        "reason": "嘲讽中老年人上当，表达负面评价"
+      },
+      {
+        "number": 75,
+        "reason": "嘲讽明年不敲后年一定敲，质疑上市承诺"
+      },
+      {
+        "number": 76,
+        "reason": "讽刺说多投点，表达嘲讽"
+      },
+      {
+        "number": 77,
+        "reason": "暗示万总为私利奋斗，表达讽刺和质疑"
+      }
+    ],
+    "positive_count": 47,
+    "neutral_count": 1,
+    "analyzed_count": 76,
+    "classification_valid": true,
+    "themes": [],
+    "urgent": [],
+    "response_suggestions": [],
+    "unavailable_count": 1
+  },
+  "video": {
+    "description": "所有难熬的时刻，都是登顶前最后的考验，同心聚力 沉心深耕，相信万总 相信我们团队！#万全通 #新健康运动 #健康运动",
+    "create_time": 1795763241,
+    "account_name": "万董健身日记"
+  }
 }
